@@ -1,5 +1,5 @@
 {
-  "name": "ReactNativeTS",
+  "name": "react-native-ts-boilerplate",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -13,7 +13,8 @@
   },
   "dependencies": {
     "react": "16.0.0-alpha.6",
-    "react-native": "0.44.0"
+    "react-native": "0.44.0",
+    "react-navigation": "^1.0.0-beta.11"
   },
   "devDependencies": {
     "@types/jest": "^19.2.3",
