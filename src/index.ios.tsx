@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import { HomeScreen, Somewhere } from './components/index';
+import { HomeScreen, SomewhereScreen } from './components/index';
 
 const App = StackNavigator({
     Home: { screen: HomeScreen },
-    Add: { screen: Somewhere },
+    Add: { screen: SomewhereScreen },
 });
 
 export default App;

@@ -20,6 +20,7 @@
     "@types/jest": "^19.2.3",
     "@types/react": "^15.0.24",
     "@types/react-native": "^0.43.11",
+    "@types/react-navigation": "^1.0.12",
     "@types/react-test-renderer": "^15.5.0",
     "babel-jest": "^19.0.0",
     "babel-preset-react-native": "^1.9.1",
