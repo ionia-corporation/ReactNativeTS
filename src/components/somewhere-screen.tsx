@@ -43,9 +43,9 @@ export class SomewhereScreenComponent extends React.Component<SomewhereScreenPro
                 </Text>
                 <Button
                     onPress={() => this.props.increment()}
-                    title='go somewhere' />
+                    title='increment value' />
                 <Text style={Styles.subtitle}>
-                    {this.props.val}
+                    Value: {this.props.val}
                 </Text>
             </View>
         );
