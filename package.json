@@ -1,5 +1,5 @@
 {
-  "name": "ReactNativeTS",
+  "name": "react-native-ts-boilerplate",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -12,13 +12,25 @@
     "test": "jest"
   },
   "dependencies": {
+    "@types/lodash": "^4.14.70",
+    "@types/react-redux": "^4.4.46",
+    "@types/redux": "^3.6.0",
+    "@types/redux-actions": "^1.2.6",
+    "@types/redux-thunk": "^2.1.0",
+    "lodash": "^4.17.4",
     "react": "16.0.0-alpha.6",
-    "react-native": "0.44.0"
+    "react-native": "0.44.0",
+    "react-navigation": "^1.0.0-beta.11",
+    "react-redux": "^5.0.5",
+    "redux": "^3.7.2",
+    "redux-actions": "^2.2.1",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "@types/jest": "^19.2.3",
     "@types/react": "^15.0.24",
     "@types/react-native": "^0.43.11",
+    "@types/react-navigation": "^1.0.12",
     "@types/react-test-renderer": "^15.5.0",
     "babel-jest": "^19.0.0",
     "babel-preset-react-native": "^1.9.1",
