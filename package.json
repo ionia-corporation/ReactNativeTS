@@ -9,17 +9,25 @@
     "prebuild": "node node_modules/.bin/rimraf build",
     "build": "tsc",
     "pretest": "npm run build",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "node_modules/.bin/rn-nodeify --install crypto --hack"
   },
   "dependencies": {
+    "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.70",
+    "@types/qs": "^6.5.0",
     "@types/react-redux": "^4.4.46",
     "@types/redux": "^3.6.0",
     "@types/redux-actions": "^1.2.6",
     "@types/redux-thunk": "^2.1.0",
+    "jwt-decode": "^2.2.0",
+    "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
+    "qs": "^6.5.0",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
+    "react-native-crypto": "^2.0.2",
+    "react-native-randombytes": "^2.2.0",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
@@ -37,6 +45,7 @@
     "jest": "19.0.2",
     "react-test-renderer": "16.0.0-alpha.6",
     "rimraf": "^2.6.1",
+    "rn-nodeify": "^7.0.1",
     "ts-jest": "^19.0.14",
     "typescript": "^2.3.2"
   },
@@ -52,5 +61,11 @@
       "tsx",
       "js"
     ]
+  },
+  "react-native": {
+    "crypto": "react-native-crypto"
+  },
+  "browser": {
+    "crypto": "react-native-crypto"
   }
 }
