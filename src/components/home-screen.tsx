@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Text, Button, TextInput } from "react-native";
+import { View, Text, Button } from "react-native";
 import Styles from '../styles/main';
 import { NavigationScreenConfigProps } from 'react-navigation';
 

@@ -1,5 +1,3 @@
-import { fetch } from 'react-native';
-
 // cause we are in a browser
 let logger = console;
 
@@ -19,15 +17,21 @@ export function getJson(options: CommOptions): Promise <any> {
     reject: (err: any) => any,
   ) => {
     let res: any;
+    let body: any;
     try {
-      res = await fetch(options.url, options);
+      const url = options.url;
+      delete options.url;
+      res = await fetch(url, options);
 
-      if (res === undefined || !res.ok) {
-        reject(new Error(!!res && !!res.body ? JSON.stringify(res.body) : 'No response or no response body'));
-      } else if (res.body === null && res.status !== 204) {
+      body = await res.json();
+      // TODO: better error messaging here
+      if (!res.ok) {
+        reject(new Error(body && body.message ? body.message
+          : 'Server sent error code ' + res.status + '\n\n' + JSON.stringify(body)));
+      }
+      if (body === null && res.status !== 204) {
         reject(new Error('Cannot get body object'));
       }
-      const body = await res.json();
 
       if (body && body.success === false) {
         reject(new Error('Unsuccessful request\n' + JSON.stringify(res.body)));
@@ -35,12 +39,15 @@ export function getJson(options: CommOptions): Promise <any> {
         resolve(body);
       }
 
-    } catch (err) {
-      if (err) {
-        logger.error('Error running HTTP request:\n' + JSON.stringify(err)
+    } catch (commError) {
+      // TODO: better error messaging here
+      if (res === undefined) {
+        reject(new Error(!!res && !!body ? JSON.stringify(body) : 'No response or no response body'));
+      } else if (commError) {
+        logger.error('Error running HTTP request:\n' + JSON.stringify(commError)
           + '\n\nResponse:\n'
           + JSON.stringify(res));
-        reject(err);
+        reject(commError);
       }
     }
   });

@@ -25,7 +25,7 @@ export class RenewSessionScreen extends React.Component<RenewSessionProps, Renew
         } else {
           // TODO: pick the correct route to redirect to here
           this.props.navigation.goBack();
-          this.props.navigation.navigate('Root/Home');
+          this.props.navigation.navigate('Root/Login');
         }
       })
       .catch((err) => {
@@ -34,7 +34,7 @@ export class RenewSessionScreen extends React.Component<RenewSessionProps, Renew
         this.props.navigation.goBack();
 
         // TODO: pick the correct route to redirect to here
-        this.props.navigation.navigate('Root/Home');
+        this.props.navigation.navigate('Root/Login');
       });
   }
 

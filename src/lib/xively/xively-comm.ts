@@ -116,12 +116,13 @@ class XivelyComm {
   private skimJwt(jwtResponse: any): any {
     // TODO: when product allows CORS we should look at response headers
     //       for an updated JWT before returning, not just body
-    if (typeof localStorage !== 'undefined') {
+    // TODO: figure out localStorage polyfill or similar
+    // if (typeof localStorage !== 'undefined') {
       if (jwtResponse && jwtResponse.jwt) {
         JWT = jwtResponse.jwt;
         JWT_LAST_UPDATED = new Date().getTime();
       }
-    }
+    // }
 
     return jwtResponse;
   }

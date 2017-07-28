@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { StackNavigator, NavigationActions, NavigationState } from 'react-navigation';
-import { HomeScreen, DeviceList, RenewSessionScreen } from './components/index';
+import { HomeScreen, DeviceList, RenewSessionScreen, LoginScreen } from './components/index';
 import configureStore from './store/index';
 import xively from './lib/xively';
 
 const Navigator = StackNavigator({
-        Home: { screen: HomeScreen },
-        'Authenticated/DeviceList': { screen: DeviceList },
-    });
+    Login: { screen: LoginScreen },
+    Home: { screen: HomeScreen },
+    'Authenticated/DeviceList': { screen: DeviceList },
+});
 
 // Check that only authenticated people access paths that start with 'Authenticated/'
 const defaultGetStateForAction = Navigator.router.getStateForAction;
 Navigator.router.getStateForAction = (action, state: NavigationState) => {
     if (state
         && action.routeName
-        && action.routeName.split('/')[0] === 'Authenticated'
+        && action.routeName.split('/')[1] === 'Authenticated' // remember, 0 is 'Root'
         && !(xively.comm.checkJwtNoRenew())) {
         // un-authenticated, but trying to access something under 'Authenticated/'
         // TODO: TEST that this redirects to login
