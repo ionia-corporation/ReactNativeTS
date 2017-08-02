@@ -21,11 +21,14 @@ export class RenewSessionScreen extends React.Component<RenewSessionProps, Renew
           this.props.navigation.goBack();
           this.props.navigation.navigate(
             this.props.navigation.state.params.nextRoute,
-            this.props.navigation.state.params.nextRouteParams)
+            {
+              ...(this.props.navigation.state.params.nextRouteParams),
+              auth: true,
+            });
         } else {
           // TODO: pick the correct route to redirect to here
           this.props.navigation.goBack();
-          this.props.navigation.navigate('Root/Login');
+          this.props.navigation.navigate('Login');
         }
       })
       .catch((err) => {
@@ -34,7 +37,7 @@ export class RenewSessionScreen extends React.Component<RenewSessionProps, Renew
         this.props.navigation.goBack();
 
         // TODO: pick the correct route to redirect to here
-        this.props.navigation.navigate('Root/Login');
+        this.props.navigation.navigate('Login');
       });
   }
 

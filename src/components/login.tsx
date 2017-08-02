@@ -1,6 +1,6 @@
 import * as React from 'react';
 import xively from '../lib/xively';
-import { NavigationScreenConfigProps } from 'react-navigation';
+import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { KeyboardAvoidingView, View, Text, TextInput, Button } from "react-native";
 import Styles from '../styles/main';
 
@@ -47,15 +47,26 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
       let res = await xively.idm.authentication.login(userOptions);
 
       // Successfully logged in
+      if (!res.jwt) {
+        throw new Error('Not Authorized');
+      }
       this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS });
 
       // TODO: select the correct route
       const routeName = this.props.navigation.state.params
         && this.props.navigation.state.params.nextRoute || 'Home';
-      const routeParams = this.props.navigation.state.params
+      const params = this.props.navigation.state.params
         && this.props.navigation.state.params.nextRouteParams || {};
 
-      this.props.navigation.navigate(routeName, routeParams);
+      // reset nav stack
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName, params }),
+        ]
+      });
+      this.props.navigation.dispatch(resetAction);
+
     } catch (err) {
       // Server Error
       if ( err.message === 'Unauthorized') {

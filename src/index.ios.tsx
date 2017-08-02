@@ -16,8 +16,9 @@ const defaultGetStateForAction = Navigator.router.getStateForAction;
 Navigator.router.getStateForAction = (action, state: NavigationState) => {
     if (state
         && action.routeName
-        && action.routeName.split('/')[1] === 'Authenticated' // remember, 0 is 'Root'
-        && !(xively.comm.checkJwtNoRenew())) {
+        && action.routeName.split('/')[0] === 'Authenticated'
+        && (action.params && !action.params.auth)
+    ) { // remember, 0 is 'Root' {
         // un-authenticated, but trying to access something under 'Authenticated/'
         // TODO: TEST that this redirects to login
         action.params = {
