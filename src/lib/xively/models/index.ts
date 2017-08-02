@@ -1,0 +1,10 @@
+export { Devices } from './devices';
+export { Meta } from './meta';
+export { Authorization } from './authorization';
+export { XivelyConfig } from './xively-config';
+export { CommOptions } from './comm-options';
+export { User } from './user';
+export { Organizations } from './organizations';
+export { Provision } from './provision'
+export { Logs } from './logs'
+export { TimeSeries } from './timeseries';

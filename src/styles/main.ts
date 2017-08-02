@@ -1,4 +1,7 @@
-import { StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native";
+
+const DEVICE_WIDTH = Dimensions.get('window').width;
+const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 export const Styles = StyleSheet.create({
     container: {
@@ -19,6 +22,19 @@ export const Styles = StyleSheet.create({
         color: "#333333",
         marginBottom: 5,
     } as TextStyle,
+
+    input: {
+		backgroundColor: 'rgba(200, 200, 200, 0.4)',
+		width: DEVICE_WIDTH - 40,
+		height: 40,
+		marginHorizontal: 20,
+		paddingLeft: 45,
+		borderRadius: 20,
+		color: '#333333',
+	},
+    inputWrapper: {
+        paddingBottom: 10
+	},
 });
 
 export default Styles;
