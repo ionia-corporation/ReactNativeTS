@@ -1,16 +1,18 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppState } from '../store/reducers/index';
+import { AppState } from '../types/index';
+import { Authenticated } from './authenticated';
+import { getDevices } from '../store/blueprint/devices/reducers';
+import { Devices } from '../lib/xively/models/index';
 
 import { View, Text, Button } from "react-native";
 import Styles from '../styles/main';
-import { increment } from '../store/actions/sample';
 
 interface DeviceListReduxProps {
+    devices: Devices.Device[];
 }
 interface DeviceListDispatchProps {
-    increment: () => any;
 }
 interface DeviceListProps extends
     React.Props<DeviceListComponent>,
@@ -20,12 +22,12 @@ interface DeviceListProps extends
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {
     return {
+        devices: getDevices(state),
     }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListProps) {
     return {
-        increment: () => dispatch(increment()),
     }
 }
 
@@ -37,12 +39,15 @@ export class DeviceListComponent extends React.Component<DeviceListProps, void> 
         return (
             <View style={Styles.container}>
                 <Text style={Styles.title}>
-                    Devices (todo)
+                    Devices
                 </Text>
+                { this.props.devices ? this.props.devices.map((d) => {
+                    return <Text style={Styles.subtitle}>d.name</Text>;
+                }) : null }
             </View>
         );
     }
 }
 
-export let DeviceList = connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent);
+export let DeviceList = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent));
 export default DeviceList;
