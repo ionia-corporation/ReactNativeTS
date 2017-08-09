@@ -33,8 +33,22 @@ export const Styles = StyleSheet.create({
 		color: '#333333',
 	},
     inputWrapper: {
-        paddingBottom: 10
-	},
+        paddingBottom: 10,
+    },
+    deviceRow: {
+        padding: 4,
+        borderWidth: 0.5,
+        borderRadius: 2,
+        borderColor: '#eeeeee',
+        margin: 2,
+    } as TextStyle,
+    deviceConnectedImage: {
+        marginTop: 2,
+    },
+    deviceRowText: {
+        paddingLeft: 15,
+        paddingBottom: 4,
+    } as TextStyle,
 });
 
 export default Styles;
