@@ -21,7 +21,7 @@ export class HomeScreen extends React.Component<HomeProps, HomeState> {
                     TITLE HERE
                 </Text>
                 <Button
-                    onPress={() => this.props.navigation.navigate('Authenticated/DeviceList')}
+                    onPress={() => this.props.navigation.navigate('DeviceList')}
                     title='go somewhere' />
             </View>
         );

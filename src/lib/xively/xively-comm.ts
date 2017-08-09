@@ -2,10 +2,11 @@
 /* tslint:disable:object-literal-key-quotes */
 import * as comm from '../comm';
 import { Authorization, CommOptions, XivelyConfig } from './models/index';
+import { AsyncStorage } from 'react-native';
 
 // TODO: store this somewhere on the phone or at least abstract storage
-export let JWT : string = '';
-export let JWT_LAST_UPDATED: number = 0;
+export let JWT : string = 'JWT';
+export let JWT_LAST_UPDATED: string = 'JWT_LAST_UPDATED';
 
 class XivelyComm {
   config: XivelyConfig;
@@ -49,8 +50,13 @@ class XivelyComm {
     }
   }
 
-  clearJwt() {
-    JWT = '';
+  async clearJwt() {
+    try {
+      await AsyncStorage.setItem(JWT, '');
+      await AsyncStorage.setItem(JWT_LAST_UPDATED, '');
+    } catch (err) {
+      console.error('ERROR clearing saved JWT: ' + JSON.stringify(err));
+    }
   }
 
   checkJwt(): Promise<boolean> {
@@ -59,68 +65,81 @@ class XivelyComm {
       .catch((e) => false);
   }
 
-  checkJwtNoRenew(): boolean {
-    const lastUpdatedInt = JWT_LAST_UPDATED;
-    let lastUpdated = isNaN(lastUpdatedInt) ? null : new Date(lastUpdatedInt);
-    let savedJwt = JWT;
-    if (lastUpdated !== null && !!savedJwt) {
-      // check if expired
-      if (new Date().getTime() - lastUpdated.getTime() <= (this.config.jwtExpiration || 600000)) {
-        return true;
+  async checkJwtNoRenew() {
+    try {
+      const lastUpdatedInt = parseInt(await AsyncStorage.getItem(JWT_LAST_UPDATED));
+      let lastUpdated = isNaN(lastUpdatedInt) ? null : new Date(lastUpdatedInt);
+      let savedJwt = await AsyncStorage.getItem(JWT);
+      if (lastUpdated !== null && !!savedJwt) {
+        // check if expired
+        if (new Date().getTime() - lastUpdated.getTime() <= (this.config.jwtExpiration || 600000)) {
+          return true;
+        }
       }
+    } catch (err) {
+      console.error('ERROR checking saved JWT: ' + JSON.stringify(err));
     }
   }
 
   // struggled with putting this here or in IDM...
-  getCurrentJwt(): Promise<string> {
-    const lastUpdatedInt = JWT_LAST_UPDATED;
-    let lastUpdated = isNaN(lastUpdatedInt) ? null : new Date(lastUpdatedInt);
-    let savedJwt = JWT;
-    if (lastUpdated !== null && !!savedJwt) {
-      // check if expired
-      if (new Date().getTime() - lastUpdated.getTime() > (this.config.jwtExpiration || 600000)) {
-        // try renewing JWT
-        return this.renewJwt(savedJwt)
-          .then((res) => {
-            return res.jwt;
-          });
+  async getCurrentJwt() {
+    try {
+      const lastUpdatedInt = parseInt(await AsyncStorage.getItem(JWT_LAST_UPDATED));
+      let lastUpdated = isNaN(lastUpdatedInt) ? null : new Date(lastUpdatedInt);
+      let savedJwt = await AsyncStorage.getItem(JWT);
+      if (lastUpdated !== null && !!savedJwt) {
+        // check if expired
+        if (new Date().getTime() - lastUpdated.getTime() > (this.config.jwtExpiration || 600000)) {
+          // try renewing JWT
+          return this.renewJwt(savedJwt)
+            .then((res) => {
+              return res.jwt;
+            });
+        }
       }
-    }
-    return new Promise<string>((resolve, reject) => {
-      if (savedJwt) {
-        resolve(savedJwt);
-      } else {
-        throw new Error('Not logged in');
-      }
-    });
-  }
-
-  renewJwt(jwtP?: string)
-    : Promise<Authorization.LoginResponse> {
-    const jwt = jwtP || JWT;
-    let options = {
-      url: this.urlIDM
-      + 'sessions/renew-session',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwt,
-      },
-    };
-
-    return comm.getJson(options)
-      .then((res : any) => {
-        return this.skimJwt(res);
+      return new Promise<string>((resolve, reject) => {
+        if (savedJwt) {
+          resolve(savedJwt);
+        } else {
+          throw new Error('Not logged in');
+        }
       });
+    } catch (err) {
+      console.error('ERROR checking saved JWT: ' + JSON.stringify(err));
+    }
   }
-  private skimJwt(jwtResponse: any): any {
+
+  async renewJwt(jwtP?: string)
+    : Promise<Authorization.LoginResponse> {
+    try{
+      const jwt = jwtP || await AsyncStorage.getItem(JWT);
+      let options = {
+        url: this.urlIDM
+        + 'sessions/renew-session',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwt,
+        },
+      };
+
+      return this.skimJwt(await comm.getJson(options));
+    } catch (err) {
+      console.error('ERROR renewing saved JWT: ' + JSON.stringify(err));
+    }
+  }
+  private async skimJwt(jwtResponse: any) {
     // TODO: when product allows CORS we should look at response headers
     //       for an updated JWT before returning, not just body
     // TODO: figure out localStorage polyfill or similar
     // if (typeof localStorage !== 'undefined') {
       if (jwtResponse && jwtResponse.jwt) {
-        JWT = jwtResponse.jwt;
-        JWT_LAST_UPDATED = new Date().getTime();
+        try {
+          await AsyncStorage.setItem(JWT, jwtResponse.jwt);
+          await AsyncStorage.setItem(JWT_LAST_UPDATED, (new Date().getTime()) + '');
+        } catch (err) {
+          console.error('ERROR saving JWT: ' + JSON.stringify(err));
+        }
       }
     // }
 
