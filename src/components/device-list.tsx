@@ -73,7 +73,7 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
                         <View style={Styles.deviceRow}>
                             <Text style={Styles.deviceRowText}>
                                 <Image style={Styles.deviceConnectedImage} source={device.connected ?
-                                    require('../images/device_on.png') : require('../images/device_off.png')} />
+                                    require('../../images/device_on.png') : require('../../images/device_off.png')} />
                                 {device.name || device.serialNumber || '(no name)'}
                             </Text>
                         </View>

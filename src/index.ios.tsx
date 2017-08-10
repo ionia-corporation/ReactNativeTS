@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { StackNavigator, NavigationActions, NavigationState } from 'react-navigation';
+import { StackNavigator, StackNavigatorConfig, NavigationActions, NavigationState } from 'react-navigation';
 import { HomeScreen, DeviceList, LoginScreen } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
@@ -11,7 +11,8 @@ const Navigator = StackNavigator({
     Home: { screen: HomeScreen },
 }, {
     initialRouteName: 'DeviceList',
-});
+    headerMode: 'none',
+} as StackNavigatorConfig);
 
 let store = configureStore();
 
