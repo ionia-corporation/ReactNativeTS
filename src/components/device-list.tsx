@@ -9,15 +9,15 @@ import { Devices } from '../lib/xively/models/index';
 import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
 import Styles from '../styles/main';
 
-interface DeviceListReduxProps {
+interface ReduxStateProps {
     devices: Devices.Device[];
 }
-interface DeviceListDispatchProps {
+interface ReduxDispatchProps {
 }
 interface DeviceListProps extends
     React.Props<DeviceListComponent>,
-    DeviceListReduxProps,
-    DeviceListDispatchProps {
+    ReduxStateProps,
+    ReduxDispatchProps {
 }
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {

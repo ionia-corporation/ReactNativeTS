@@ -7,6 +7,7 @@ import xively from '../lib/xively';
 import { batchRequest } from '../store/blueprint/actions';
 import { fetchProfile } from '../store/profile/actions';
 import { NavigationScreenConfigProps, NavigationParams, NavigationInitAction } from 'react-navigation';
+import { actions as mqttActions } from '../store/mqtt';
 
 // TODO: since we are not resuing this authenticated logic for any other component
 // this should be just a regular component that renders conditionally the App component
@@ -39,16 +40,16 @@ export const Authenticated = (DecoratedComponent) => {
   interface ReduxDispatchProps {
     fetch: any;
     fetchProfile: any;
-    // connectToMqtt: any;
-    // subscribeDevices: any;
+    connectToMqtt: any;
+    subscribeDevices: any;
   }
 
   function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
     return {
       fetch: () => dispatch(batchRequest()),
       fetchProfile: () => dispatch(fetchProfile()),
-      // connectToMqtt: () => dispatch(mqttActions.connect()),
-      // subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
+      connectToMqtt: () => dispatch(mqttActions.connect()),
+      subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
     };
   }
 
@@ -65,6 +66,7 @@ export const Authenticated = (DecoratedComponent) => {
   const displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
 
   class AuthenticatedComponent extends React.Component<AuthenticatedProps, AuthenticatedState> {
+    subscribed = false;
     static displayName = 'Authenticated(' + displayName + ')';
 
     constructor(props) {
@@ -94,7 +96,7 @@ export const Authenticated = (DecoratedComponent) => {
       }
       this.props.fetch();
       this.props.fetchProfile();
-      // this.props.connectToMqtt();
+      this.props.connectToMqtt();
     }
 
     // Runs before new props
@@ -102,6 +104,11 @@ export const Authenticated = (DecoratedComponent) => {
     // TODO: Is this the source of our rerendering problems!?
     componentWillReceiveProps(nextProps) {
       this.checkAuth(nextProps);
+      if (!this.subscribed && this.props.devices.length > 0) {
+        // make sure this runs only once
+        this.props.subscribeDevices(this.props.devices);
+        this.subscribed = true;
+      }
     }
 
     async checkAuth(props: AuthenticatedProps) {
