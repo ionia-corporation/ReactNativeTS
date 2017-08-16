@@ -21,7 +21,7 @@ const appReducer = combineReducers({
       parse: JSON.parse,
       stringify: JSON.stringify,
     },
-    battery: {
+    '_updates/fields': {
       parse: JSON.parse,
       stringify: JSON.stringify,
     },

@@ -131,8 +131,8 @@ export function subscribeDevice(device: Device) {
       .map((channel) => ({
         topic: channel.channel,
         channelType: channel.persistenceType,
-      }))
-      .forEach((topic) => {
+      }));
+      topicsToSubscribe.forEach((topic) => {
         client.subscribe(topic.topic, {
           onFailure: (err) => {
             dispatch(setError(err.errorMessage));
@@ -140,6 +140,9 @@ export function subscribeDevice(device: Device) {
           },
         });
       });
+
+    // TODO: make sure we got the ack on the subscribes
+    dispatch(subscribed(topicsToSubscribe));
 
     // TODO: figure out how to mimic this functionality from MQTTJS
     // client.subscribe(topicsToSubscribe.map((channel) => channel.topic), (error, granted) => {
@@ -154,7 +157,7 @@ export function subscribeDevice(device: Device) {
     //     .map((grant) => grant.topic);
 
     //   failedTopics.forEach((topic) => {
-    //       console.error(`MQTT subscription denied for ${topic}`);
+    //       console.warn(`MQTT subscription denied for ${topic}`);
     //     });
 
     //   const successfulySubscribedTopics = topicsToSubscribe
@@ -213,7 +216,7 @@ export function send<T>(topic: string, payload: T, qos: number, retained: boolea
     try {
       channel = parseTopic(topic).channel;
     } catch (err) {
-      console.error(`MQTT: bad topic ${topic}, ignoring`);
+      console.warn(`MQTT: bad topic ${topic}, ignoring`);
       return;
     }
 
@@ -221,7 +224,7 @@ export function send<T>(topic: string, payload: T, qos: number, retained: boolea
     try {
       stringifier = serdes[channel].stringify;
     } catch (err) {
-      console.error(`MQTT: stringifier not found for channel ${channel}, ignoring`);
+      console.warn(`MQTT: stringifier not found for channel ${channel}, ignoring`);
       return;
     }
 

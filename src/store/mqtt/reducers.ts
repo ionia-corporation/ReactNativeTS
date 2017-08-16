@@ -87,7 +87,7 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
           try {
             channel = parseTopic(topic).channel;
           } catch (err) {
-            console.error(`MQTT Reducer: error while parsing a topic`, topic);
+            console.warn(`MQTT Reducer: error while parsing a topic`, topic);
             return state;
           }
 
@@ -107,8 +107,8 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
           };
 
           if (channelType === 'simple') {
+            console.log('SETTING PARSED PAYLOAD');
             data[topic].message = message;
-
           } else if (channelType === 'timeSeries') {
             data[topic].messages = [].concat(data[topic].messages, [message]);
           }

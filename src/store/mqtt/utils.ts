@@ -8,6 +8,6 @@ export function parseTopic(topic: string) {
   return {
     accountId: parts[3],
     deviceId: parts[5],
-    channel: parts[6],
+    channel: parts.slice(6).join('/'),
   };
 }
