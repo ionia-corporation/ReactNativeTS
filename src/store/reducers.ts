@@ -1,12 +1,12 @@
 import { combineReducers, AnyAction } from 'redux';
 import { reducer as blueprint, BlueprintState } from './blueprint/reducers';
 import { reducer as profile, ProfileState } from './profile/reducers';
-// import { default as createMqttReducer, MqttState } from './mqtt';
+import { default as createMqttReducer, MqttState } from './mqtt';
 
 export type AppState = {
   blueprint: BlueprintState,
   profile: ProfileState,
-  // mqtt: MqttState;
+  mqtt: MqttState;
 };
 
 export const constants = {
@@ -16,16 +16,16 @@ export const constants = {
 const appReducer = combineReducers({
   blueprint,
   profile,
-  // mqtt: createMqttReducer({
-  //   _log: {
-  //     parse: JSON.parse,
-  //     stringify: JSON.stringify,
-  //   },
-  //   battery: {
-  //     parse: JSON.parse,
-  //     stringify: JSON.stringify,
-  //   },
-  // }),
+  mqtt: createMqttReducer({
+    _log: {
+      parse: JSON.parse,
+      stringify: JSON.stringify,
+    },
+    '_updates/fields': {
+      parse: JSON.parse,
+      stringify: JSON.stringify,
+    },
+  }),
 });
 
 const rootReducer = (state: AppState, action: AnyAction) => {

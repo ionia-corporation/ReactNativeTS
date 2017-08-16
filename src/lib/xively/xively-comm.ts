@@ -55,7 +55,7 @@ class XivelyComm {
       await AsyncStorage.setItem(JWT, '');
       await AsyncStorage.setItem(JWT_LAST_UPDATED, '');
     } catch (err) {
-      console.error('ERROR clearing saved JWT: ' + JSON.stringify(err));
+      console.warn('ERROR clearing saved JWT: ' + JSON.stringify(err));
     }
   }
 
@@ -77,7 +77,7 @@ class XivelyComm {
         }
       }
     } catch (err) {
-      console.error('ERROR checking saved JWT: ' + JSON.stringify(err));
+      console.warn('ERROR checking saved JWT: ' + JSON.stringify(err));
     }
   }
 
@@ -105,7 +105,7 @@ class XivelyComm {
         }
       });
     } catch (err) {
-      console.error('ERROR checking saved JWT: ' + JSON.stringify(err));
+      console.warn('ERROR checking saved JWT: ' + JSON.stringify(err));
     }
   }
 
@@ -125,7 +125,7 @@ class XivelyComm {
 
       return this.skimJwt(await comm.getJson(options));
     } catch (err) {
-      console.error('ERROR renewing saved JWT: ' + JSON.stringify(err));
+      console.warn('ERROR renewing saved JWT: ' + JSON.stringify(err));
     }
   }
   private async skimJwt(jwtResponse: any) {
@@ -138,7 +138,7 @@ class XivelyComm {
           await AsyncStorage.setItem(JWT, jwtResponse.jwt);
           await AsyncStorage.setItem(JWT_LAST_UPDATED, (new Date().getTime()) + '');
         } catch (err) {
-          console.error('ERROR saving JWT: ' + JSON.stringify(err));
+          console.warn('ERROR saving JWT: ' + JSON.stringify(err));
         }
       }
     // }
