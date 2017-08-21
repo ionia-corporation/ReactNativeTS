@@ -1,7 +1,7 @@
 import * as React from 'react';
 import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
 import Styles from '../styles/main';
 
 // TODO: move this enum
@@ -88,6 +88,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
   render() {
     return (
       <KeyboardAvoidingView behavior='padding' style={Styles.container}>
+        <Image style={Styles.logo} source={require('../../images/logo.png')} />
         <Text style={Styles.title}>
           Sign In
         </Text>
