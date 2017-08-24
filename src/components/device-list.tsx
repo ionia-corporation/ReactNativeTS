@@ -86,9 +86,9 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
     render() {
         return (
             <View style={Styles.container}>
-                <Text style={Styles.title}>
+                {/* <Text style={Styles.title}>
                     Devices ({this.props.devices ? this.props.devices.length : 0})
-                </Text>
+                </Text> */}
                 <ListView
                     dataSource={this.state.deviceDataSource}
                     renderRow={(deviceWithData: DeviceWithData) => {
