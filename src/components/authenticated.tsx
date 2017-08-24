@@ -67,6 +67,7 @@ export const Authenticated = (DecoratedComponent) => {
 
   class AuthenticatedComponent extends React.Component<AuthenticatedProps, AuthenticatedState> {
     subscribed = false;
+    checkingAuth = false;
     static displayName = 'Authenticated(' + displayName + ')';
 
     constructor(props) {
@@ -112,22 +113,30 @@ export const Authenticated = (DecoratedComponent) => {
     }
 
     async checkAuth(props: AuthenticatedProps) {
+      if (this.checkingAuth) {
+        return;
+      }
+
+      this.checkingAuth = true;
       try {
         const isLoggedIn = await xively.comm.checkJwt();
 
         if (!isLoggedIn) {
           this.redirectToLogin(props);
+          return;
         }
+
+        // If we've made it this far, we're still valid
+        this.setState((state) => {
+          state.isAuthenticated = true;
+          return state;
+        });
       } catch (e) {
         this.redirectToLogin(props);
         return;
+      } finally {
+        this.checkingAuth = false;
       }
-
-      // If we've made it this far, we're still valid
-      this.setState((state) => {
-        state.isAuthenticated = true;
-        return state;
-      });
     }
 
 

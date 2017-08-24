@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, TextStyle, Dimensions, Platform } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, Dimensions, ImageStyle, Platform } from "react-native";
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -17,6 +17,10 @@ export const Styles = StyleSheet.create({
         textAlign: "center",
         margin: 10,
     } as TextStyle,
+
+    logo: {
+        marginBottom: 50,
+    } as ImageStyle,
 
     subtitle: {
         textAlign: "center",
