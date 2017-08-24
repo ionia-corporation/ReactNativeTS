@@ -17,11 +17,11 @@ import xively from './lib/xively';
 const DevicesNavigator = StackNavigator({
     DeviceList: {
         screen: DeviceList,
-        navigationOptions: ({ navigation }) => ({
+        navigationOptions: (navigation) => ({
             drawerLabel: 'Devices',
             headerRight: headerRight(navigation),
         }),
-    },
+    } as StackNavigatorConfig,
 })
 
 const Navigator = DrawerNavigator({
