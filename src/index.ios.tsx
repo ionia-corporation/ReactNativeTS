@@ -1,18 +1,37 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { StackNavigator, StackNavigatorConfig, NavigationActions, NavigationState } from 'react-navigation';
-import { HomeScreen, DeviceList, LoginScreen } from './components/index';
+import { Text, Button } from 'react-native';
+import {
+    HeaderProps,
+    DrawerNavigator,
+    DrawerNavigatorConfig,
+    NavigationActions,
+    NavigationState
+} from 'react-navigation';
+import { HomeScreen, DeviceList, LoginScreen, LogoutScreen } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
 
-const Navigator = StackNavigator({
-    DeviceList: { screen: DeviceList },
-    Login: { screen: LoginScreen },
-    Home: { screen: HomeScreen },
-}, {
-    initialRouteName: 'DeviceList',
-    headerMode: 'none',
-} as StackNavigatorConfig);
+const Navigator = DrawerNavigator({
+    DeviceList: {
+        screen: DeviceList,
+        navigationOptions: {
+            drawerLabel: 'Devices',
+        },
+    },
+    Logout: {
+        screen: LogoutScreen,
+        navigationOptions: {
+            drawerLabel: 'Logout',
+        },
+    },
+    Login: {
+        screen: LoginScreen,
+        navigationOptions: {
+            drawerLabel: '',
+        },
+    },
+});
 
 let store = configureStore();
 
