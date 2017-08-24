@@ -54,7 +54,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
       // TODO: select the correct route
       const routeName = this.props.navigation.state.params
-        && this.props.navigation.state.params.nextRoute || 'DeviceList';
+        && this.props.navigation.state.params.nextRoute || 'Devices/DeviceList';
       const params = this.props.navigation.state.params
         && this.props.navigation.state.params.nextRouteParams || {};
 

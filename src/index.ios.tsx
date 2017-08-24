@@ -5,30 +5,39 @@ import {
     HeaderProps,
     DrawerNavigator,
     DrawerNavigatorConfig,
+    StackNavigator,
+    StackNavigatorConfig,
     NavigationActions,
     NavigationState
 } from 'react-navigation';
-import { HomeScreen, DeviceList, LoginScreen, LogoutScreen } from './components/index';
+import { HomeScreen, DeviceList, LoginScreen, LogoutScreen, headerRight } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
 
-const Navigator = DrawerNavigator({
+const DevicesNavigator = StackNavigator({
     DeviceList: {
         screen: DeviceList,
-        navigationOptions: {
+        navigationOptions: ({ navigation }) => ({
             drawerLabel: 'Devices',
+            headerRight: headerRight(navigation),
+        }),
+    },
+})
+
+const Navigator = DrawerNavigator({
+    Devices: {
+        screen: DevicesNavigator,
+    },
+    Login: {
+        screen: LoginScreen,
+        navigationOptions: {
+            drawerLabel: '',
         },
     },
     Logout: {
         screen: LogoutScreen,
         navigationOptions: {
             drawerLabel: 'Logout',
-        },
-    },
-    Login: {
-        screen: LoginScreen,
-        navigationOptions: {
-            drawerLabel: '',
         },
     },
 });
