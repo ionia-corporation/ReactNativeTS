@@ -17,27 +17,28 @@ import xively from './lib/xively';
 const DevicesNavigator = StackNavigator({
     DeviceList: {
         screen: DeviceList,
-        navigationOptions: (navigation) => ({
-            drawerLabel: 'Devices',
+        navigationOptions: ({ navigation }) => ({
+            title: 'Devices',
             headerRight: headerRight(navigation),
         }),
-    } as StackNavigatorConfig,
+    },
 })
 
 const Navigator = DrawerNavigator({
     Devices: {
         screen: DevicesNavigator,
     },
-    Login: {
-        screen: LoginScreen,
-        navigationOptions: {
-            drawerLabel: '',
-        },
-    },
     Logout: {
         screen: LogoutScreen,
         navigationOptions: {
             drawerLabel: 'Logout',
+        },
+    },
+    Login: {
+        screen: LoginScreen,
+        navigationOptions: {
+            title: '',
+            drawerLabel: '',
         },
     },
 });
