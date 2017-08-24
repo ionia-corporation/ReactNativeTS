@@ -54,6 +54,8 @@ interface DeviceListState {
 }
 
 export class DeviceListComponent extends React.Component<DeviceListProps, DeviceListState> {
+    connectedImage = require('../../images/device_on.png');
+    disconnectedImage = require('../../images/device_off.png');
     static navigationOptions = {
         title: 'Devices',
     };
@@ -97,7 +99,7 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
                         return <View style={Styles.deviceRow}>
                             <Text style={Styles.deviceRowText}>
                                 <Image style={Styles.deviceConnectedImage} source={ connected ?
-                                    require('../../images/device_on.png') : require('../../images/device_off.png') } />
+                                    this.connectedImage : this.disconnectedImage } />
                                 {device.name || device.serialNumber || '(no name)'} { curData ? curData.state.firmwareVersion : '' }
                             </Text>
                         </View>;

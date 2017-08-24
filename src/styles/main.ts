@@ -1,10 +1,11 @@
-import { StyleSheet, ViewStyle, TextStyle, Dimensions } from "react-native";
+import { StyleSheet, ViewStyle, TextStyle, Dimensions, Platform } from "react-native";
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 export const Styles = StyleSheet.create({
     container: {
+        marginTop: Platform.OS === 'ios' ? 20 : 0,
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
