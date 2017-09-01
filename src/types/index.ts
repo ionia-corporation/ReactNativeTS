@@ -1,4 +1,5 @@
 import { Organizations, Devices, Logs } from '../lib/xively/models';
+import { TopicData } from '../store/mqtt/reducers';
 
 export { AppState } from '../store/reducers';
 
@@ -37,4 +38,11 @@ export type Organization = Organizations.Organization;
 export type Device = Devices.Device & {
   location?: any;
   channels?: Array<Channel>;
+};
+
+export type DeviceWithData = {
+  device: Devices.Device;
+  mqttData: {
+      [topicName: string]: TopicData
+  }
 };

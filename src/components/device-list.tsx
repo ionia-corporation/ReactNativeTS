@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { AppState } from '../types/index';
+import { NavigationScreenConfigProps } from 'react-navigation';
+import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
 import { getDevices } from '../store/blueprint/devices/reducers';
 import { TopicData } from '../store/mqtt/reducers';
@@ -11,12 +12,6 @@ import { Devices } from '../lib/xively/models/index';
 import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
 import Styles from '../styles/main';
 
-interface DeviceWithData {
-    device: Devices.Device;
-    mqttData: {
-        [topicName: string]: TopicData
-    }
-};
 interface ReduxStateProps {
     devices: DeviceWithData[];
 }
@@ -25,7 +20,8 @@ interface ReduxDispatchProps {
 interface DeviceListProps extends
     React.Props<DeviceListComponent>,
     ReduxStateProps,
-    ReduxDispatchProps {
+    ReduxDispatchProps,
+    NavigationScreenConfigProps {
 }
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {
@@ -97,7 +93,12 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
                         const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
                         const connected = curData ? curData.state.connected : false;
                         return <View style={Styles.deviceRow}>
-                            <Text style={Styles.deviceRowText}>
+                            <Text style={Styles.deviceRowText} onPress={() => {
+                                this.props.navigation.navigate('Device', {
+                                    deviceId: device.id,
+                                    deviceName: device.name || device.serialNumber,
+                                });
+                            }}>
                                 <Image style={Styles.deviceConnectedImage} source={ connected ?
                                     this.connectedImage : this.disconnectedImage } />
                                 {device.name || device.serialNumber || '(no name)'} { curData ? curData.state.firmwareVersion : '' }
