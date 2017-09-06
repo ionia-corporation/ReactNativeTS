@@ -9,7 +9,7 @@ import { TopicData } from '../store/mqtt/reducers';
 import { topic } from '../store/mqtt/utils';
 import { Devices } from '../lib/xively/models/index';
 
-import { View, Text, Button, Image } from "react-native";
+import { View, Text, Button, Image, ScrollView } from "react-native";
 import Styles from '../styles/main';
 
 interface ReduxStateProps {
@@ -62,15 +62,30 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
                     </Text>
                 </View>
             )
-    }
+        }
         return (
             <View style={Styles.container}>
-                <Text style={Styles.title}>
-                    {this.props.device.device.name}
-                </Text>
-                <Text>
-                    {this.props.device?JSON.stringify(this.props.device.mqttData):'(no data)'}
-                </Text>
+                <ScrollView>
+                    {Object.keys(this.props.device.mqttData).map((topic) => {
+                        let msg = '<none>';
+                        const data = this.props.device.mqttData[topic];
+                        if (data && data.message && data.message.stringPayload) {
+                            msg = data.message.stringPayload;
+                        } else if (data && data.messages && data.messages.length && data.messages[0].stringPayload) {
+                            msg = data.messages[0].stringPayload;
+                        }
+                        return (
+                            <View key={topic}>
+                                <Text>
+                                    Topic: {topic}
+                                </Text>
+                                <Text>
+                                    Data: {msg}
+                                </Text>
+                            </View>
+                        )
+                    })}
+                </ScrollView>
             </View>
         );
     }
