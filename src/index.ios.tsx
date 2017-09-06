@@ -10,7 +10,14 @@ import {
     NavigationActions,
     NavigationState
 } from 'react-navigation';
-import { HomeScreen, DeviceList, LoginScreen, LogoutScreen, headerRight } from './components/index';
+import {
+    HomeScreen,
+    DeviceList,
+    DeviceScreen,
+    LoginScreen,
+    LogoutScreen,
+    headerRight
+} from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
 
@@ -22,6 +29,13 @@ const DevicesNavigator = StackNavigator({
             headerRight: headerRight(navigation),
         }),
     },
+    Device: {
+        screen: DeviceScreen,
+        navigationOptions: ({ navigation }) => ({
+            title: navigation.state.params.deviceName,
+            headerRight: headerRight(navigation),
+        })
+    }
 })
 
 const Navigator = DrawerNavigator({

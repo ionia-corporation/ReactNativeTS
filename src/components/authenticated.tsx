@@ -85,12 +85,8 @@ export const Authenticated = (DecoratedComponent) => {
       };
     }
 
-    // Runs before render()
-    componentWillMount() {
-      this.checkAuth(this.props);
-    }
-
     componentDidMount() {
+      this.checkAuth(this.props);
       // Only run the initial fetch once
       if (this.props.loadedOnce && this.props.devices.length > 0) {
         return;
@@ -132,6 +128,7 @@ export const Authenticated = (DecoratedComponent) => {
           return state;
         });
       } catch (e) {
+        console.warn('ERROR checking auth: ' + e.message);
         this.redirectToLogin(props);
         return;
       } finally {
@@ -153,7 +150,7 @@ export const Authenticated = (DecoratedComponent) => {
       const { isAuthenticated } = this.state;
 
       if (!isAuthenticated) {
-        return <Text />;
+        return <Text>Loading</Text>;
       }
 
       // TODO: figure out what props we should be sending down (should we prune out the router?)
