@@ -70,16 +70,21 @@ export function connect() {
       await dispatch(disconnect());
       // connect
       await dispatch(connect());
-      // re subscribe mqtt
-      client.subscribe(Object.keys(subscriptions), (error, granted) => {
-        if (error) {
-          dispatch(setError(error.message));
-          console.log(`MQTT: something went wrong while subscribing`, error);
-          return;
-        }
-      });
-      // restore state.mqtt.data
-      dispatch(restoreSubscriptionState(subscriptions));
+      try {
+        // re subscribe mqtt
+        client.subscribe(Object.keys(subscriptions), (error, granted) => {
+          if (error) {
+            dispatch(setError(error.message));
+            console.log(`MQTT: something went wrong while subscribing`, error);
+            return;
+          }
+        });
+        // restore state.mqtt.data
+        dispatch(restoreSubscriptionState(subscriptions));
+      } catch (err) {
+        // retry connection
+        setTimeout(() => { reconnect(); }, 500);
+      }
     };
 
     handlers['onConnected'] = () => dispatch({ type: constants.CONNECTED });

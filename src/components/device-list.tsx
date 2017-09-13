@@ -86,6 +86,7 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
                     Devices ({this.props.devices ? this.props.devices.length : 0})
                 </Text> */}
                 <ListView
+                    enableEmptySections
                     dataSource={this.state.deviceDataSource}
                     renderRow={(deviceWithData: DeviceWithData) => {
                         const curMessage = deviceWithData.mqttData['_updates/fields'];
