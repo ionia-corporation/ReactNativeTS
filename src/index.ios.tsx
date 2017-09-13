@@ -36,6 +36,8 @@ const DevicesNavigator = StackNavigator({
             headerRight: headerRight(navigation),
         })
     }
+}, {
+    initialRouteName: 'DeviceList',
 })
 
 const Navigator = DrawerNavigator({

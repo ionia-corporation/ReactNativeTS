@@ -54,20 +54,21 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
       // TODO: select the correct route
       const routeName = this.props.navigation.state.params
-        && this.props.navigation.state.params.nextRoute || 'Devices';
+        && this.props.navigation.state.params.nextRoute || 'DeviceList';
       const params = this.props.navigation.state.params
         && this.props.navigation.state.params.nextRouteParams || {};
 
-      // // reset nav stack
-      // const resetAction = NavigationActions.reset({
-      //   index: 0,
-      //   actions: [
-      //     NavigationActions.navigate({ routeName, params }),
-      //   ]
-      // });
+      // reset nav stack
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName, params }),
+        ]
+      });
+      this.props.navigation.dispatch(resetAction);
 
-      // Login is now in a drawer navigator, so don't have to reset stack
-      this.props.navigation.navigate(routeName, params);
+      // // Login is now in a drawer navigator, so don't have to reset stack
+      // this.props.navigation.navigate(routeName, params);
 
     } catch (err) {
       // Server Error
