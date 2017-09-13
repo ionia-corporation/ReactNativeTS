@@ -66,8 +66,13 @@ export function connect() {
       dispatch({ type: constants.RECONNECTING });
       // save state.mqtt.data
       const subscriptions = cloneDeep(getState().mqtt.data);
-      // disconnect
-      await dispatch(disconnect());
+      // might already be disconnected
+      try {
+        // disconnect
+        await dispatch(disconnect());
+      } catch (err) {
+        console.log('Attempted to disconnect, but already disconnected');
+      }
       // connect
       await dispatch(connect());
       try {
@@ -83,7 +88,8 @@ export function connect() {
         dispatch(restoreSubscriptionState(subscriptions));
       } catch (err) {
         // retry connection
-        setTimeout(() => { reconnect(); }, 500);
+        console.log('MQTT subscribe failed, trying again in 4 seconds');
+        setTimeout(() => { reconnect(); }, 4000);
       }
     };
 
