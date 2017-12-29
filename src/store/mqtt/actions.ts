@@ -1,4 +1,4 @@
-import * as mqtt from 'mqtt';
+const mqtt = require('../../client');
 import { Dispatch as reduxDispatch } from 'redux';
 import { cloneDeep, values } from 'lodash';
 import xively from '../../lib/xively';
@@ -10,7 +10,7 @@ import { ChannelType, MqttMessage, TopicData } from './types';
 // TODO use a config param
 const MQTT_HOST = 'wss://broker.xively.com:443/';
 
-let client: mqtt.Client; // lsl
+let client
 
 let handlers = {};
 
@@ -185,7 +185,8 @@ export function onMessage(topic: string, message: MqttMessage) {
 }
 
 
-export function send<T>(topic: string, payload: T, options: mqtt.IClientPublishOptions = {}) {
+// export function send<T>(topic: string, payload: T, options: mqtt.IClientPublishOptions = {}) {
+export function send<T>(topic: string, payload: T, options= {}) {
   return async function(dispatch: Dispatch, getState: GetState) {
     let channel;
     try {
