@@ -1,4 +1,4 @@
-const mqtt = require('../../client');
+import * as mqtt from 'mqtt/mqttClient';
 import { Dispatch as reduxDispatch } from 'redux';
 import { cloneDeep, values } from 'lodash';
 import xively from '../../lib/xively';
@@ -10,7 +10,7 @@ import { ChannelType, MqttMessage, TopicData } from './types';
 // TODO use a config param
 const MQTT_HOST = 'wss://broker.xively.com:443/';
 
-let client
+let client;
 
 let handlers = {};
 
