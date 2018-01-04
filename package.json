@@ -7,10 +7,11 @@
     "android": "node node_modules/react-native/local-cli/cli.js run-android",
     "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
     "prebuild": "node node_modules/.bin/rimraf build",
-    "build": "tsc",
+    "build": "tsc && cp -r ./images ./build/images",
     "pretest": "npm run build",
     "test": "jest",
-    "postinstall": "node_modules/.bin/rn-nodeify --install crypto --hack"
+    "postinstall": "node_modules/.bin/rn-nodeify --install crypto --hack && npm run build:mqttClient",
+    "build:mqttClient": "webpack node_modules/mqtt/mqtt.js node_modules/mqtt/mqttClient.js --output-library mqtt --output-library-target commonjs2"
   },
   "dependencies": {
     "@types/jwt-decode": "^2.2.1",
@@ -23,7 +24,7 @@
     "jwt-decode": "^2.2.0",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
-    "mqtt": "^2.13.0",
+    "mqtt": "^2.15.0",
     "qs": "^6.5.0",
     "react": "16.0.0-alpha.6",
     "react-native": "0.44.0",
@@ -34,7 +35,8 @@
     "react_native_mqtt": "^1.1.6",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
-    "redux-thunk": "^2.2.0"
+    "redux-thunk": "^2.2.0",
+    "webpack": "^3.10.0"
   },
   "devDependencies": {
     "@types/jest": "^19.2.3",
