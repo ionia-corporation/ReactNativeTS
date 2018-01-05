@@ -56,8 +56,8 @@ export class DeviceListComponent extends React.Component<DeviceListProps, Device
         title: 'Devices',
     };
 
-    constructor() {
-        super();
+    constructor(prop) {
+        super(prop);
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => {
                 return r1 !== r2;

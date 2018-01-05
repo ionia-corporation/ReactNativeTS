@@ -123,9 +123,8 @@ export const Authenticated = (DecoratedComponent) => {
         }
 
         // If we've made it this far, we're still valid
-        this.setState((state) => {
-          state.isAuthenticated = true;
-          return state;
+        this.setState({
+          isAuthenticated: true
         });
       } catch (e) {
         console.warn('ERROR checking auth: ' + e.message);
