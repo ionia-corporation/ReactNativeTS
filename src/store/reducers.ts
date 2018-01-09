@@ -1,7 +1,9 @@
 import { combineReducers, AnyAction } from 'redux';
+
+import { Action } from 'redux-actions';
 import { reducer as blueprint, BlueprintState } from './blueprint/reducers';
 import { reducer as profile, ProfileState } from './profile/reducers';
-import { default as createMqttReducer, MqttState } from './mqtt';
+import { default as createMqttReducer, MqttState, defaultParser, updatesParser } from './mqtt';
 
 export type AppState = {
   blueprint: BlueprintState,
@@ -17,18 +19,12 @@ const appReducer = combineReducers({
   blueprint,
   profile,
   mqtt: createMqttReducer({
-    _log: {
-      parse: JSON.parse,
-      stringify: JSON.stringify,
-    },
-    '_updates/fields': {
-      parse: JSON.parse,
-      stringify: JSON.stringify,
-    },
+    _log: defaultParser,
+    '_updates/fields': updatesParser,
   }),
 });
 
-const rootReducer = (state: AppState, action: AnyAction) => {
+const rootReducer = (state: AppState, action: Action<any>) => {
   if (action.type === constants.REDUX_INITIAL_STATE) {
     state = undefined;
   }

@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash';
 import { Action } from 'redux-actions';
 import { parseTopic } from './utils';
 import { Serdes, ChannelType } from './types';
+import { AppState } from '../../types';
 
 export interface Message {
   stringPayload: string;
@@ -17,7 +18,9 @@ export interface TopicData {
 
 export interface MqttState {
   connecting: boolean;
+  disconnecting: boolean;
   reconnecting: boolean;
+  reconnectCount: number;
   connected: boolean;
   error: string;
   data: {
@@ -25,32 +28,39 @@ export interface MqttState {
   };
 }
 
-
+const initialState: MqttState = {
+  error: '',
+  connecting: false,
+  disconnecting: false,
+  connected: false,
+  reconnecting: false,
+  reconnectCount: 0,
+  data: {},
+};
 
 export interface ActionMessagePayload {
+  appState: AppState;
   topic: string;
   channelType: ChannelType;
   stringPayload: any;
 }
 
-export type ActionSubscribe = Array<{topic: string, channelType: ChannelType}>;
-export type ActionUnsubscribe = Array<string>;
-export type ActionRestoreSubscriptionState = { [topicName: string]: TopicData };
-
-
-const initialState: MqttState = {
-  error: '',
-  connecting: true,
-  connected: false,
-  reconnecting: false,
-  data: {},
-};
+export type ActionSubscribePayload = Array<{ topic: string, channelType: ChannelType }>;
+export type ActionUnsubscribePayload = Array<string>;
+export type ActionRestoreSubscriptionStatePayload = { [topicName: string]: TopicData };
+export type ActionErrorPayload = string;
 
 export const constants = {
+  CLOSE: 'mqtt/CLOSE',
+  OFFLINE: 'mqtt/OFFLINE',
   CONNECTED: 'mqtt/CONNECTED',
   NOT_CONNECTED: 'mqtt/NOT_CONNECTED',
-  CONNECTING: 'mqtt/CONNECTING',
-  RECONNECTING: 'mqtt/RECONNECTING',
+  CONNECT_START: 'mqtt/CONNECT_START',
+  CONNECT_END: 'mqtt/CONNECT_END',
+  RECONNECT_START: 'mqtt/RECONNECT_START',
+  RECONNECT_END: 'mqtt/RECONNECT_END',
+  DISCONNECT_START: 'mqtt/DISCONNECT_START',
+  DISCONNECT_END: 'mqtt/DISCONNECT_END',
   SUBSCRIBED_TO_TOPICS: 'mqtt/SUBSCRIBED_TO_TOPIC',
   UNSUBSCRIBED_TO_TOPICS: 'mqtt/UNSUBSCRIBED_TO_TOPIC',
   RESTORE_SUBSCRIPTION_STATE: 'mqtt/RESTORE_SUBSCRIPTION_STATE',
@@ -58,8 +68,6 @@ export const constants = {
   ERROR: 'mqtt/ERROR',
   INITIAL_STATE: 'mqtt/INITIAL_STATE',
 };
-
-
 
 // Export a null reference to the serdes object,
 // by the time you use it, it will be filled with the serdesParams
@@ -69,9 +77,6 @@ export let serdes: Serdes | null = null;
 // serdesParams is a simple way of parameterising parsers and stringifiers for each channel.
 // - parsers are used for the incoming messages
 // - stringifiers are used for the outgoing messages
-//
-// parser and stringifier and specified for each "channel" (do not confuse this with topic),
-// see the type definition for Serde for more details.
 export default function mqttReducerFactory(serdesParam: Serdes) {
   serdes = serdesParam;
   return function mqttReducer(state = initialState, action: Action<any>) {
@@ -79,23 +84,33 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
 
       case constants.MESSAGE:
         return (() => {
-          const { topic, channelType, stringPayload } = (action as Action<ActionMessagePayload>).payload;
+          const { topic, channelType, stringPayload, appState } = (action as Action<ActionMessagePayload>).payload;
 
           const data = cloneDeep(state.data);
 
-          let channel;
+          let parsedTopic;
           try {
-            channel = parseTopic(topic).channel;
+            parsedTopic = parseTopic(topic);
           } catch (err) {
-            console.warn(`MQTT Reducer: error while parsing a topic`, topic);
+            console.error(`MQTT Reducer: error while parsing a topic`, topic);
             return state;
           }
 
-          let channelParser = serdes[channel] && serdes[channel].parse ? serdes[channel].parse : null;
+          const { channel } = parsedTopic;
+
+          let channelParser;
+          try {
+            channelParser = serdes[channel].parse;
+          } catch (err) {
+            /* this is not the empty block you are looking for eslint */
+          }
 
           let parsedPayload = null;
           if (channelParser) {
-            parsedPayload = channelParser(stringPayload);
+            // Important to pass all this data to the parsers because they might want
+            // to conditionally parse based on the topic, or something in the app state such as
+            // the device
+            parsedPayload = channelParser(stringPayload, parsedTopic, appState);
           } else {
             console.log(`MQTT: parser not found for topic ${topic}, not parsing payload`);
           }
@@ -107,20 +122,18 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
           };
 
           if (channelType === 'simple') {
-            console.log('SETTING PARSED PAYLOAD');
             data[topic].message = message;
+
           } else if (channelType === 'timeSeries') {
             data[topic].messages = [].concat(data[topic].messages, [message]);
           }
-
-
 
           return { ...state, data };
         })();
 
       case constants.SUBSCRIBED_TO_TOPICS:
         return (() => {
-          const payload = (action as Action<ActionSubscribe>).payload;
+          const payload = (action as Action<ActionSubscribePayload>).payload;
           const newSubscriptions = {};
           payload.forEach((sub) => {
             newSubscriptions[sub.topic] = {
@@ -137,7 +150,7 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
 
       case constants.UNSUBSCRIBED_TO_TOPICS:
         return (() => {
-          const topicsToUnsubscribe = (action as Action<ActionUnsubscribe>).payload;
+          const topicsToUnsubscribe = (action as Action<ActionUnsubscribePayload>).payload;
           const subscriptions = { ...state.data };
           topicsToUnsubscribe.forEach((topic) => {
             delete subscriptions[topic];
@@ -149,25 +162,31 @@ export default function mqttReducerFactory(serdesParam: Serdes) {
 
       case constants.RESTORE_SUBSCRIPTION_STATE:
         return (() => {
-          const subscriptions = (action as Action<ActionRestoreSubscriptionState>).payload;
+          const subscriptions = (action as Action<ActionRestoreSubscriptionStatePayload>).payload;
           return { ...state, data: subscriptions };
         })();
 
-      case constants.CONNECTING:
+      case constants.DISCONNECT_START:
+        return { ...state, disconnecting: true };
+
+      case constants.DISCONNECT_END:
+        return { ...state, disconnecting: false };
+
+      case constants.CONNECT_START:
         return { ...state, connecting: true, connected: false };
 
       case constants.CONNECTED:
-        return { ...state, connecting: false, reconnecting: false, connected: true };
+        return { ...state, connecting: false, reconnecting: false, connected: true, reconnectCount: 0 };
 
       case constants.NOT_CONNECTED:
         return { ...state, connecting: false, reconnecting: false, connected: false };
 
-      case constants.RECONNECTING:
-        return { ...state, connecting: false, reconnecting: true, connected: false };
+      case constants.RECONNECT_START:
+        return { ...state, connecting: false, reconnecting: true, connected: false, reconnectCount: state.reconnectCount + 1 };
 
       case constants.ERROR:
         return (() => {
-          const error = (action as Action<string>).payload;
+          const error = (action as Action<ActionErrorPayload>).payload;
           return { ...state, error: error };
         })();
 
