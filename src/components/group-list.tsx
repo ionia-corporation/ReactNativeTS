@@ -73,7 +73,12 @@ export class GroupListComponent extends React.Component<GroupListProps, GroupLis
                     dataSource={this.state.groupDataSource}
                     renderRow={(group: Organizations.Organization) => {
                         return <View style={Styles.groupRow}>
-                          <Text style={Styles.groupRowText}>
+                          <Text style={Styles.groupRowText} onPress={() => {
+                                this.props.navigation.navigate('Group', {
+                                    groupId: group.id,
+                                    groupName: group.name || 'no name',
+                                });
+                            }}>
                             {group.name}
                           </Text>
                         </View>;
