@@ -12,6 +12,7 @@ import {
 } from 'react-navigation';
 import {
     HomeScreen,
+    GroupList,
     DeviceList,
     DeviceScreen,
     LoginScreen,
@@ -20,6 +21,17 @@ import {
 } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
+
+
+const GroupsNavigator = StackNavigator({
+    GroupList: {
+        screen: GroupList,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Groups',
+            headerRight: headerRight(navigation),
+        }),
+    },
+});
 
 const DevicesNavigator = StackNavigator({
     DeviceList: {
@@ -36,13 +48,14 @@ const DevicesNavigator = StackNavigator({
             headerRight: headerRight(navigation),
         })
     }
-}, {
-    initialRouteName: 'DeviceList',
-})
+});
 
 const Navigator = DrawerNavigator({
     Devices: {
         screen: DevicesNavigator,
+    },
+    Groups: {
+        screen: GroupsNavigator,
     },
     Logout: {
         screen: LogoutScreen,

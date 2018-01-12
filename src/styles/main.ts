@@ -54,6 +54,17 @@ export const Styles = StyleSheet.create({
         paddingLeft: 15,
         paddingBottom: 4,
     } as TextStyle,
+    groupRow: {
+        padding: 4,
+        borderWidth: 0.5,
+        borderRadius: 2,
+        borderColor: '#eeeeee',
+        margin: 2,
+    } as TextStyle,
+    groupRowText: {
+        paddingLeft: 15,
+        paddingBottom: 4,
+    } as TextStyle,
 });
 
 export default Styles;
