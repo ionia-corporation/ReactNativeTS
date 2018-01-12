@@ -135,7 +135,7 @@ export function disconnect() {
   return async function(dispatch: Dispatch, getState: GetState) {
     dispatch({ type: constants.DISCONNECT_START });
     const state = getState();
-    if (!client && !client.connected) {
+    if (!client || !client.connected) {
       console.log(`MQTT: attempting to disconnect while already disconnected`);
       return;
     }
