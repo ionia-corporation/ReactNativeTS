@@ -1,6 +1,7 @@
 import * as mqtt from 'mqtt/mqttClient';
 import * as redux from 'redux';
 import { cloneDeep, values } from 'lodash';
+import { AppState as AppStateRN } from 'react-native';
 
 import xively from '../../lib/xively';
 import { Device, AppState, Channel } from '../../types';
@@ -32,7 +33,7 @@ export function connect() {
   return async function(dispatch: Dispatch, getState: GetState) {
     dispatch({ type: constants.CONNECT_START });
     const state = getState();
-    if (client || state.mqtt.connected) {
+    if (client && client.connected) {
       throw new Error(`MQTT: attempting to connect while already connected`);
     }
 
@@ -68,6 +69,7 @@ export function connect() {
     client.on('close', () => dispatch({ type: constants.CLOSE }));
     client.on('offline', () => dispatch({ type: constants.OFFLINE }));
     client.on('reconnect', () => dispatch(reconnect()));
+    AppStateRN.addEventListener('change', () => client._checkPing());
     client.on('message', (topic: string, message: MqttMessage) =>
       dispatch(handleMessage(topic, message)));
 
@@ -133,7 +135,7 @@ export function disconnect() {
   return async function(dispatch: Dispatch, getState: GetState) {
     dispatch({ type: constants.DISCONNECT_START });
     const state = getState();
-    if (!client || !state.mqtt.connected) {
+    if (!client && !client.connected) {
       console.log(`MQTT: attempting to disconnect while already disconnected`);
       return;
     }
