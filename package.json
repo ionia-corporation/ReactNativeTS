@@ -9,6 +9,7 @@
     "prebuild": "node node_modules/.bin/rimraf build",
     "build:ts": "tsc",
     "build": "tsc && cp -r ./images ./build/images",
+    "dev": "cp -r ./images ./build/images && tsc --watch",
     "pretest": "npm run build",
     "test": "jest",
     "postinstall": "node_modules/.bin/rn-nodeify --install crypto --hack && npm run build:mqttClient",
