@@ -1,26 +1,39 @@
-import * as mqtt from 'mqtt';
-import { Dispatch as reduxDispatch } from 'redux';
+import * as mqtt from 'mqtt/mqttClient';
+import * as redux from 'redux';
 import { cloneDeep, values } from 'lodash';
+import { AppState as AppStateRN } from 'react-native';
+
 import xively from '../../lib/xively';
-import { Device, Channel, AppState } from '../../types';
-import { constants, MqttState, serdes, ActionRestoreSubscriptionState } from './reducers';
+import { Device, AppState, Channel } from '../../types';
+import {
+  constants,
+  MqttState,
+  serdes,
+  ActionMessagePayload,
+  ActionSubscribePayload,
+  ActionUnsubscribePayload,
+  ActionRestoreSubscriptionStatePayload,
+  ActionErrorPayload,
+} from './reducers';
 import { parseTopic } from './utils';
 import { ChannelType, MqttMessage, TopicData } from './types';
 
 // TODO use a config param
 const MQTT_HOST = 'wss://broker.xively.com:443/';
+const MAX_DELAY = 60 * 1000;
 
-let client: mqtt.Client; // lsl
+let client;
 
 let handlers = {};
 
 type GetState = () => AppState;
-type Dispatch = reduxDispatch<AppState>;
+type Dispatch = redux.Dispatch<AppState>;
 
 export function connect() {
   return async function(dispatch: Dispatch, getState: GetState) {
+    dispatch({ type: constants.CONNECT_START });
     const state = getState();
-    if (client || state.mqtt.connected) {
+    if (client && client.connected) {
       throw new Error(`MQTT: attempting to connect while already connected`);
     }
 
@@ -39,81 +52,114 @@ export function connect() {
       password: jwt,
     });
 
-    dispatch(connecting());
+    try {
+      await new Promise((resolve, reject) => {
+        client.on('connect', resolve);
+        client.on('error', reject);
+      });
+    } catch (err) {
+      dispatch(setError(`Something went wrong: ${err}`));
+      dispatch({ type: constants.CONNECT_END });
+      throw err;
+    }
 
-    handlers['connect'] = () => dispatch({ type: constants.CONNECTED });
-    handlers['close'] = () => dispatch(notConnected());
-    handlers['offline'] = () => dispatch(notConnected());
-    handlers['error'] = (err: any) => dispatch(setError(`Something went wrong: ${err}`));
-    handlers['message'] = (topic: string, message: MqttMessage) => dispatch(onMessage(topic, message));
+    dispatch({ type: constants.CONNECTED });
 
-    // This is one of the most complex things in the code,
-    // the main purpose of this logic is to try to auto-reconnect after disconnecting.
-    // BUT, we cannot let mqtt.js handle this automatically for us, because our password
-    // (jwt) changes every few minutes (because that's why the session get's renewed and extended)
-    // so need to hijack the reconnection mechanism provided by mqtt.js, abort it (disconnect) and
-    // re initiate the connection ourselves, by dispatching(connect) recursively.
-    //
-    // Probably this whole thing would benefit from some refactor if you are up for it.
-    // TODO:
-    // - crate hooks so when the user logs out this is stopped
-    handlers['reconnect'] = async () => {
-      dispatch({ type: constants.RECONNECTING });
-      // save state.mqtt.data
-      const subscriptions = cloneDeep(getState().mqtt.data);
-      // disconnect
-      await dispatch(disconnect());
-      // connect
-      await dispatch(connect());
-      // re subscribe mqtt
-      client.subscribe(Object.keys(subscriptions), (error, granted) => {
-        if (error) {
-          dispatch(setError(error.message));
-          console.log(`MQTT: something went wrong while subscribing`, error);
+    client.on('error', (err: any) => dispatch(setError(`Parsing error: ${err}`)));
+    client.on('close', () => dispatch({ type: constants.CLOSE }));
+    client.on('offline', () => dispatch({ type: constants.OFFLINE }));
+    client.on('reconnect', () => dispatch(reconnect()));
+    AppStateRN.addEventListener('change', () => client._checkPing());
+    client.on('message', (topic: string, message: MqttMessage) =>
+      dispatch(handleMessage(topic, message)));
+
+    dispatch({ type: constants.CONNECT_END });
+  };
+}
+
+
+// This is one of the most complex things in the code,
+// the main purpose of this logic is to try to auto-reconnect after disconnecting.
+// BUT, we cannot let mqtt.js handle this automatically for us, because our password
+// (jwt) changes every few minutes (because that's why the session get's renewed and extended)
+// so need to hijack the reconnection mechanism provided by mqtt.js, abort it (disconnect) and
+// re initiate the connection ourselves, by dispatching(connect) recursively.
+export function reconnect() {
+  return async function(dispatch: Dispatch, getState: GetState) {
+    const state = getState().mqtt;
+    if (state.disconnecting) {
+      return;
+    }
+
+    dispatch({ type: constants.RECONNECT_START });
+    // save state.mqtt.data
+    const subscriptions = cloneDeep(state.data);
+    client.end(true);
+    client = null;
+    dispatch({ type: constants.NOT_CONNECTED });
+
+    // Exponential backoff
+    let delay = 500 * Math.pow(2, state.reconnectCount);
+    if (delay > MAX_DELAY) {
+      delay = MAX_DELAY;
+    }
+    setTimeout(
+      async () => {
+        try {
+          await dispatch(connect());
+        } catch (err) {
+          dispatch(restoreSubscriptionState(subscriptions));
+          dispatch({ type: constants.RECONNECT_END });
+          // This recursive call only happens when a long disconnection happens
+          dispatch(reconnect());
           return;
         }
-      });
-      // restore state.mqtt.data
-      dispatch(restoreSubscriptionState(subscriptions));
-    };
-
-    Object.keys(handlers)
-      .map((eventName) => [eventName, handlers[eventName]])
-      .forEach(([eventName, handler]) => {
-        client.on(eventName, handler);
-      });
+        // re subscribe mqtt
+        client.subscribe(Object.keys(subscriptions), (error, granted) => {
+          if (error) {
+            dispatch(setError(error.message));
+            console.log(`MQTT: something went wrong while subscribing`, error);
+            return;
+          }
+        });
+        // restore state.mqtt.data
+        dispatch(restoreSubscriptionState(subscriptions));
+        dispatch({ type: constants.RECONNECT_END });
+      },
+      delay,
+    );
   };
 }
 
 export function disconnect() {
   return async function(dispatch: Dispatch, getState: GetState) {
+    dispatch({ type: constants.DISCONNECT_START });
     const state = getState();
-    if (!state.mqtt.connected) {
-      console.log(`MQTT ERROR: attempting to disconnect while already disconnected`);
+    if (!client || !client.connected) {
+      console.log(`MQTT: attempting to disconnect while already disconnected`);
       return;
     }
 
-    Object.keys(handlers)
-      .map((eventName) => [eventName, handlers[eventName]])
-      .forEach(([eventName, handler]) => {
-        client.removeListener(eventName, handler);
-      });
-
     client.end(true);
-
-    dispatch(notConnected());
-    await dispatch(unsubscribeAll());
+    dispatch({ type: constants.NOT_CONNECTED });
+    // cleanup state, remove subscritions
+    dispatch({ type: constants.INITIAL_STATE });
     client = null;
+    dispatch({ type: constants.DISCONNECT_END });
   };
 }
 
-export function subscribeDevice(device: Device) {
+interface SubscribeDeviceInterface {
+  channels?: Array<Channel>;
+}
+
+export function subscribeDevice(device: SubscribeDeviceInterface) {
   return async function(dispatch: Dispatch, getState: GetState) {
     const state: MqttState = getState().mqtt;
     const subscriptions = values(state.data);
     const notSubscribedTopics = (channel: Channel) => !(subscriptions as any).includes(channel.channel);
 
-    const topicsToSubscribe = device.channels
+    const topicsToSubscribe = (device.channels || [])
       .filter(notSubscribedTopics)
       .map((channel) => ({
         topic: channel.channel,
@@ -148,34 +194,24 @@ export function unsubscribeDevice(device: Device) {
     const state: MqttState = getState().mqtt;
     const subscriptions = values(state.data);
     const subscribedTopics = (channel: Channel) => !(subscriptions as any).includes(channel.channel);
-
     const topicsToUnsubscribe = device.channels.filter(subscribedTopics).map((channel) => channel.channel);
     client.unsubscribe(topicsToUnsubscribe);
     dispatch(unsubscribed(topicsToUnsubscribe));
   };
 }
 
-
-export function unsubscribeAll() {
+export function handleMessage(topic: string, message: MqttMessage) {
   return async function(dispatch: Dispatch, getState: GetState) {
-    const state: MqttState = getState().mqtt;
-    const topics = Object.keys(state.data);
-    client.unsubscribe(topics);
-    dispatch(unsubscribed(topics));
-  };
-}
-
-
-export function onMessage(topic: string, message: MqttMessage) {
-  return async function(dispatch: Dispatch, getState: GetState) {
-    const state: MqttState = getState().mqtt;
-    const channelType = state.data[topic].channelType;
+    const state = getState();
+    const mqttState = state.mqtt;
+    const channelType = mqttState.data[topic].channelType;
     const payload = {
       topic,
       channelType,
+      // give access to the parsers to the app state
+      appState: state,
       stringPayload: message.toString(),
-    };
-
+    } as ActionMessagePayload;
 
     dispatch({
       type: constants.MESSAGE,
@@ -184,8 +220,7 @@ export function onMessage(topic: string, message: MqttMessage) {
   };
 }
 
-
-export function send<T>(topic: string, payload: T, options: mqtt.IClientPublishOptions = {}) {
+export function send<T>(topic: string, payload: T, options: object = { qos: 0 }) {
   return async function(dispatch: Dispatch, getState: GetState) {
     let channel;
     try {
@@ -214,43 +249,27 @@ export function send<T>(topic: string, payload: T, options: mqtt.IClientPublishO
 export function restoreSubscriptionState(prevState: { [topicName: string]: TopicData }) {
   return {
     type: constants.RESTORE_SUBSCRIPTION_STATE,
-    payload: prevState as ActionRestoreSubscriptionState,
+    payload: prevState as ActionRestoreSubscriptionStatePayload,
   };
 }
 
 export function subscribed(topics: Array<{topic: string, channelType: ChannelType}>) {
   return {
     type: constants.SUBSCRIBED_TO_TOPICS,
-    payload: topics,
+    payload: topics as ActionSubscribePayload,
   };
 }
 
 export function unsubscribed(topics: Array<string>) {
   return {
     type: constants.UNSUBSCRIBED_TO_TOPICS,
-    payload: topics,
+    payload: topics as ActionUnsubscribePayload,
   };
 }
-
-export function connecting() {
-  return {
-    type: constants.CONNECTING,
-  };
-}
-
-
-
-export function notConnected() {
-  return {
-    type: constants.NOT_CONNECTED,
-  };
-}
-
-
 
 export function setError(error: string) {
   return {
     type: constants.ERROR,
-    payload: error,
+    payload: error as ActionErrorPayload,
   };
 }
