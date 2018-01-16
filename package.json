@@ -12,6 +12,7 @@
     "dev": "cp -r ./images ./build/images && tsc --watch",
     "pretest": "npm run build",
     "test": "jest",
+    "link:reactNativeSvg": "node node_modules/react-native/local-cli/cli.js link react-native-svg",
     "postinstall": "node_modules/.bin/rn-nodeify --install crypto --hack && npm run build:mqttClient",
     "build:mqttClient": "webpack node_modules/mqtt/mqtt.js node_modules/mqtt/mqttClient.js --output-library mqtt --output-library-target commonjs2"
   },
@@ -32,12 +33,14 @@
     "react-native": "^0.51.0",
     "react-native-crypto": "^2.0.2",
     "react-native-randombytes": "^2.2.0",
+    "react-native-svg": "^6.0.1-rc.1",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",
     "react_native_mqtt": "^1.1.6",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
+    "victory-native": "^0.16.6",
     "webpack": "^3.10.0"
   },
   "devDependencies": {
