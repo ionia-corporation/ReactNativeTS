@@ -2,16 +2,19 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { AppState } from '../types/index';
+import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
 import { getOrganization } from '../store/blueprint/organizations/reducers';
+import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { Organizations } from '../lib/xively/models/index';
+import { DeviceList } from './shared';
 
 import { View, Text, Button, Image, ScrollView } from "react-native";
 import Styles from '../styles/main';
 
 interface ReduxStateProps {
-    group: Organizations.Organization;
+  group: Organizations.Organization;
+  devices: DeviceWithData[];
 }
 interface ReduxDispatchProps {
 }
@@ -23,9 +26,11 @@ interface GroupProps extends
 }
 
 function mapStateToProps(state: AppState, ownProps: GroupProps) {
-    const group = getOrganization(state, ownProps.navigation.state.params.groupId);
+  const group = getOrganization(state, ownProps.navigation.state.params.groupId);
+  const devices = getDevicesWithData(state, ownProps.navigation.state.params.groupId);
     return {
-        group,
+      group,
+      devices,
     };
 }
 
@@ -48,15 +53,19 @@ export class GroupScreenComponent extends React.Component<GroupProps, GroupState
         <View style={Styles.container}>
           <Text style={Styles.title}>
             loading
-                    </Text>
+          </Text>
         </View>
-      )
+      );
     }
     return (
       <View style={Styles.container}>
         <Text>
           {this.props.group.name}
         </Text>
+        <DeviceList devices={this.props.devices} onPress={(deviceId) => {
+          // TODO: navigate!
+          console.log('clicked ' + deviceId);
+        }} />
       </View>
     );
   }

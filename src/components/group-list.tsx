@@ -65,6 +65,12 @@ export class GroupListComponent extends React.Component<GroupListProps, GroupLis
         }
     }
 
+    componentDidMount() {
+        this.setState({
+            groupDataSource: this.state.groupDataSource.cloneWithRows(this.props.groups),
+        });
+    }
+
     render() {
         return (
             <View style={Styles.container}>
