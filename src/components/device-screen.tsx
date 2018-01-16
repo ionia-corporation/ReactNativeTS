@@ -11,10 +11,11 @@ import { Devices } from '../lib/xively/models/index';
 
 import { View, Text, Button, Image, ScrollView } from "react-native";
 import Styles from '../styles/main';
-import { VictoryChart, VictoryLine } from "victory-native";
+import { VictoryChart, VictoryLine, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
 import xively from '../lib/xively';
 import { TimeSeries } from '../lib/xively/models/timeseries';
 import { groupBy } from 'lodash';
+import randomColor from 'randomcolor';
 
 interface ReduxStateProps {
   device: DeviceWithData;
@@ -121,38 +122,56 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
     }
 
     const { timeSeries } = this.state;
+
     let chartContent;
   
     if (!timeSeries) {
-      chartContent = (
-        <Text>Loading data...</Text>
-      );
+      chartContent = <Text>Loading data...</Text>;
     } else if (timeSeries === 'error') {
-      chartContent = (
-        <Text>There was an error loading data</Text>
-      );
+      chartContent = <Text>There was an error loading data</Text>;
     } else {
       const formattedData = this.formatData(timeSeries);
 
       chartContent = (
-        <VictoryChart scale={{ x: "time" }}>
+        <VictoryChart scale={{ x: 'time' }}
+          containerComponent={
+            <VictoryVoronoiContainer
+              voronoiDimension='x'
+              labels={
+                (datum) => {
+                  return `${datum.l}: ${datum.y}`;
+                }
+              }
+              labelComponent={<CustomComp/>}
+            />
+          }
+        >
           {
             formattedData.fields.map((field, i) => {
+              const color = randomColor({ seed: field });
+
             	return (
                 <VictoryLine
                   style={{
-                    data: { stroke: "tomato" }
+                    data: { stroke: color },
+                    labels: { fill: color }
                   }}
                   data={
                     formattedData.data.filter((item) => {
                       return item[field];
+                    }).map((item) => {
+                      return {
+                        time: item.time,
+                        l: field,
+                        [field]: item[field]
+                      };
                     })
                   }
-                  x="time"
+                  x='time'
                   y={field}
                   key={i}
                 />
-            	) 
+            	)
             })
           }
         </VictoryChart>
@@ -189,6 +208,27 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
       </View>
     );
   }
+}
+
+const CustomComp = (prop) => {
+  prop.text.unshift("Title");
+
+  prop.style.unshift({
+    fill:"black",
+  	fontFamily:"'Gill Sans', 'Gill Sans MT', 'Ser­avek', 'Trebuchet MS', sans-serif",
+	  fontSize:14,
+	  letterSpacing:"normal",
+	  padding:5,
+	  pointerEvents:"none",
+	  stroke:"transparent",
+	  textAnchor:"middle"
+  });
+
+  return <VictoryTooltip
+  	cornerRadius={0}
+    {...prop}
+    flyoutStyle={{ fill: "white" }}
+  />
 }
 
 export let DeviceScreen = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceScreenComponent));

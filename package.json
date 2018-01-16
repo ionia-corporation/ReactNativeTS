@@ -29,6 +29,7 @@
     "lodash": "^4.17.4",
     "mqtt": "^2.15.0",
     "qs": "^6.5.0",
+    "randomcolor": "^0.5.3",
     "react": "^16.2.0",
     "react-native": "^0.51.0",
     "react-native-crypto": "^2.0.2",
