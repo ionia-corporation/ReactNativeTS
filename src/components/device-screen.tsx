@@ -11,11 +11,12 @@ import { Devices } from '../lib/xively/models/index';
 
 import { View, Text, Button, Image, ScrollView } from "react-native";
 import Styles from '../styles/main';
-import { VictoryChart, VictoryLine, VictoryVoronoiContainer, VictoryTooltip } from "victory-native";
+import { VictoryChart, VictoryLine, VictoryVoronoiContainer, VictoryTooltip, VictoryAxis } from "victory-native";
 import xively from '../lib/xively';
 import { TimeSeries } from '../lib/xively/models/timeseries';
 import { groupBy } from 'lodash';
 import randomColor from 'randomcolor';
+import moment from 'moment';
 
 interface ReduxStateProps {
   device: DeviceWithData;
@@ -133,7 +134,8 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
       const formattedData = this.formatData(timeSeries);
 
       chartContent = (
-        <VictoryChart scale={{ x: 'time' }}
+        <VictoryChart
+          scale={{ x: 'time' }}
           containerComponent={
             <VictoryVoronoiContainer
               voronoiDimension='x'
@@ -146,6 +148,22 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
             />
           }
         >
+          <VictoryAxis
+            domain={{
+              x: [formattedData.data[0].time, formattedData.data[formattedData.data.length - 1].time]
+            }}
+            standalone={false}
+            style={{ tickLabels: { padding: 15, angle: -45, fontSize: 12 } }}
+          />
+
+          <VictoryAxis
+            dependentAxis
+            offsetX={-1}
+            style={{
+              grid: {stroke: "grey"},
+            }}
+          />
+
           {
             formattedData.fields.map((field, i) => {
               const color = randomColor({ seed: field });
@@ -211,7 +229,7 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
 }
 
 const CustomComp = (prop) => {
-  prop.text.unshift("Title");
+  prop.text.unshift(moment(prop.x).format('MM/DD/YY HH:mm'));
 
   prop.style.unshift({
     fill:"black",

@@ -27,6 +27,7 @@
     "jwt-decode": "^2.2.0",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
+    "moment": "^2.20.1",
     "mqtt": "^2.15.0",
     "qs": "^6.5.0",
     "randomcolor": "^0.5.3",
