@@ -13,6 +13,7 @@ import {
 import {
     HomeScreen,
     GroupList,
+    GroupScreen,
     DeviceList,
     DeviceScreen,
     LoginScreen,
@@ -31,6 +32,13 @@ const GroupsNavigator = StackNavigator({
             headerRight: headerRight(navigation),
         }),
     },
+    Group: {
+        screen: GroupScreen,
+        navigationOptions: ({ navigation }) => ({
+            title: navigation.state.params.groupName,
+            headerRight: headerRight(navigation),
+        })
+    }
 });
 
 const DevicesNavigator = StackNavigator({

@@ -1,7 +1,8 @@
 import * as ReduxActions from 'redux-actions';
 import { includes, keyBy, valuesIn } from 'lodash';
 
-import { IdMap, AppState } from '../../../types';
+import { IdMap, AppState, DeviceWithData } from '../../../types';
+import { TopicData } from '../../mqtt/reducers';
 import { Devices } from '../../../lib/xively/models';
 import { getChildren, getOrganization, Organization } from '../organizations/reducers';
 import { getEndUsers } from '../end-users/reducers';
@@ -112,6 +113,19 @@ export function getDevices(state: AppState, orgId?: string, includeSubOrgs: bool
   const orgs = [orgId, ...subOrgs];
 
   return devices.filter((device) => includes(orgs, device.organizationId));
+}
+
+export function getDevicesWithData(state: AppState, orgId?: string, includeSubOrgs: boolean = true): DeviceWithData[] {
+  const devicesRaw = getDevices(state, orgId, includeSubOrgs);
+  return devicesRaw.map((device) => {
+    let mqttData: { [topicName: string]: TopicData } = {};
+    Object.keys(state.mqtt.data).filter((topic) => {
+        return topic.split('/')[5] === device.id;
+    }).forEach((topic) => {
+        mqttData[topic.split('/').slice(6).join('/')] = state.mqtt.data[topic];
+    });
+    return { device, mqttData };
+});
 }
 
 export function countDevices(state: AppState): number {

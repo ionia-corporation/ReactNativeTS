@@ -5,3 +5,4 @@ export * from './login';
 export * from './logout';
 export * from './header';
 export * from './group-list';
+export * from './group-screen';
