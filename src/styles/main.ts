@@ -65,6 +65,14 @@ export const Styles = StyleSheet.create({
         paddingLeft: 15,
         paddingBottom: 4,
     } as TextStyle,
+    groupPageSubtitle: {
+        backgroundColor: '#eeeeee',
+        marginTop: 20,
+        fontSize: 17,
+        padding: 12,
+        display: 'flex',
+        textAlign: 'center',
+    } as TextStyle,
 });
 
 export default Styles;

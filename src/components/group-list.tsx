@@ -6,8 +6,9 @@ import { AppState } from '../types/index';
 import { Authenticated } from './authenticated';
 import { getTopLevelOrganizations } from '../store/blueprint/organizations/reducers';
 import { Organizations } from '../lib/xively/models/index';
+import { GroupList as GroupListShared } from './shared';
 
-import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
+import { View } from "react-native";
 import Styles from '../styles/main';
 
 interface ReduxStateProps {
@@ -33,63 +34,22 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: GroupListPro
     }
 }
 
-interface GroupListState {
-  groupDataSource: ListViewDataSource;
-}
-
-export class GroupListComponent extends React.Component<GroupListProps, GroupListState> {
+export class GroupListComponent extends React.Component<GroupListProps, null> {
     static navigationOptions = {
         title: 'Groups',
     };
 
-    constructor(prop) {
-        super(prop);
-        const ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => {
-                return r1 !== r2;
-            },
-        });
-        if (this.props && this.props.groups) {
-            ds.cloneWithRows(this.props.groups)
-        }
-      this.state = {
-        groupDataSource: ds,
-      };
-    }
-
-    componentWillReceiveProps(newProps: GroupListProps) {
-        if (newProps.groups) {
-            this.setState({
-                groupDataSource: this.state.groupDataSource.cloneWithRows(newProps.groups),
-            });
-        }
-    }
-
-    componentDidMount() {
-        this.setState({
-            groupDataSource: this.state.groupDataSource.cloneWithRows(this.props.groups),
-        });
-    }
-
     render() {
         return (
             <View style={Styles.container}>
-                <ListView
-                    enableEmptySections
-                    dataSource={this.state.groupDataSource}
-                    renderRow={(group: Organizations.Organization) => {
-                        return <View style={Styles.groupRow}>
-                          <Text style={Styles.groupRowText} onPress={() => {
-                                this.props.navigation.navigate('Group', {
-                                    groupId: group.id,
-                                    groupName: group.name || 'no name',
-                                });
-                            }}>
-                            {group.name}
-                          </Text>
-                        </View>;
-                        }
-                    } />
+                <GroupListShared
+                    groups={this.props.groups}
+                    onPress={(group) => {
+                        this.props.navigation.navigate('Group', {
+                            groupId: group.id,
+                            groupName: group.name || 'no name',
+                        });
+                    }} />
             </View>
         );
     }

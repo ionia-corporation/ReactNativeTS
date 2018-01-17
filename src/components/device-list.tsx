@@ -44,17 +44,14 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
     render() {
         return (
             <View style={Styles.container}>
-                <DeviceListShared devices={this.props.devices} onPress={(deviceId) => {
-                    const device = this.props.devices.find((d) => d.device.id === deviceId);
-                    if (!device) {
-                        console.warn('device ID ' + deviceId + ' not found in props!');
-                        return;
-                    }
-                    this.props.navigation.navigate('Device', {
-                        deviceId: device.device.id,
-                        deviceName: device.device.name || device.device.serialNumber,
-                    });
-                }}/>
+                <DeviceListShared
+                    devices={this.props.devices}
+                    onPress={(device) => {
+                        this.props.navigation.navigate('Device', {
+                            deviceId: device.device.id,
+                            deviceName: device.device.name || device.device.serialNumber,
+                        });
+                    }} />
             </View>
         );
     }

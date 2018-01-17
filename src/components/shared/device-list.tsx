@@ -13,7 +13,7 @@ import Styles from '../../styles/main';
 
 interface DeviceListProps extends
     React.Props<DeviceList> {
-    onPress: (deviceId: string) => void;
+    onPress: (device: DeviceWithData) => void;
     devices: DeviceWithData[];
 }
 
@@ -66,7 +66,7 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
             const connected = curData ? curData.state.connected : false;
             return <View style={Styles.deviceRow}>
               <Text style={Styles.deviceRowText} onPress={() => {
-                this.props.onPress(device.id);
+                this.props.onPress(deviceWithData);
               }}>
                 <Image style={Styles.deviceConnectedImage} source={connected ?
                   this.connectedImage : this.disconnectedImage} />
