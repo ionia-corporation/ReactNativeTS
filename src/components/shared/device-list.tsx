@@ -64,8 +64,8 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
             const device = deviceWithData.device;
             const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
             const connected = curData ? curData.state.connected : false;
-            return <View style={Styles.deviceRow}>
-              <Text style={Styles.deviceRowText} onPress={() => {
+            return <View style={Styles.listItem}>
+              <Text style={Styles.listItemText} onPress={() => {
                 this.props.onPress(deviceWithData);
               }}>
                 <Image style={Styles.deviceConnectedImage} source={connected ?

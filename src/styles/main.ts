@@ -39,31 +39,9 @@ export const Styles = StyleSheet.create({
 	},
     inputWrapper: {
         paddingBottom: 10,
-    },
-    deviceRow: {
-        padding: 4,
-        borderWidth: 0.5,
-        borderRadius: 2,
-        borderColor: '#eeeeee',
-        margin: 2,
     } as TextStyle,
     deviceConnectedImage: {
         marginTop: 2,
-    },
-    deviceRowText: {
-        paddingLeft: 15,
-        paddingBottom: 4,
-    } as TextStyle,
-    groupRow: {
-        padding: 4,
-        borderWidth: 0.5,
-        borderRadius: 2,
-        borderColor: '#eeeeee',
-        margin: 2,
-    } as TextStyle,
-    groupRowText: {
-        paddingLeft: 15,
-        paddingBottom: 4,
     } as TextStyle,
     groupPageSubtitle: {
         backgroundColor: '#eeeeee',
@@ -72,6 +50,19 @@ export const Styles = StyleSheet.create({
         padding: 12,
         display: 'flex',
         textAlign: 'center',
+    } as TextStyle,
+    listItem: {
+        padding: 5,
+        paddingTop: 10,
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: '#dce0e6',
+        margin: 2,
+        backgroundColor: '#ffffff'
+    } as ViewStyle,
+    listItemText: {
+        paddingLeft: 15,
+        paddingBottom: 4,
     } as TextStyle,
 });
 

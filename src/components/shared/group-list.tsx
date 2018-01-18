@@ -54,8 +54,8 @@ export class GroupList extends React.Component<GroupListProps, GroupListState> {
           enableEmptySections
           dataSource={this.state.groupDataSource}
           renderRow={(group: Organizations.Organization) => {
-            return <View style={Styles.groupRow}>
-              <Text style={Styles.groupRowText} onPress={() => {
+            return <View style={Styles.listItem}>
+              <Text style={Styles.listItemText} onPress={() => {
                 this.props.onPress(group);
               }}>
                 {group.name}
