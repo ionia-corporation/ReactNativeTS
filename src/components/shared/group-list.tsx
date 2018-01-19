@@ -51,6 +51,7 @@ export class GroupList extends React.Component<GroupListProps, GroupListState> {
     render() {
       return (
         <ListView
+          style={Styles.listContainer}
           enableEmptySections
           dataSource={this.state.groupDataSource}
           renderRow={(group: Organizations.Organization) => {

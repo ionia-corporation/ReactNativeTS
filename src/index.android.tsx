@@ -14,7 +14,6 @@ import {
 import {
     HomeScreen,
     GroupList,
-    GroupScreen,
     SubGroupsScreen,
     GroupDevices,
     DeviceList,
@@ -25,7 +24,6 @@ import {
 } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
-
 
 const GroupsTabNavigation = TabNavigator({
     SubGroups: {

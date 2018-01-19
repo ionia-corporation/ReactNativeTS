@@ -57,6 +57,7 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
     render() {
       return (
         <ListView
+          style={Styles.listContainer}
           enableEmptySections
           dataSource={this.state.deviceDataSource}
           renderRow={(deviceWithData: DeviceWithData) => {
@@ -73,7 +74,7 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
                 {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
               </Text>
             </View>;
-          }
+            }
           } />
       );
     }

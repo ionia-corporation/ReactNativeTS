@@ -74,8 +74,6 @@ export class SubGroupsScreenComponent extends React.Component<GroupProps, GroupS
     return (
       <View style={Styles.container}>
         <View>
-          <Text style={Styles.groupPageSubtitle}>
-          </Text>
           {subGroups}
         </View>
       </View>

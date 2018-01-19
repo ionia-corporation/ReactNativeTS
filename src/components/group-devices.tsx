@@ -68,9 +68,6 @@ export class GroupDevicesScreenComponent extends React.Component<GroupProps, Gro
     return (
       <View style={Styles.container}>
         <View>
-          <Text style={Styles.groupPageSubtitle}>
-            Devices
-          </Text>
           {devices}
         </View>
       </View>
