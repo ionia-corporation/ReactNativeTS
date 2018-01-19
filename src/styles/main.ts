@@ -54,6 +54,24 @@ export const Styles = StyleSheet.create({
         paddingLeft: 15,
         paddingBottom: 4,
     } as TextStyle,
+
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingTop: 10,
+        paddingLeft: 5,
+    } as TextStyle,
+
+    sectionDescription: {
+        paddingTop: 5,
+        paddingLeft: 5,
+    } as TextStyle,
+
+    sectionLoading: {
+        paddingTop: 15,
+        paddingBottom: 15,
+        textAlign: 'center',
+    } as TextStyle,
 });
 
 export default Styles;
