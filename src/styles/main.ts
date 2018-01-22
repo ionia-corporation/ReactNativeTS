@@ -67,7 +67,7 @@ export const Styles = StyleSheet.create({
         paddingLeft: 5,
     } as TextStyle,
 
-    sectionLoading: {
+    sectionStatus: {
         paddingTop: 15,
         paddingBottom: 15,
         textAlign: 'center',

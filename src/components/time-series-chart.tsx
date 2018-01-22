@@ -57,9 +57,9 @@ export class TimeSeriesChart extends React.Component<Props, State> {
     let content;
 
     if (!data) {
-      content = <Text style={Styles.sectionLoading}>Loading data...</Text>;
+      content = <Text style={Styles.sectionStatus}>Loading data...</Text>;
     } else if (data === 'error') {
-      content = <Text>There was an error loading data</Text>;
+      content = <Text style={Styles.sectionStatus}>There was an error loading data</Text>;
     } else {
       const formattedData = this.formatData(data);
 
