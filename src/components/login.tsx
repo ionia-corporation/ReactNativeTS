@@ -90,9 +90,11 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
     return (
       <KeyboardAvoidingView behavior='padding' style={Styles.container}>
         <Image style={Styles.logo} source={require('../../images/logo.png')} />
+
         <Text style={Styles.title}>
           Sign In
         </Text>
+
         <View style={Styles.inputWrapper}>
           <TextInput
             keyboardType='email-address'
@@ -103,6 +105,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
             style={Styles.input}
           />
         </View>
+
         <View style={Styles.inputWrapper}>
           <TextInput
             placeholder='Password'
@@ -118,6 +121,9 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
         <Button title='Login' onPress={() => { this.submit(); }} />
 
+        <Text>
+          Don't have an account? Sign up
+        </Text>
       </KeyboardAvoidingView>
     );
   }

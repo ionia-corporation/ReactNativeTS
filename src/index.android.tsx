@@ -16,7 +16,8 @@ import {
     DeviceScreen,
     LoginScreen,
     LogoutScreen,
-    headerRight
+    headerRight,
+    SignUp
 } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
