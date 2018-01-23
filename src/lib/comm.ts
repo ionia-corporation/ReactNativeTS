@@ -44,7 +44,7 @@ export function getJson(options: CommOptions): Promise <any> {
       if (res === undefined) {
         reject(new Error(!!res && !!body ? JSON.stringify(body) : 'No response or no response body'));
       } else if (commError) {
-        logger.error('Error running HTTP request:\n' + JSON.stringify(commError)
+        logger.log('Error running HTTP request:\n' + JSON.stringify(commError)
           + '\n\nResponse:\n'
           + JSON.stringify(res));
         reject(commError);
