@@ -8,10 +8,14 @@ import {
     StackNavigator,
     StackNavigatorConfig,
     NavigationActions,
-    NavigationState
+    NavigationState,
+    TabNavigator
 } from 'react-navigation';
 import {
     HomeScreen,
+    GroupList,
+    SubGroupsScreen,
+    GroupDevices,
     DeviceList,
     DeviceScreen,
     LoginScreen,
@@ -21,6 +25,40 @@ import {
 } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
+
+const GroupsTabNavigation = TabNavigator({
+    SubGroups: {
+        screen: SubGroupsScreen,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Sub Groups',
+            headerRight: headerRight(navigation),
+        })
+    },
+    GroupDevices: {
+        screen: GroupDevices,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Devices',
+            headerRight: headerRight(navigation),
+        })
+    },
+});
+
+const GroupsNavigator = StackNavigator({
+    GroupList: {
+        screen: GroupList,
+        navigationOptions: ({ navigation }) => ({
+            title: 'Groups',
+            headerRight: headerRight(navigation),
+        }),
+    },
+    Group: {
+        screen: GroupsTabNavigation,
+        navigationOptions: ({ navigation }) => ({
+            title: navigation.state.params.groupName,
+            headerRight: headerRight(navigation),
+        })
+    }
+});
 
 const DevicesNavigator = StackNavigator({
     DeviceList: {
@@ -37,11 +75,14 @@ const DevicesNavigator = StackNavigator({
             headerRight: headerRight(navigation),
         })
     }
-})
+});
 
 const Navigator = DrawerNavigator({
     Devices: {
         screen: DevicesNavigator,
+    },
+    Groups: {
+        screen: GroupsNavigator,
     },
     Logout: {
         screen: LogoutScreen,

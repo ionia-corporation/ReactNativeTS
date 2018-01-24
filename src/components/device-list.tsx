@@ -4,12 +4,13 @@ import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
-import { getDevices } from '../store/blueprint/devices/reducers';
+import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { TopicData } from '../store/mqtt/reducers';
 import { topic } from '../store/mqtt/utils';
 import { Devices } from '../lib/xively/models/index';
+import { DeviceList as DeviceListShared } from './shared';
 
-import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
+import { View, Text, Button, Image } from "react-native";
 import Styles from '../styles/main';
 
 interface ReduxStateProps {
@@ -25,19 +26,9 @@ interface DeviceListProps extends
 }
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {
-    const devicesRaw: Devices.Device[] = getDevices(state);
-    const devices = devicesRaw.map((device) => {
-        let mqttData: { [topicName: string]: TopicData } = {};
-        Object.keys(state.mqtt.data).filter((topic) => {
-            return topic.split('/')[5] === device.id;
-        }).forEach((topic) => {
-            mqttData[topic.split('/').slice(6).join('/')] = state.mqtt.data[topic];
-        });
-        return { device, mqttData };
-    });
     return {
-        devices
-    };
+        devices: getDevicesWithData(state),
+    }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListProps) {
@@ -45,68 +36,22 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListPr
     }
 }
 
-interface DeviceListState {
-    deviceDataSource: ListViewDataSource;
-}
-
-export class DeviceListComponent extends React.Component<DeviceListProps, DeviceListState> {
-    connectedImage = require('../../images/device_on.png');
-    disconnectedImage = require('../../images/device_off.png');
+export class DeviceListComponent extends React.Component<DeviceListProps, null> {
     static navigationOptions = {
         title: 'Devices',
     };
 
-    constructor(prop) {
-        super(prop);
-        const ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => {
-                return r1 !== r2;
-            },
-        });
-        if (this.props && this.props.devices) {
-            ds.cloneWithRows(this.props.devices)
-        }
-        this.state = {
-            deviceDataSource: ds,
-        };
-    }
-
-    componentWillReceiveProps(newProps: DeviceListProps) {
-        if (newProps.devices) {
-            this.setState({
-                deviceDataSource: this.state.deviceDataSource.cloneWithRows(newProps.devices),
-            });
-        }
-    }
-
     render() {
         return (
             <View style={Styles.container}>
-                {/* <Text style={Styles.title}>
-                    Devices ({this.props.devices ? this.props.devices.length : 0})
-                </Text> */}
-                <ListView
-                    enableEmptySections
-                    dataSource={this.state.deviceDataSource}
-                    renderRow={(deviceWithData: DeviceWithData) => {
-                        const curMessage = deviceWithData.mqttData['_updates/fields'];
-                        const device = deviceWithData.device;
-                        const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
-                        const connected = curData ? curData.state.connected : false;
-                        return <View style={Styles.deviceRow}>
-                            <Text style={Styles.deviceRowText} onPress={() => {
-                                this.props.navigation.navigate('Device', {
-                                    deviceId: device.id,
-                                    deviceName: device.name || device.serialNumber,
-                                });
-                            }}>
-                                <Image style={Styles.deviceConnectedImage} source={ connected ?
-                                    this.connectedImage : this.disconnectedImage } />
-                                {device.name || device.serialNumber || '(no name)'} { curData ? curData.state.firmwareVersion : '' }
-                            </Text>
-                        </View>;
-                        }
-                    } />
+                <DeviceListShared
+                    devices={this.props.devices}
+                    onPress={(device) => {
+                        this.props.navigation.navigate('Device', {
+                            deviceId: device.device.id,
+                            deviceName: device.device.name || device.device.serialNumber,
+                        });
+                    }} />
             </View>
         );
     }

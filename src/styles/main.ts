@@ -9,7 +9,7 @@ export const Styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#F5FCFF",
+        backgroundColor: "#F5FCFF"
     } as ViewStyle,
 
     title: {
@@ -36,21 +36,31 @@ export const Styles = StyleSheet.create({
 		paddingLeft: 45,
 		borderRadius: 20,
 		color: '#333333',
-	},
+    },
+
     inputWrapper: {
         paddingBottom: 10,
-    },
-    deviceRow: {
-        padding: 4,
-        borderWidth: 0.5,
-        borderRadius: 2,
-        borderColor: '#eeeeee',
-        margin: 2,
     } as TextStyle,
+
     deviceConnectedImage: {
         marginTop: 2,
-    },
-    deviceRowText: {
+    } as TextStyle,
+
+    listContainer: {
+        paddingTop: 20,
+    } as ViewStyle,
+
+    listItem: {
+        padding: 5,
+        paddingTop: 10,
+        borderWidth: 1,
+        borderRadius: 2,
+        borderColor: '#dce0e6',
+        margin: 2,
+        backgroundColor: '#ffffff'
+    } as ViewStyle,
+
+    listItemText: {
         paddingLeft: 15,
         paddingBottom: 4,
     } as TextStyle,
