@@ -60,9 +60,11 @@ export class GroupDevicesScreenComponent extends React.Component<GroupProps, Gro
 
     if (this.props.devices && this.props.devices.length) {
       devices = <DeviceList devices={this.props.devices} onPress={(device) => {
-        // TODO: navigate!
-        console.log('clicked ' + device.device.id);
-      }} />;
+        this.props.navigation.navigate('Device', {
+            deviceId: device.device.id,
+            deviceName: device.device.name || device.device.serialNumber,
+        });
+    }} />;
     }
 
     return (
