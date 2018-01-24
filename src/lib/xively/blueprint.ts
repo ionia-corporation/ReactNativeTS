@@ -401,7 +401,7 @@ class Organizations {
       url: this.urlBP
       + 'organizations',
       method: 'POST',
-      body: org,
+      body: JSON.stringify(org),
     };
 
     return this.comm.getXivelyJson(options, true);

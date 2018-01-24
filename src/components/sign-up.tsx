@@ -37,12 +37,10 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     };
   }
 
-  async submit(event: any) {
-    event.preventDefault();
+  async submit() {
+    // this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
 
-    this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
-
-    if (Object.getOwnPropertyNames(this.form.validateAll()).length === 0) {
+    // if (Object.getOwnPropertyNames(this.form.validateAll()).length === 0) {
 
       let userOptions = {
         emailAddress : this.state.email,
@@ -114,9 +112,9 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           requestStatus : RequestStatus.REQUEST_ERROR,
         });
       }
-    } else {
-      this.setState({ requestStatus : RequestStatus.REQUEST_ERROR });
-    }
+    // } else {
+    //   this.setState({ requestStatus : RequestStatus.REQUEST_ERROR });
+    // }
   }
 
   handleChange(fieldName, event) {
@@ -222,7 +220,10 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           { this.state.error }
         </Text>
 
-        <Button title='Login' onPress={() => { this.submit.bind(this); }} />
+        <Button title='Login' onPress={() => { 
+            this.submit();
+          }}
+        />
 
         <Text>
           Already have an account? Sign in

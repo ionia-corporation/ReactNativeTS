@@ -87,6 +87,8 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
+
     return (
       <KeyboardAvoidingView behavior='padding' style={Styles.container}>
         <Image style={Styles.logo} source={require('../../images/logo.png')} />
@@ -122,7 +124,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
         <Button title='Login' onPress={() => { this.submit(); }} />
 
         <Text>
-          Don't have an account? Sign up
+          Don't have an account? <Text onPress={() => navigate('SignUp')}>Sign up</Text>
         </Text>
       </KeyboardAvoidingView>
     );

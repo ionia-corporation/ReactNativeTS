@@ -1,6 +1,6 @@
 import * as request from 'superagent';
 import * as Bluebird from 'bluebird';
-import { Logs as LogsModel } from '../../../common/services/xively/models/logs';
+import { Logs as LogsModel } from '../xively/models/logs';
 
 const BASE_URL = '/api/devices';
 

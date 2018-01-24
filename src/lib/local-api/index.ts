@@ -4,4 +4,4 @@ import * as group from './group';
 
 export { user, devices, group };
 // Re-export types for better interface
-export * from '../../../common/types/local-api';
+export * from '../../types/local-api';

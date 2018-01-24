@@ -1,6 +1,6 @@
 import * as request from 'superagent';
 
-import * as localAPI from '../../../common/types/local-api';
+import * as localAPI from '../../types/local-api';
 
 const URL_BASE = '/api/group';
 const URL_INVITE_USER_SEGMENT = 'invite';

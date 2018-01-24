@@ -13,7 +13,7 @@
     "pretest": "npm run build",
     "test": "jest",
     "link:reactNativeSvg": "node node_modules/react-native/local-cli/cli.js link react-native-svg",
-    "link:rnNodeify": "node node_modules/.bin/rn-nodeify --install crypto --hack", 
+    "link:rnNodeify": "node node_modules/.bin/rn-nodeify --install crypto --hack",
     "postinstall": "npm run link:rnNodeify && npm run link:reactNativeSvg && npm run build:mqttClient",
     "build:mqttClient": "webpack node_modules/mqtt/mqtt.js node_modules/mqtt/mqttClient.js --output-library mqtt --output-library-target commonjs2"
   },
@@ -25,6 +25,7 @@
     "@types/redux": "^3.6.0",
     "@types/redux-actions": "^1.2.6",
     "@types/redux-thunk": "^2.1.0",
+    "bluebird": "^3.5.1",
     "jwt-decode": "^2.2.0",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
@@ -43,6 +44,7 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
+    "superagent": "^3.8.2",
     "victory-native": "^0.16.6",
     "webpack": "^3.10.0"
   },

@@ -1,8 +1,12 @@
 import * as request from 'superagent';
-import * as Bluebird from 'bluebird';
-import * as localAPI from './index';
+// import * as Bluebird from 'bluebird';
 
-const URL_BASE = '/api/user';
+import * as localAPI from './index';
+import { config } from '../../config';
+
+const apiUrl = config.xively.riotApiUrl;
+
+const URL_BASE = 'ws://' + apiUrl + '/api/user';
 const URL_RESET_PASSWORD = URL_BASE + '/reset-password';
 const URL_CHANGE_PASSWORD = URL_BASE + '/change-password';
 const URL_REGISTRATION_SUCCESS = URL_BASE + '/registration-success';
@@ -17,7 +21,7 @@ export async function resetPassword(email: string): Promise<localAPI.ResetPasswo
   // TODO: use native superagent promise support
   //
   // when the typings are updated with the latest version of the lib
-  const req = new Bluebird((resolve, reject) => {
+  const req = new Promise((resolve, reject) => {
     request('POST', URL_RESET_PASSWORD)
       .send(body)
       .set('Content-Type', 'application/json')
@@ -44,16 +48,23 @@ export async function registrationSuccess(userId: string): Promise<localAPI.Regi
   // TODO: use native superagent promise support
   //
   // when the typings are updated with the latest version of the lib
-  const req = new Bluebird((resolve, reject) => {
-    request('POST', URL_REGISTRATION_SUCCESS)
-      .send(body)
-      .set('Content-Type', 'application/json')
-      // in newer versions of super agent this returns a promise
-      .end((err, res) => err ? reject(err) : resolve(res));
-  });
+  // const req = new Promise((resolve, reject) => {
+  //   request.Request('POST', URL_REGISTRATION_SUCCESS)
+  //     .send(body)
+  //     .set('Content-Type', 'application/json')
+  //     // in newer versions of super agent this returns a promise
+  //     .end((err, res) => err ? reject(err) : resolve(res));
+  // });
 
   try {
-    const res: any = await req;
+    const res: any = await fetch(URL_REGISTRATION_SUCCESS, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
     return res.body;
 
   } catch (errorData) {
@@ -71,7 +82,7 @@ export async function changePassword(
     userId: userId,
   } as localAPI.ChangePasswordRequestBody;
 
-  const req = new Bluebird((resolve, reject) => {
+  const req = new Promise((resolve, reject) => {
     request('POST', URL_CHANGE_PASSWORD)
       .send(body)
       .set('Content-Type', 'application/json')
