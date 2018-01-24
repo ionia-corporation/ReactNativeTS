@@ -13,7 +13,7 @@
     "pretest": "npm run build",
     "test": "jest",
     "link:reactNativeSvg": "node node_modules/react-native/local-cli/cli.js link react-native-svg",
-    "link:rnNodeify": "node node_modules/.bin/rn-nodeify --install crypto --hack", 
+    "link:rnNodeify": "node node_modules/.bin/rn-nodeify --install crypto --hack",
     "postinstall": "npm run link:rnNodeify && npm run link:reactNativeSvg && npm run build:mqttClient",
     "build:mqttClient": "webpack node_modules/mqtt/mqtt.js node_modules/mqtt/mqttClient.js --output-library mqtt --output-library-target commonjs2"
   },
