@@ -40,6 +40,13 @@ const GroupsTabNavigation = TabNavigator({
             headerRight: headerRight(navigation),
         })
     },
+}, {
+    tabBarOptions: {
+        labelStyle: {
+            padding: 12,
+            fontSize: 14,
+        }
+    }
 });
 
 const GroupsNavigator = StackNavigator({
