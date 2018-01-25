@@ -1,12 +1,9 @@
-import * as request from 'superagent';
-// import * as Bluebird from 'bluebird';
-
 import * as localAPI from './index';
 import { config } from '../../config';
 
 const apiUrl = config.xively.riotApiUrl;
 
-const URL_BASE = 'ws://' + apiUrl + '/api/user';
+const URL_BASE = apiUrl + '/api/user';
 const URL_RESET_PASSWORD = URL_BASE + '/reset-password';
 const URL_CHANGE_PASSWORD = URL_BASE + '/change-password';
 const URL_REGISTRATION_SUCCESS = URL_BASE + '/registration-success';
@@ -16,23 +13,16 @@ export async function resetPassword(email: string): Promise<localAPI.ResetPasswo
       emailAddress: email,
   } as localAPI.ResetPasswordRequestBody;
 
-
-
-  // TODO: use native superagent promise support
-  //
-  // when the typings are updated with the latest version of the lib
-  const req = new Promise((resolve, reject) => {
-    request('POST', URL_RESET_PASSWORD)
-      .send(body)
-      .set('Content-Type', 'application/json')
-      // in newer versions of super agent this returns a promise
-      .end((err, res) => err ? reject(err) : resolve(res));
-  });
-
   try {
-    const res: any = await req;
-    return res.body;
+    const res: any = await fetch(URL_RESET_PASSWORD, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
 
+    return res.body;
   } catch (errorData) {
     // TODO: Handle better
     throw new Error(errorData);
@@ -44,18 +34,6 @@ export async function registrationSuccess(userId: string): Promise<localAPI.Regi
       userId,
   } as localAPI.RegistrationSuccessRequestBody;
 
-
-  // TODO: use native superagent promise support
-  //
-  // when the typings are updated with the latest version of the lib
-  // const req = new Promise((resolve, reject) => {
-  //   request.Request('POST', URL_REGISTRATION_SUCCESS)
-  //     .send(body)
-  //     .set('Content-Type', 'application/json')
-  //     // in newer versions of super agent this returns a promise
-  //     .end((err, res) => err ? reject(err) : resolve(res));
-  // });
-
   try {
     const res: any = await fetch(URL_REGISTRATION_SUCCESS, {
       method: 'POST',
@@ -66,7 +44,6 @@ export async function registrationSuccess(userId: string): Promise<localAPI.Regi
     });
 
     return res.body;
-
   } catch (errorData) {
     // TODO: Handle better
     throw new Error(errorData);
@@ -82,17 +59,16 @@ export async function changePassword(
     userId: userId,
   } as localAPI.ChangePasswordRequestBody;
 
-  const req = new Promise((resolve, reject) => {
-    request('POST', URL_CHANGE_PASSWORD)
-      .send(body)
-      .set('Content-Type', 'application/json')
-      .end((err, res) => err ? reject(err) : resolve(res));
-  });
-
   try {
-    const res: any = await req;
-    return res.body;
+    const res: any = await fetch(URL_CHANGE_PASSWORD, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
 
+    return res.body;
   } catch (errorData) {
     // TODO: Handle better
     throw new Error(errorData);

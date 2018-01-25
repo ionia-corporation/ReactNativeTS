@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, ScrollView } from "react-native";
 
 import Styles from '../styles/main';
 import { config } from '../config';
@@ -38,83 +38,80 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   }
 
   async submit() {
-    // this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
+    this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
 
-    // if (Object.getOwnPropertyNames(this.form.validateAll()).length === 0) {
+    let userOptions = {
+      emailAddress : this.state.email,
+      password : this.state.password,
+      passwordConfirm : this.state.password,
+      firstName: this.state.firstName,
+      lastName: this.state.lastName,
+    };
 
-      let userOptions = {
+    try {
+      let res = await xively.idm.authentication.createUser(userOptions);
+
+      if (!res.userId) {
+        // TODO: Throw something better
+        throw new Error('No user ID passed in');
+      }
+
+      const accountId = config.xively.accountId;
+      const endUserTemplateId = config.xively.endUserTemplate;
+      const orgTemplateId = config.xively.baseOrgTemplate;
+
+      // Login user to obtain JWT
+      await xively.idm.authentication.login({
         emailAddress : this.state.email,
         password : this.state.password,
-        passwordConfirm : this.state.password,
-        firstName: this.state.firstName,
-        lastName: this.state.lastName,
-      };
+        renewalType: 'short',
+      });
 
-      try {
+        // Create new org and end user in that org
+      let orgRes = await xively.blueprint.organizations.createOrganization({
+        accountId: accountId,
+        name: 'Organization for ' + this.state.email,
+        organizationTemplateId: orgTemplateId,
+        endUserTemplateId: endUserTemplateId,
+      });
 
-        let res = await xively.idm.authentication.createUser(userOptions);
-
-        if (!res.userId) {
-          // TODO: Throw something better
-          throw new Error('No user ID passed in');
-        }
-
-        const accountId = config.xively.accountId;
-        const endUserTemplateId = config.xively.endUserTemplate;
-        const orgTemplateId = config.xively.baseOrgTemplate;
-
-        // Login user to obtain JWT
-        await xively.idm.authentication.login({
-          emailAddress : this.state.email,
-          password : this.state.password,
-          renewalType: 'short',
-        });
-
-          // Create new org and end user in that org
-        let orgRes = await xively.blueprint.organizations.createOrganization({
-          accountId: accountId,
-          name: 'Organization for ' + this.state.email,
-          organizationTemplateId: orgTemplateId,
-          endUserTemplateId: endUserTemplateId,
-        });
-
-        if (!orgRes || !orgRes.organization.id || !orgRes.organization.defaultEndUser) {
-          // TODO: Is this block needed?
-          // TODO: Throw something better
-          throw new Error('Org was not created right');
-        }
-
-        // Update status to update the loading indicator
-        this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
-
-        return await localAPI.user.registrationSuccess(res.userId);
-
-      } catch (err) {
-        // Server Error
-        console.log(err);
-        let errorMsg = 'An error has occurred. Please try it again.';
-
-        // check for Xively error first, then localAPI error
-        if (err.response && err.response.body && err.response.body.message) {
-          // error on HTTP REQUEST
-          if (err.response.body.message === 'The user already exists.') {
-            // TODO: Link to login screen?
-            errorMsg = 'This email is already registered, did you mean to login?';
-          } else if (err.response.body.message.strengthValue >= 0) {
-            errorMsg = `Invalid password. Your password must be between 8 and 128
-              characters in length. It must not repeat 3 characters in a row. It must not
-              contain any of the top 20 passwords. It must not contain your email username.`;
-          }
-        }
-
-        this.setState({
-          error : errorMsg,
-          requestStatus : RequestStatus.REQUEST_ERROR,
-        });
+      if (!orgRes || !orgRes.organization.id || !orgRes.organization.defaultEndUser) {
+        // TODO: Is this block needed?
+        // TODO: Throw something better
+        throw new Error('Org was not created right');
       }
-    // } else {
-    //   this.setState({ requestStatus : RequestStatus.REQUEST_ERROR });
-    // }
+
+      // Update status to update the loading indicator
+      this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
+
+      return await localAPI.user.registrationSuccess(res.userId);
+
+    } catch (err) {
+      // Server Error
+      console.log(err);
+    
+      let errorMsg = 'An error has occurred. Please try it again.';
+
+      // check for Xively error first, then localAPI error
+      if (err.response && err.response.body && err.response.body.message) {
+        // error on HTTP REQUEST
+        if (err.response.body.message === 'The user already exists.') {
+          // TODO: Link to login screen?
+          errorMsg = 'This email is already registered, did you mean to login?';
+        } else if (err.response.body.message.strengthValue >= 0) {
+          errorMsg = `Invalid password. Your password must be between 8 and 128
+            characters in length. It must not repeat 3 characters in a row. It must not
+            contain any of the top 20 passwords. It must not contain your email username.`;
+        }
+      } if (err.message) {
+        errorMsg = err.message;
+      }
+
+      this.setState({
+        error : errorMsg,
+        requestStatus : RequestStatus.REQUEST_ERROR,
+      });
+    }
   }
 
   handleChange(fieldName, event) {
@@ -132,28 +129,22 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     return (
       <View>
         <Text>
-          Registration successful!
-          <Text onPress={() => navigate('Devices')}>Please click here to proceed.</Text>
+          Registration successful! 
+          <Text style={Styles.link} onPress={() => navigate('Devices')}>Please click here to proceed.</Text>
         </Text>
       </View>
     );
   }
 
   render() {
-    const autocontrol = (fieldName) => ({
-      name: fieldName,
-      value: this.state[fieldName] || '',
-      onChange: this.handleChange.bind(this, fieldName),
-      containerClassName: 'form-group',
-      className: 'form-control',
-    });
+    const { navigate } = this.props.navigation;
 
     if (this.state.requestStatus === RequestStatus.REQUEST_SUCCESS) {
       return this.userCreatedAlert();
     }
 
     return (
-      <KeyboardAvoidingView behavior='padding' style={Styles.container}>
+      <KeyboardAvoidingView keyboardVerticalOffset={0} style={Styles.container}>
         <Image style={Styles.logo} source={require('../../images/logo.png')} />
 
         <Text style={Styles.title}>
@@ -193,9 +184,8 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           />
         </View>
 
-        <Text>
-          Please enter a password. It should contain at least 8 characters
-          including one capital letter, one number, and one special character.
+        <Text style={Styles.paragraph}>
+          Please enter a password. It should contain at least 8 characters including one capital letter, one number, and one special character.
         </Text>
 
         <View style={Styles.inputWrapper}>
@@ -216,7 +206,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           />
         </View>
 
-        <Text>
+        <Text style={Styles.errorMessage}>
           { this.state.error }
         </Text>
 
@@ -225,8 +215,8 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           }}
         />
 
-        <Text>
-          Already have an account? Sign in
+        <Text style={Styles.paragraph}>
+          Already have an account? <Text style={Styles.link} onPress={() => navigate('Login')}>Sign in</Text>
         </Text>
       </KeyboardAvoidingView>
     );

@@ -123,8 +123,8 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
         <Button title='Login' onPress={() => { this.submit(); }} />
 
-        <Text>
-          Don't have an account? <Text onPress={() => navigate('SignUp')}>Sign up</Text>
+        <Text style={Styles.paragraph}>
+          Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
         </Text>
       </KeyboardAvoidingView>
     );
