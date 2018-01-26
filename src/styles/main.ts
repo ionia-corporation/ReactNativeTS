@@ -18,6 +18,8 @@ export const Styles = StyleSheet.create({
   container: {
     marginTop: Platform.OS === 'ios' ? 20 : 0,
     flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
@@ -59,7 +61,10 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   listContainer: {
-    paddingTop: 20,
+    width: DEVICE_WIDTH,
+    padding: 20,
+    display: 'flex',
+    flexDirection: 'column',
   } as ViewStyle,
 
   listItem: {
@@ -68,7 +73,7 @@ export const Styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 2,
     borderColor: '#dce0e6',
-    margin: 2,
+    marginBottom: 10,
     backgroundColor: '#ffffff',
   } as ViewStyle,
 
