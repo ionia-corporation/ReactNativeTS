@@ -1,5 +1,3 @@
-import * as request from 'superagent';
-
 import * as localAPI from '../../types/local-api';
 
 const URL_BASE = '/api/group';
@@ -16,61 +14,53 @@ export function inviteUserToGroup(
     message,
   };
 
-  const reqPromise: Promise<localAPI.InviteUserToGroupResponseBody> =
-    new Promise((resolve, reject) => {
-      request('POST', `${URL_BASE}/${groupId}/${URL_INVITE_USER_SEGMENT}`)
-        .send(body)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', 'Bearer ' + jwt)
-        // in newer versions of super agent this returns a promise
-        .end((err, res) => (err ? reject(err) : resolve(res.body)));
-    });
-  return reqPromise;
+  return fetch(`${URL_BASE}/${groupId}/${URL_INVITE_USER_SEGMENT}`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);;
 }
 
 export function acceptInvitation(
   invitationToken: string,
   jwt: string,
 ): Promise<localAPI.AcceptInvitationResponseBody> {
-  const reqPromise: Promise<localAPI.AcceptInvitationResponseBody> =
-    new Promise((resolve, reject) => {
-      request('GET', `${URL_BASE}/${invitationToken}/acceptInvitation`)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', 'Bearer ' + jwt)
-        // in newer versions of super agent this returns a promise
-        .end((err, res) => (err ? reject(err) : resolve(res.body)));
-    });
-  return reqPromise;
+  return fetch(`${URL_BASE}/${invitationToken}/acceptInvitation`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);;
 }
 
 export function getInvitationsByGroup(
   groupId: string,
   jwt: string,
 ): Promise<localAPI.GetInvitationsByGroupResponseBody> {
-  const reqPromise: Promise<localAPI.GetInvitationsByGroupResponseBody> =
-    new Promise((resolve, reject) => {
-      request('GET', `${URL_BASE}/${groupId}/invitations`)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', 'Bearer ' + jwt)
-        // in newer versions of super agent this returns a promise
-        .end((err, res) => (err ? reject(err) : resolve(res.body)));
-    });
-  return reqPromise;
+  return fetch(`${URL_BASE}/${groupId}/invitations`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);;
 }
 
 export function getNamesOfUsersInGroup(
   groupId: string,
   jwt: string,
 ): Promise<localAPI.GetNamesOfUsersInGroupResponseBody> {
-  const reqPromise: Promise<localAPI.GetNamesOfUsersInGroupResponseBody> =
-    new Promise((resolve, reject) => {
-      request('GET', `${URL_BASE}/${groupId}/namesOfUsers`)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', 'Bearer ' + jwt)
-        // in newer versions of super agent this returns a promise
-        .end((err, res) => (err ? reject(err) : resolve(res.body)));
-    });
-  return reqPromise;
+  return fetch(`${URL_BASE}/${groupId}/namesOfUsers`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);;
 }
 
 export function deleteInvitation(
@@ -78,13 +68,13 @@ export function deleteInvitation(
   email: string,
   jwt: string,
 ): Promise<localAPI.DeleteInvitationResponseBody> {
-  return new Promise((resolve, reject) => {
-    request('DELETE', `${URL_BASE}/${groupId}/invitations/${email}/`)
-      .set('Content-Type', 'application/json')
-      .set('Authorization', 'Bearer ' + jwt)
-      // in newer versions of super agent this returns a promise
-      .end((err, res) => (err ? reject(err) : resolve(res.body)));
-  });
+  return fetch(`${URL_BASE}/${groupId}/invitations/${email}/`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);
 }
 
 export function deleteUserFromGroup(
@@ -92,13 +82,13 @@ export function deleteUserFromGroup(
   endUserId: string,
   jwt: string,
 ): Promise<localAPI.DeleteEndUserFromGroupResponseBody> {
-  return new Promise((resolve, reject) => {
-    request('DELETE', `${URL_BASE}/${groupId}/users/${endUserId}/`)
-      .set('Content-Type', 'application/json')
-      .set('Authorization', 'Bearer ' + jwt)
-      // in newer versions of super agent this returns a promise
-      .end((err, res) => (err ? reject(err) : resolve(res.body)));
-  });
+  return fetch(`${URL_BASE}/${groupId}/users/${endUserId}/`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);
 }
 
 export function updateEndUser(
@@ -107,15 +97,16 @@ export function updateEndUser(
   destGroupId: string,
   jwt: string,
 ): Promise<localAPI.UpdateEndUserFromGroupResponseBody> {
-  return new Promise((resolve, reject) => {
-    const body = {
-      destGroupId,
-    };
-    request('PUT', `${URL_BASE}/${groupId}/users/${endUserId}/`)
-      .send(body)
-      .set('Content-Type', 'application/json')
-      .set('Authorization', 'Bearer ' + jwt)
-      // in newer versions of super agent this returns a promise
-      .end((err, res) => (err ? reject(err) : resolve(res.body)));
-  });
+  const body = {
+    destGroupId,
+  };
+
+  return fetch(`${URL_BASE}/${groupId}/users/${endUserId}/`, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + jwt,
+    }
+  }).then(res => res.body).catch(err => err);
 }

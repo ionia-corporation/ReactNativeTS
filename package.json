@@ -25,7 +25,6 @@
     "@types/redux": "^3.6.0",
     "@types/redux-actions": "^1.2.6",
     "@types/redux-thunk": "^2.1.0",
-    "bluebird": "^3.5.1",
     "jwt-decode": "^2.2.0",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.4",
@@ -44,7 +43,6 @@
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-thunk": "^2.2.0",
-    "superagent": "^3.8.2",
     "victory-native": "^0.16.6",
     "webpack": "^3.10.0"
   },
