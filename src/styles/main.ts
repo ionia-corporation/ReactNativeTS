@@ -51,7 +51,7 @@ export const Styles = StyleSheet.create({
 
   inputWrapper: {
     width: DEVICE_WIDTH,
-    paddingBottom: 10,
+    marginBottom: 10,
     paddingLeft: 20,
     paddingRight: 20,
   } as ViewStyle,
@@ -107,6 +107,18 @@ export const Styles = StyleSheet.create({
   paragraph,
 
   errorMessage,
+
+  switchContainer: {
+    width: DEVICE_WIDTH,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    alignContent: 'center',
+    paddingLeft: 25,
+    marginTop: -5,
+    paddingTop: 0,
+  } as ViewStyle,
 });
 
 export default Styles;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
 import Styles from '../styles/main';
 
 // TODO: move this enum
@@ -115,6 +115,17 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
             onChangeText={(text) => this.setState({ password: text })}
             style={Styles.input}
           />
+        </View>
+
+        <View style={Styles.switchContainer}>
+          <Switch
+            value={this.state.rememberMe}
+            onValueChange={(value) => this.setState({rememberMe: value})}
+          />
+
+          <Text>
+            Stay signed in
+          </Text>
         </View>
 
         <Text>
