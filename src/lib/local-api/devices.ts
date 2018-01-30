@@ -1,6 +1,8 @@
 import { Logs as LogsModel } from '../xively/models/logs';
+import { config } from '../../config';
 
-const BASE_URL = '/api/devices';
+const apiUrl = config.xively.riotApiUrl;
+const BASE_URL = apiUrl + '/api/devices';
 
 // TODO: type the response
 // TODO: do we need to make a promise and then await it here?

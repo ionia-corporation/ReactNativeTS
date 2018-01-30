@@ -1,6 +1,9 @@
 import * as localAPI from '../../types/local-api';
+import { config } from '../../config';
 
-const URL_BASE = '/api/group';
+const apiUrl = config.xively.riotApiUrl;
+
+const URL_BASE = apiUrl + '/api/group';
 const URL_INVITE_USER_SEGMENT = 'invite';
 
 export function inviteUserToGroup(

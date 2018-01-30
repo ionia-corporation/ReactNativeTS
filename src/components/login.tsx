@@ -35,7 +35,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
     let userOptions = {
       emailAddress: this.state.username,
       password: this.state.password,
-      renewalType: this.state.rememberMe === true ? 'remembered' : 'short',
+      renewalType: this.state.rememberMe ? 'remembered' : 'short',
     };
 
     this.setState({

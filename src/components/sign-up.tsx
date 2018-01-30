@@ -34,6 +34,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       lastName: '',
       email: '',
       password: '',
+      passwordConfirm: '',
     };
   }
 
@@ -43,12 +44,16 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     let userOptions = {
       emailAddress : this.state.email,
       password : this.state.password,
-      passwordConfirm : this.state.password,
+      passwordConfirm : this.state.passwordConfirm,
       firstName: this.state.firstName,
       lastName: this.state.lastName,
     };
 
     try {
+      if (userOptions.password !== userOptions.passwordConfirm) {
+        throw new Error('Password does not match the confirm password.');
+      }
+
       let res = await xively.idm.authentication.createUser(userOptions);
 
       if (!res.userId) {
@@ -64,7 +69,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       await xively.idm.authentication.login({
         emailAddress : this.state.email,
         password : this.state.password,
-        renewalType: 'short',
+        renewalType: 'extended',
       });
 
         // Create new org and end user in that org
