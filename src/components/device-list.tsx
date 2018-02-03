@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
+import { Container } from 'native-base';
+
 import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
@@ -9,52 +11,50 @@ import { TopicData } from '../store/mqtt/reducers';
 import { topic } from '../store/mqtt/utils';
 import { Devices } from '../lib/xively/models/index';
 import { DeviceList as DeviceListShared } from './shared';
-
-import { View, Text, Button, Image } from "react-native";
 import Styles from '../styles/main';
+import { HeaderComponent } from './index';
 
 interface ReduxStateProps {
-    devices: DeviceWithData[];
+  devices: DeviceWithData[];
 }
 interface ReduxDispatchProps {
 }
 interface DeviceListProps extends
-    React.Props<DeviceListComponent>,
-    ReduxStateProps,
-    ReduxDispatchProps,
-    NavigationScreenConfigProps {
+  React.Props<DeviceListComponent>,
+  ReduxStateProps,
+  ReduxDispatchProps,
+  NavigationScreenConfigProps {
 }
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {
-    return {
-        devices: getDevicesWithData(state),
-    }
+  return {
+    devices: getDevicesWithData(state),
+  }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListProps) {
-    return {
-    }
+  return {
+  }
 }
 
 export class DeviceListComponent extends React.Component<DeviceListProps, null> {
-    static navigationOptions = {
-        title: 'Devices',
-    };
+  render() {
+    return (
+      <Container>
+        <HeaderComponent title='Devices'/>
 
-    render() {
-        return (
-            <View style={Styles.container}>
-                <DeviceListShared
-                    devices={this.props.devices}
-                    onPress={(device) => {
-                        this.props.navigation.navigate('Device', {
-                            deviceId: device.device.id,
-                            deviceName: device.device.name || device.device.serialNumber,
-                        });
-                    }} />
-            </View>
-        );
-    }
+        <DeviceListShared
+          devices={this.props.devices}
+          onPress={(device) => {
+            this.props.navigation.navigate('Device', {
+              deviceId: device.device.id,
+              deviceName: device.device.name || device.device.serialNumber,
+            });
+          }}
+        />
+      </Container>
+    );
+  }
 }
 
 export let DeviceList = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent));

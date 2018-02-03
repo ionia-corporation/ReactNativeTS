@@ -20,7 +20,7 @@ import {
     DeviceScreen,
     LoginScreen,
     LogoutScreen,
-    headerRight,
+    // headerRight,
     SignUp
 } from './components/index';
 import configureStore from './store/configure-store';
@@ -31,14 +31,14 @@ const GroupsTabNavigation = TabNavigator({
         screen: SubGroupsScreen,
         navigationOptions: ({ navigation }) => ({
             title: 'Sub Groups',
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         })
     },
     GroupDevices: {
         screen: GroupDevices,
         navigationOptions: ({ navigation }) => ({
             title: 'Devices',
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         })
     },
 }, {
@@ -55,14 +55,14 @@ const GroupsNavigator = StackNavigator({
         screen: GroupList,
         navigationOptions: ({ navigation }) => ({
             title: 'Groups',
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         }),
     },
     Group: {
         screen: GroupsTabNavigation,
         navigationOptions: ({ navigation }) => ({
             title: navigation.state.params.groupName,
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         })
     }
 });
@@ -72,14 +72,14 @@ const DevicesNavigator = StackNavigator({
         screen: DeviceList,
         navigationOptions: ({ navigation }) => ({
             title: 'Devices',
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         }),
     },
     Device: {
         screen: DeviceScreen,
         navigationOptions: ({ navigation }) => ({
             title: navigation.state.params.deviceName,
-            headerRight: headerRight(navigation),
+            // headerRight: headerRight(navigation),
         })
     }
 });
