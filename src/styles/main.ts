@@ -98,6 +98,7 @@ export const Styles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 15,
     textAlign: 'center',
+    color: '#333333',
   } as TextStyle,
 
   link: {

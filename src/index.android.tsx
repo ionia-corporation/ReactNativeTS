@@ -31,16 +31,7 @@ import {
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
 
-const Device = StackNavigator({
-  Device: {
-    screen: DeviceScreen,
-    navigationOptions: ({ navigation }) => ({
-      title: navigation.state.params.deviceName,
-    })
-  }
-});
-
-const AppTabNavigation = TabNavigator({
+const TabsNavigation = TabNavigator({
   Devices: {
     screen: DeviceList
   },
@@ -56,14 +47,24 @@ const AppTabNavigation = TabNavigator({
 }, {
   tabBarPosition: 'bottom',
   tabBarComponent: NavTabs,
+  initialRouteName: 'Devices'
+});
+
+const MainNavigation = StackNavigator({
+  TabsNavigation: {
+    screen: TabsNavigation
+  },
+  Device : {
+    screen: DeviceScreen
+  }
+}, {
+  initialRouteName: 'TabsNavigation',
+  headerMode: 'none'
 });
 
 const RootNavigator = StackNavigator({
   App: {
-    screen: AppTabNavigation,
-  },
-  Device: {
-    screen: Device
+    screen: MainNavigation
   },
   SignUp: {
     screen: SignUp
@@ -74,8 +75,7 @@ const RootNavigator = StackNavigator({
   Login: {
     screen: LoginScreen
   },
-},
-{
+}, {
   headerMode: 'none'
 });
 
@@ -86,7 +86,8 @@ class App extends React.Component<void, void> {
     return (
       <Provider store={store}>
         <RootNavigator />
-      </Provider>);
+      </Provider>
+    );
   }
 }
 

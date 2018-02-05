@@ -2,7 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { View, Text, Button, Image, ScrollView } from "react-native";
+import { Button, Image, ScrollView } from "react-native";
+import { Container, Content, Text } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
@@ -14,6 +15,7 @@ import Styles from '../styles/main';
 import xively from '../lib/xively';
 import { TimeSeries } from '../lib/xively/models/timeseries';
 import { TimeSeriesChart } from './time-series-chart';
+import { HeaderComponent } from './index';
 
 interface ReduxStateProps {
   device: DeviceWithData;
@@ -88,22 +90,31 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
   render() {
     if (!this.props || !this.props.device || !this.props.device.device) {
       return (
-        <View style={Styles.container}>
+        <Container>
           <Text style={Styles.title}>
-            loading
+            Loading
           </Text>
-        </View>
+        </Container>
       )
     }
 
     const { timeSeries } = this.state;
+    const { navigation, device } = this.props;
 
     return (
-      <View style={Styles.container}>
+      <Container>
+        <HeaderComponent
+          title={ navigation.state.params.deviceName }
+          leftButton={{
+            text: 'Back',
+            onPess: () => navigation.goBack()
+          }}
+        />
+
         <ScrollView>
-          {Object.keys(this.props.device.mqttData).map((topic) => {
+          {Object.keys(device.mqttData).map((topic) => {
             let msg = '<none>';
-            const data = this.props.device.mqttData[topic];
+            const data = device.mqttData[topic];
 
             if (data && data.message && data.message.stringPayload) {
               msg = data.message.stringPayload;
@@ -112,14 +123,14 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
             }
 
             return (
-              <View key={topic}>
+              <Content padder key={topic}>
                 <Text>
                   Topic: {topic}
                 </Text>
                 <Text>
                   Data: {msg}
                 </Text>
-              </View>
+              </Content>
             )
           })}
         </ScrollView>
@@ -129,7 +140,7 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
           description='Last 100 data points from the charge-controller channel.'
           data={ timeSeries }
         />
-      </View>
+      </Container>
     );
   }
 }

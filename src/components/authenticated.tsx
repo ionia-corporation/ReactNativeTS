@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { Text } from 'react-native';
 import { connect, Dispatch } from 'react-redux';
-import { Device, AppState } from '../types/index';
+import { Container, Content, Title } from 'native-base';
 import { values } from 'lodash';
+import { NavigationScreenConfigProps, NavigationParams, NavigationInitAction } from 'react-navigation';
+
+import { Device, AppState } from '../types/index';
 import xively from '../lib/xively';
 import { batchRequest } from '../store/blueprint/actions';
 import { fetchProfile } from '../store/profile/actions';
-import { NavigationScreenConfigProps, NavigationParams, NavigationInitAction } from 'react-navigation';
 import { actions as mqttActions } from '../store/mqtt';
+import Styles from '../styles/main';
 
 // TODO: since we are not resuing this authenticated logic for any other component
 // this should be just a regular component that renders conditionally the App component
@@ -149,7 +152,15 @@ export const Authenticated = (DecoratedComponent) => {
       const { isAuthenticated } = this.state;
 
       if (!isAuthenticated) {
-        return <Text>Loading</Text>;
+        return (
+          <Container>
+            <Content>
+              <Title style={Styles.sectionStatus}>
+                Loading
+              </Title>
+            </Content>
+          </Container>
+        );
       }
 
       // TODO: figure out what props we should be sending down (should we prune out the router?)

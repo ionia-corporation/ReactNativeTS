@@ -17,8 +17,10 @@ import { HeaderComponent } from './index';
 interface ReduxStateProps {
   devices: DeviceWithData[];
 }
+
 interface ReduxDispatchProps {
 }
+
 interface DeviceListProps extends
   React.Props<DeviceListComponent>,
   ReduxStateProps,

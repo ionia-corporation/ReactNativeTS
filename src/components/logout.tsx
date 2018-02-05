@@ -1,7 +1,8 @@
 import * as React from 'react';
-import { View, Text, Button } from "react-native";
-import Styles from '../styles/main';
+import { Container, Content, Title } from 'native-base';
 import { NavigationScreenConfigProps } from 'react-navigation';
+
+import Styles from '../styles/main';
 import xively from '../lib/xively';
 
 interface LogoutProps extends
@@ -14,16 +15,20 @@ export class LogoutScreen extends React.Component<LogoutProps, void> {
     xively.idm.authentication.logout();
     this.props.navigation.navigate('Login');
   }
+
   static navigationOptions = {
     title: 'Logging Out...',
   };
+
   render() {
     return (
-      <View>
-        <Text style={Styles.title}>
-          Logging out
-        </Text>
-      </View>
+      <Container>
+        <Content>
+          <Title style={Styles.sectionStatus}>
+            Logging out
+          </Title>
+        </Content>
+      </Container>
     );
   }
 }
