@@ -76,6 +76,7 @@ const RootNavigator = StackNavigator({
     screen: LoginScreen
   },
 }, {
+  initialRouteName: 'App',
   headerMode: 'none'
 });
 
