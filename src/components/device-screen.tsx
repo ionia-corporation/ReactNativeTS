@@ -6,7 +6,6 @@ import { Button, Image, ScrollView } from "react-native";
 import { Container, Content, Text } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getDevice } from '../store/blueprint/devices/reducers';
 import { TopicData } from '../store/mqtt/reducers';
 import { topic } from '../store/mqtt/utils';
@@ -145,5 +144,5 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
   }
 }
 
-export let DeviceScreen = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceScreenComponent));
+export let DeviceScreen = connect(mapStateToProps, mapDispatchToProps)(DeviceScreenComponent);
 export default DeviceScreen;

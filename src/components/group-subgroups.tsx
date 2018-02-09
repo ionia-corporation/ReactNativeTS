@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { AppState, DeviceWithData } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getOrganization, getDescendants } from '../store/blueprint/organizations/reducers';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { Organizations } from '../lib/xively/models/index';
@@ -81,5 +80,5 @@ export class SubGroupsScreenComponent extends React.Component<GroupProps, GroupS
   }
 }
 
-export let SubGroupsScreen = Authenticated(connect(mapStateToProps, mapDispatchToProps)(SubGroupsScreenComponent));
+export let SubGroupsScreen = connect(mapStateToProps, mapDispatchToProps)(SubGroupsScreenComponent);
 export default SubGroupsScreen;

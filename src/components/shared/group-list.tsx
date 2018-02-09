@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { Authenticated } from '../authenticated';
 import { Organizations } from '../../lib/xively/models/index';
 
 import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";

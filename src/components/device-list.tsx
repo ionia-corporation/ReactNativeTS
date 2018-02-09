@@ -5,7 +5,6 @@ import { NavigationScreenConfigProps } from 'react-navigation';
 import { Container } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { TopicData } from '../store/mqtt/reducers';
 import { topic } from '../store/mqtt/utils';
@@ -59,5 +58,5 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
   }
 }
 
-export let DeviceList = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent));
+export let DeviceList = connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent);
 export default DeviceList;

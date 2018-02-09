@@ -5,7 +5,6 @@ import { NavigationScreenConfigProps } from 'react-navigation';
 import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
 
 import { AppState, DeviceWithData } from '../../types/index';
-import { Authenticated } from '../authenticated';
 import { getDevices } from '../../store/blueprint/devices/reducers';
 import { TopicData } from '../../store/mqtt/reducers';
 import { topic } from '../../store/mqtt/utils';

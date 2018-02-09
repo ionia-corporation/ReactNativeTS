@@ -89,7 +89,7 @@ export const Authenticated = (DecoratedComponent) => {
     }
 
     componentDidMount() {
-      this.checkAuth(this.props);
+      this.checkAuth();
       // Only run the initial fetch once
       if (this.props.loadedOnce && this.props.devices.length > 0) {
         return;
@@ -103,7 +103,8 @@ export const Authenticated = (DecoratedComponent) => {
     // This happens while navigating to different pages on the app
     // TODO: Is this the source of our rerendering problems!?
     componentWillReceiveProps(nextProps) {
-      this.checkAuth(nextProps);
+      console.log('Received props', nextProps);
+      this.checkAuth();
       if (!this.subscribed && this.props.devices.length > 0) {
         // make sure this runs only once
         this.props.subscribeDevices(this.props.devices);
@@ -111,60 +112,45 @@ export const Authenticated = (DecoratedComponent) => {
       }
     }
 
-    async checkAuth(props: AuthenticatedProps) {
+    async checkAuth() {
       if (this.checkingAuth) {
         return;
       }
 
       this.checkingAuth = true;
       try {
-        const isLoggedIn = await xively.comm.checkJwt();
-
-        if (!isLoggedIn) {
-          this.redirectToLogin(props);
-          return;
-        }
-
-        // If we've made it this far, we're still valid
-        this.setState({
-          isAuthenticated: true
-        });
+        const isAuthenticated = await xively.comm.checkJwt();
+        this.setState({ isAuthenticated });
       } catch (e) {
         console.warn('ERROR checking auth: ' + e.message);
-        this.redirectToLogin(props);
+        this.setState({ isAuthenticated: false })
         return;
       } finally {
         this.checkingAuth = false;
       }
     }
 
-
-    redirectToLogin(props: AuthenticatedProps) {
-      xively.idm.authentication.logout();
-
-      this.props.navigation.navigate('Login', {
-        nextRoute: this.props.navigation.state.routeName,
-        nextProps: this.props.navigation.state.params,
-      });
-    }
-
     render() {
       const { isAuthenticated } = this.state;
-
-      if (!isAuthenticated) {
-        return (
-          <Container>
-            <Content>
-              <Title style={Styles.sectionStatus}>
-                Loading
-              </Title>
-            </Content>
-          </Container>
-        );
+      const props = {
+        ...this.props,
+        isAuthenticated
       }
+      
+      // if (!isAuthenticated) {
+      //   return (
+      //     <Container>
+      //       <Content>
+      //         <Title style={Styles.sectionStatus}>
+      //           Loading
+      //         </Title>
+      //       </Content>
+      //     </Container>
+      //   );
+      // }
 
       // TODO: figure out what props we should be sending down (should we prune out the router?)
-      return <DecoratedComponent { ...this.props } />;
+      return <DecoratedComponent { ...props } />;
     }
   }
 

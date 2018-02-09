@@ -64,17 +64,17 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
       const params = state.params && state.params.nextRouteParams || {};
 
       // reset nav stack
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName, params }),
-        ]
-      });
+      // const resetAction = NavigationActions.reset({
+      //   index: 0,
+      //   actions: [
+      //     NavigationActions.navigate({ routeName, params }),
+      //   ]
+      // });
 
-      this.props.navigation.dispatch(resetAction);
+      // this.props.navigation.dispatch(resetAction);
 
       // // Login is now in a drawer navigator, so don't have to reset stack
-      // this.props.navigation.navigate(routeName, params);
+      this.props.navigation.navigate('SignedIn', params);
 
     } catch (err) {
       // Server Error

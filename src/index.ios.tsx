@@ -1,6 +1,7 @@
 import React, { Component, ComponentClass } from 'react';
 import { Provider } from 'react-redux';
 import { Text, Button } from 'react-native';
+import { Authenticated } from './components/authenticated';
 import {
   HeaderProps,
   DrawerNavigator,
@@ -63,33 +64,81 @@ const MainNavigation = StackNavigator({
   headerMode: 'none'
 });
 
-const RootNavigator = StackNavigator({
+export const SignedIn = StackNavigator({
   App: {
     screen: MainNavigation
   },
-  SignUp: {
-    screen: SignUp
-  },
-  Logout: {
+  Logout: { 
     screen: LogoutScreen
-  },
-  Login: {
-    screen: LoginScreen
   },
 },
 {
-  headerMode: 'none'
+  initialRouteName: 'App'
 });
+
+export const SignedOut = StackNavigator({
+  SignUp: {
+    screen: SignUp,
+  },
+  Login: {
+    screen: LoginScreen,
+  }
+},
+{
+  initialRouteName: 'Login'
+});
+
+export const createRootNavigator = (signedIn = false) => {
+  return StackNavigator(
+    {
+      SignedIn: {
+        screen: SignedIn,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      },
+      SignedOut: {
+        screen: SignedOut,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      }
+    },
+    {
+      headerMode: "none",
+      mode: "modal",
+      initialRouteName: signedIn ? "SignedIn" : "SignedOut"
+    }
+  );
+}
+
 
 let store = configureStore();
 
-class App extends React.Component<void, void> {
+type Props = {
+  isAuthenticated: boolean;
+}
+type State = {
+
+}
+class App extends React.Component<Props, State> {
   render() {
+    const { isAuthenticated } = this.props;
+    const Layout = createRootNavigator(isAuthenticated)
+    return <Layout />;
+  }
+}
+
+
+
+class AuthenticatedApp extends React.Component<Props, void> {
+  render() {
+    const AuthenticatedAppContainer: any = Authenticated(App);
     return (
       <Provider store={store}>
-        <RootNavigator />
+        <AuthenticatedAppContainer />
       </Provider>);
   }
 }
 
-export default App;
+export default AuthenticatedApp;
