@@ -2,7 +2,9 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
+// import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
+import { ListView, ListViewDataSource, Image } from "react-native";
+import { Content, List, ListItem, Text } from 'native-base';
 
 import { AppState, DeviceWithData } from '../../types/index';
 import { Authenticated } from '../authenticated';
@@ -26,67 +28,36 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
   connectedImage = require('../../../images/device_on.png');
   disconnectedImage = require('../../../images/device_off.png');
 
-  constructor(prop) {
-    super(prop);
-
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => {
-        return r1 !== r2;
-      },
-    });
-
-    if (this.props && this.props.devices) {
-      ds.cloneWithRows(this.props.devices)
-    }
-
-    this.state = {
-      deviceDataSource: ds,
-    };
-  }
-
-  componentWillReceiveProps(newProps: DeviceListProps) {
-    if (newProps.devices) {
-      this.setState({
-        deviceDataSource: this.state.deviceDataSource.cloneWithRows(newProps.devices),
-      });
-    }
-  }
-
-  componentDidMount() {
-    this.setState({
-      deviceDataSource: this.state.deviceDataSource.cloneWithRows(this.props.devices),
-    });
-  }
-
   render() {
     return (
-      <ListView
-        style={Styles.listContainer}
-        enableEmptySections
-        dataSource={this.state.deviceDataSource}
-        renderRow={(deviceWithData: DeviceWithData) => {
-          const curMessage = deviceWithData.mqttData['_updates/fields'];
-          const device = deviceWithData.device;
-          const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
-          const connected = curData ? curData.state.connected : false;
+      <Content>
+        <List
+          enableEmptySections
+          dataArray={this.props.devices}
+          renderRow={(deviceWithData: DeviceWithData) => {
+            const curMessage = deviceWithData.mqttData['_updates/fields'];
+            const device = deviceWithData.device;
+            const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
+            const connected = curData ? curData.state.connected : false;
 
-          return (
-            <View style={Styles.listItem}>
-              <Text style={Styles.listItemText} onPress={() => {
-                this.props.onPress(deviceWithData);
-              }}>
+            return (
+              <ListItem>
                 <Image
                   style={Styles.deviceConnectedImage}
                   source={connected ? this.connectedImage : this.disconnectedImage}
                 />
 
-                {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
-              </Text>
-            </View>
-          );
+                <Text style={Styles.listItemText} onPress={() => {
+                  this.props.onPress(deviceWithData);
+                }}>
+                  {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
+                </Text>
+              </ListItem>
+            );
+            }
           }
-        }
-      />
+        />
+      </Content>
     );
   }
 }

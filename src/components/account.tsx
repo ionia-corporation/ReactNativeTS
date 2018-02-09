@@ -4,13 +4,14 @@ import { Container, Content, Button, Text } from 'native-base';
 
 import { Authenticated } from './authenticated';
 import { HeaderComponent } from './index';
+import Styles from '../styles/main';
 
 interface Props extends NavigationScreenConfigProps {}
 
 export class AccountComponent extends React.Component<Props> {
   render() {
     return (
-      <Container>
+      <Container style={Styles.viewContainer}>
         <HeaderComponent title='Account'/>
 
         <Content>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Header, Body, Title, Button, Left, Text } from 'native-base';
 
+import { Styles , Colors} from '../styles/main';
+
 interface Props {
   title: string;
   leftButton?: {
@@ -15,7 +17,7 @@ export class HeaderComponent extends React.Component<Props> {
     const { title, leftButton } = this.props;
 
     return (
-      <Header>
+      <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
         {
           leftButton && 
           <Left>
@@ -30,7 +32,9 @@ export class HeaderComponent extends React.Component<Props> {
         }
 
         <Body style={{alignItems: leftButton ? 'flex-start' : 'center'}}>
-          <Title>{ title }</Title>
+          <Title>
+            <Text style={Styles.headerTitle}>{ title }</Text>
+          </Title>
         </Body>
       </Header>
     );

@@ -12,9 +12,10 @@
     "dev": "cp -r ./images ./build/images && tsc --watch",
     "pretest": "npm run build",
     "test": "jest",
+    "link:vectorIcons": "node node_modules/react-native/local-cli/cli.js link react-native-vector-icons",
     "link:reactNativeSvg": "node node_modules/react-native/local-cli/cli.js link react-native-svg",
     "link:rnNodeify": "node node_modules/.bin/rn-nodeify --install crypto --hack",
-    "postinstall": "npm run link:rnNodeify && npm run link:reactNativeSvg && npm run build:mqttClient",
+    "postinstall": "npm run link:rnNodeify && npm run link:reactNativeSvg && npm run link:vectorIcons && npm run build:mqttClient",
     "build:mqttClient": "webpack node_modules/mqtt/mqtt.js node_modules/mqtt/mqttClient.js --output-library mqtt --output-library-target commonjs2"
   },
   "dependencies": {
@@ -38,6 +39,7 @@
     "react-native-crypto": "^2.0.2",
     "react-native-randombytes": "^2.2.0",
     "react-native-svg": "^6.0.1-rc.1",
+    "react-native-vector-icons": "^4.5.0",
     "react-navigation": "^1.0.0-beta.11",
     "react-redux": "^5.0.5",
     "react_native_mqtt": "^1.1.6",
