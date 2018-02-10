@@ -2,6 +2,7 @@ import React, { Component, ComponentClass } from 'react';
 import { Provider } from 'react-redux';
 import { Text, Button } from 'react-native';
 import { Authenticated } from './components/authenticated';
+import { App } from './components/app';
 import {
   HeaderProps,
   DrawerNavigator,
@@ -64,18 +65,6 @@ const MainNavigation = StackNavigator({
   headerMode: 'none'
 });
 
-export const SignedIn = StackNavigator({
-  App: {
-    screen: MainNavigation
-  },
-  Logout: { 
-    screen: LogoutScreen
-  },
-},
-{
-  initialRouteName: 'App'
-});
-
 export const SignedOut = StackNavigator({
   SignUp: {
     screen: SignUp,
@@ -92,7 +81,7 @@ export const createRootNavigator = (signedIn = false) => {
   return StackNavigator(
     {
       SignedIn: {
-        screen: SignedIn,
+        screen: MainNavigation,
         navigationOptions: {
           gesturesEnabled: false
         }
@@ -114,29 +103,11 @@ export const createRootNavigator = (signedIn = false) => {
 
 
 let store = configureStore();
-
-type Props = {
-  isAuthenticated: boolean;
-}
-type State = {
-
-}
-class App extends React.Component<Props, State> {
+class AuthenticatedApp extends React.Component<void, void> {
   render() {
-    const { isAuthenticated } = this.props;
-    const Layout = createRootNavigator(isAuthenticated)
-    return <Layout />;
-  }
-}
-
-
-
-class AuthenticatedApp extends React.Component<Props, void> {
-  render() {
-    const AuthenticatedAppContainer: any = Authenticated(App);
     return (
       <Provider store={store}>
-        <AuthenticatedAppContainer />
+        <App />
       </Provider>);
   }
 }

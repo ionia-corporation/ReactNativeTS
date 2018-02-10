@@ -11,8 +11,8 @@ interface LogoutProps extends
 }
 
 export class LogoutScreen extends React.Component<LogoutProps, void> {
-  componentWillMount() {
-    xively.idm.authentication.logout();
+  async componentWillMount() {
+    await xively.idm.authentication.logout();
     this.props.navigation.navigate('SignedOut');
   }
 

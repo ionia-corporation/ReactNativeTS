@@ -4,6 +4,7 @@ import reducers from './reducers';
 import reduxThunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { AppState } from './reducers';
+import { composeWithDevTools } from 'remote-redux-devtools';
 
 export default function configureStore(): Redux.Store<AppState> {
   const middlewareArray: Redux.Middleware[] = [
@@ -11,9 +12,7 @@ export default function configureStore(): Redux.Store<AppState> {
       createBlueprintMiddleware(),
   ];
 
-  let composeEnhancers = compose;
-
-  const enhancer = composeEnhancers(
+  const enhancer = composeWithDevTools(
     // Function.prototype.apply
     applyMiddleware.apply(null, middlewareArray),
   );

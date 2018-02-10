@@ -106,6 +106,7 @@ class XivelyComm {
       });
     } catch (err) {
       console.warn('ERROR checking saved JWT: ' + JSON.stringify(err));
+      // If we fail to renew JWT, this is when we kick a user out of the application.
     }
   }
 
