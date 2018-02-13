@@ -28,6 +28,8 @@ export const reducer: Reducer = (state = InitialState , action) => {
       return { ...state, isAuthenticated: false, loading: false };
     case actions.AUTH_LOGOUT_FAILURE:
       return { ...state, error: action.payload }
+    case actions.AUTH_JWT_RENEWAL_FAILURE:
+      return { ...state, isAuthenticated: false, error: action.payload }
     default:
       return state;
   }

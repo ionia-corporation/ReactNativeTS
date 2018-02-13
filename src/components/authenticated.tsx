@@ -10,6 +10,7 @@ import xively from '../lib/xively';
 import { batchRequest } from '../store/blueprint/actions';
 import { fetchProfile } from '../store/profile/actions';
 import { actions as mqttActions } from '../store/mqtt';
+import { checkAuthentication } from '../store/auth/actions';
 import Styles from '../styles/main';
 import { createRootNavigator } from '../index.ios';
 import { isEqual } from 'lodash';
@@ -27,6 +28,7 @@ interface ReduxDispatchProps {
   fetchProfile: any;
   connectToMqtt: any;
   subscribeDevices: any;
+  checkAuthentication: any;
 }
 
 interface Props extends
@@ -49,6 +51,7 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>) {
     fetchProfile: () => dispatch(fetchProfile()),
     connectToMqtt: () => dispatch(mqttActions.connect()),
     subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
+    checkAuthentication: () => dispatch(checkAuthentication())
   };
 }
 
@@ -61,12 +64,13 @@ class AuthenticatedComponent extends React.Component<Props, State> {
     subscribed: false
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Only run the initial fetch once
-    if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
-      return;
-    }
-    this.init();
+    await this.props.checkAuthentication();
+    // if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
+    //   return;
+    // }
+    // this.init();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
