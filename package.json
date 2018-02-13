@@ -43,6 +43,7 @@
     "react_native_mqtt": "^1.1.6",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
     "remote-redux-devtools": "^0.5.12",
     "victory-native": "^0.16.6",

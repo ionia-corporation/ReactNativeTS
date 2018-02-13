@@ -12,6 +12,7 @@ import { Devices } from '../lib/xively/models/index';
 import { DeviceList as DeviceListShared } from './shared';
 import Styles from '../styles/main';
 import { HeaderComponent } from './index';
+import { Authenticated } from './authenticated';
 
 interface ReduxStateProps {
   devices: DeviceWithData[];
@@ -39,6 +40,7 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListPr
 }
 
 export class DeviceListComponent extends React.Component<DeviceListProps, null> {
+
   render() {
     return (
       <Container>

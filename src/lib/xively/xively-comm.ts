@@ -3,6 +3,13 @@
 import * as comm from '../comm';
 import { Authorization, CommOptions, XivelyConfig } from './models/index';
 import { AsyncStorage } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+
+// Import Redux store in order to dispatch authentication actions.
+// TODO: wrap all xively services in async actions.
+// IMMEDIATE TODO: move store to seperate export so this works for android as well.
+import { store } from '../../index.ios';
+import { loginSuccess, logoutSuccess } from '../../store/auth/actions';
 
 // TODO: store this somewhere on the phone or at least abstract storage
 export let JWT : string = 'JWT';
@@ -93,12 +100,16 @@ class XivelyComm {
           // try renewing JWT
           return this.renewJwt(savedJwt)
             .then((res) => {
+              // TODO: make this a "renewal success, not login success, just want to see if this works"
+              store.dispatch(loginSuccess());
               return res.jwt;
             });
         }
       }
       return new Promise<string>((resolve, reject) => {
         if (savedJwt) {
+          // TODO, this is probably not a login, just a saved jwt
+          store.dispatch(loginSuccess());
           resolve(savedJwt);
         } else {
           throw new Error('Not logged in');
@@ -107,6 +118,8 @@ class XivelyComm {
     } catch (err) {
       console.warn('ERROR checking saved JWT: ' + JSON.stringify(err));
       // If we fail to renew JWT, this is when we kick a user out of the application.
+      // TODO: make this a "renewal failure"
+      store.dispatch(logoutSuccess());
     }
   }
 
@@ -127,6 +140,7 @@ class XivelyComm {
       return this.skimJwt(await comm.getJson(options));
     } catch (err) {
       console.warn('ERROR renewing saved JWT: ' + JSON.stringify(err));
+
     }
   }
   private async skimJwt(jwtResponse: any) {

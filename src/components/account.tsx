@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationScreenConfigProps } from 'react-navigation';
+import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { Container, Content, Button, Text } from 'native-base';
 import xively from '../lib/xively';
 import { HeaderComponent } from './index';
@@ -9,7 +9,12 @@ interface Props extends NavigationScreenConfigProps {}
 export class AccountComponent extends React.Component<Props> {
   async handleSignOut() {
     await xively.idm.authentication.logout();
-    this.props.navigation.navigate('SignedOut');
+    const resetAction = NavigationActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({ routeName: 'SignedOut' })],
+      key: null,
+    });
+    this.props.navigation.dispatch(resetAction);
   }
 
   render() {

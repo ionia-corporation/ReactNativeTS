@@ -54,28 +54,6 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
       }
 
       this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS });
-
-      // TODO: select the correct route
-      const { state } = this.props.navigation;
-
-      let routeName = state.params && state.params.nextRoute || 'App';
-      routeName = tabsNames.indexOf(routeName) !== -1 ? 'App' : routeName;
-
-      const params = state.params && state.params.nextRouteParams || {};
-
-      // reset nav stack
-      // const resetAction = NavigationActions.reset({
-      //   index: 0,
-      //   actions: [
-      //     NavigationActions.navigate({ routeName, params }),
-      //   ]
-      // });
-
-      // this.props.navigation.dispatch(resetAction);
-
-      // // Login is now in a drawer navigator, so don't have to reset stack
-      this.props.navigation.navigate('SignedIn', params);
-
     } catch (err) {
       // Server Error
       if ( err.message === 'Unauthorized') {
@@ -138,7 +116,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
           { this.state.errors }
         </Text>
 
-        <Button title='Login' onPress={() => { this.submit(); }} />
+        <Button title='Login' onPress={this.submit.bind(this)} />
 
         <Text style={Styles.paragraph}>
           Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>

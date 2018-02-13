@@ -11,149 +11,116 @@ import { batchRequest } from '../store/blueprint/actions';
 import { fetchProfile } from '../store/profile/actions';
 import { actions as mqttActions } from '../store/mqtt';
 import Styles from '../styles/main';
+import { createRootNavigator } from '../index.ios';
+import { isEqual } from 'lodash';
 
-// TODO: since we are not resuing this authenticated logic for any other component
-// this should be just a regular component that renders conditionally the App component
-// based on authentication instead of being a HOC
-export const Authenticated = (DecoratedComponent) => {
 
-  interface OwnProps {
-    logout: any;
-    username: string;
-    // Setting children resolves an error with extending ReactRouter and React.props
-    children?: React.ReactElement<any>;
+interface ReduxStateProps {
+  loading: boolean;
+  devices: Array<Device>;
+  loadedOnce: boolean;
+  isAuthenticated: boolean;
+}
+
+interface ReduxDispatchProps {
+  fetch: any;
+  fetchProfile: any;
+  connectToMqtt: any;
+  subscribeDevices: any;
+}
+
+interface Props extends
+  React.Props<AuthenticatedComponent>,
+  ReduxStateProps,
+  ReduxDispatchProps { }
+
+function mapStateToProps(state: AppState) {
+  return {
+    loading: state.blueprint.devices.loading || state.blueprint.organizations.loading || state.profile.loading,
+    devices: values(state.blueprint.devices.data),
+    loadedOnce: state.blueprint.devices.loadedOnce,
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AppState>) {
+  return {
+    fetch: () => dispatch(batchRequest()),
+    fetchProfile: () => dispatch(fetchProfile()),
+    connectToMqtt: () => dispatch(mqttActions.connect()),
+    subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
+  };
+}
+
+interface State {
+  subscribed: boolean;
+}
+class AuthenticatedComponent extends React.Component<Props, State> {
+  
+  state = {
+    subscribed: false
   }
 
-  interface ReduxStateProps {
-    loading: boolean;
-    devices: Array<Device>;
-    loadedOnce: boolean;
-    // error: string;
+  componentDidMount() {
+    // Only run the initial fetch once
+    if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
+      return;
+    }
+    this.init();
   }
 
-  function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
-    return {
-      loading: state.blueprint.devices.loading || state.blueprint.organizations.loading || state.profile.loading,
-      devices: values(state.blueprint.devices.data),
-      loadedOnce: state.blueprint.devices.loadedOnce,
-      // error: state.batchReq.error,
-    };
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      !isEqual(this.props.devices, nextProps.devices) ||
+      this.props.isAuthenticated !== nextProps.isAuthenticated ||
+      this.props.loading !== nextProps.loading ||
+      this.props.loadedOnce !== nextProps.loadedOnce
+     ) {
+       return true;
+     }
+     return false;
   }
 
-  interface ReduxDispatchProps {
-    fetch: any;
-    fetchProfile: any;
-    connectToMqtt: any;
-    subscribeDevices: any;
-  }
-
-  function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
-    return {
-      fetch: () => dispatch(batchRequest()),
-      fetchProfile: () => dispatch(fetchProfile()),
-      connectToMqtt: () => dispatch(mqttActions.connect()),
-      subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
-    };
-  }
-
-  interface AuthenticatedProps extends
-    NavigationScreenConfigProps,
-    OwnProps,
-    ReduxStateProps,
-    ReduxDispatchProps { }
-
-  interface AuthenticatedState {
-    isAuthenticated: boolean;
-  }
-
-  const displayName = DecoratedComponent.displayName || DecoratedComponent.name || 'Component';
-
-  class AuthenticatedComponent extends React.Component<AuthenticatedProps, AuthenticatedState> {
-    subscribed = false;
-    checkingAuth = false;
-    static displayName = 'Authenticated(' + displayName + ')';
-
-    constructor(props) {
-      super(props);
-
-      // We are validating the session related token every time the user changes the page
-      // this piece of state is used to avoid rendering the site while we are validating the session.
-      // Most of the time this will be done in a single tick since XivelyComm is smart enough
-      // to only validate tokens when they are expired.
-      // Potential improvements:
-      // - Better UX that indicates that we are working
-
-      this.state = {
-        isAuthenticated: false,
-      };
+  // Runs before new props
+  // This happens while navigating to different pages on the app
+  // TODO: Is this the source of our rerendering problems!?
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.isAuthenticated && !this.state.subscribed && this.props.devices.length > 0) {
+      // make sure this runs only once
+      this.props.subscribeDevices(this.props.devices);
+      this.setState({ subscribed: true })
     }
 
-    componentDidMount() {
-      this.checkAuth();
-      // Only run the initial fetch once
-      if (this.props.loadedOnce && this.props.devices.length > 0) {
-        return;
-      }
-      this.props.fetch();
-      this.props.fetchProfile();
-      this.props.connectToMqtt();
+    if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
+      return;
     }
-
-    // Runs before new props
-    // This happens while navigating to different pages on the app
-    // TODO: Is this the source of our rerendering problems!?
-    componentWillReceiveProps(nextProps) {
-      console.log('Received props', nextProps);
-      this.checkAuth();
-      if (!this.subscribed && this.props.devices.length > 0) {
-        // make sure this runs only once
-        this.props.subscribeDevices(this.props.devices);
-        this.subscribed = true;
-      }
-    }
-
-    async checkAuth() {
-      if (this.checkingAuth) {
-        return;
-      }
-
-      this.checkingAuth = true;
-      try {
-        const isAuthenticated = await xively.comm.checkJwt();
-        this.setState({ isAuthenticated });
-      } catch (e) {
-        console.warn('ERROR checking auth: ' + e.message);
-        this.setState({ isAuthenticated: false })
-        return;
-      } finally {
-        this.checkingAuth = false;
-      }
-    }
-
-    render() {
-      const { isAuthenticated } = this.state;
-      const props = {
-        ...this.props,
-        isAuthenticated
-      }
-      
-      // if (!isAuthenticated) {
-      //   return (
-      //     <Container>
-      //       <Content>
-      //         <Title style={Styles.sectionStatus}>
-      //           Loading
-      //         </Title>
-      //       </Content>
-      //     </Container>
-      //   );
-      // }
-
-      // TODO: figure out what props we should be sending down (should we prune out the router?)
-      return <DecoratedComponent { ...props } />;
-    }
+    this.init()
+    // this.props.navigation.navigate('SignedIn');
   }
 
-  const Authenticated = connect(mapStateToProps, mapDispatchToProps)(AuthenticatedComponent);
-  return Authenticated;
-};
+  init() {
+    this.props.fetch();
+    this.props.fetchProfile();
+    this.props.connectToMqtt();
+  }
+
+  render() {
+    const { isAuthenticated } = this.props;
+    // if (!isAuthenticated) {
+    //   return (
+    //     <Container>
+    //       <Content>
+    //         <Title style={Styles.sectionStatus}>
+    //           Loading
+    //         </Title>
+    //       </Content>
+    //     </Container>
+    //   );
+    // }
+
+    const Layout = createRootNavigator(isAuthenticated)
+    return <Layout />;
+  }
+}
+
+export const Authenticated = connect(mapStateToProps, mapDispatchToProps)(AuthenticatedComponent);

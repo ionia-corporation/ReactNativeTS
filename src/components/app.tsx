@@ -19,34 +19,18 @@ interface OwnProps {
 }
 
 interface ReduxStateProps {
-  loading: boolean;
-  devices: Array<Device>;
-  loadedOnce: boolean;
-  // error: string;
 }
 
 function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
   return {
-    loading: state.blueprint.devices.loading || state.blueprint.organizations.loading || state.profile.loading,
-    devices: values(state.blueprint.devices.data),
-    loadedOnce: state.blueprint.devices.loadedOnce,
-    // error: state.batchReq.error,
   };
 }
 
 interface ReduxDispatchProps {
-  fetch: any;
-  fetchProfile: any;
-  connectToMqtt: any;
-  subscribeDevices: any;
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
   return {
-    fetch: () => dispatch(batchRequest()),
-    fetchProfile: () => dispatch(fetchProfile()),
-    connectToMqtt: () => dispatch(mqttActions.connect()),
-    subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
   };
 }
 
@@ -71,30 +55,11 @@ class AppComponent extends React.Component<AuthenticatedProps, AuthenticatedStat
     };
   }
 
-  componentDidMount() {
-    this.checkAuth();
-    // Only run the initial fetch once
-    if (this.props.loadedOnce && this.props.devices.length > 0) {
-      return;
-    }
-    this.props.fetch();
-    this.props.fetchProfile();
-    this.props.connectToMqtt();
-  }
-
-  // Runs before new props
-  // This happens while navigating to different pages on the app
-  // TODO: Is this the source of our rerendering problems!?
   componentWillReceiveProps(nextProps) {
-    this.checkAuth();
-    if (!this.subscribed && this.props.devices.length > 0) {
-      // make sure this runs only once
-      this.props.subscribeDevices(this.props.devices);
-      this.subscribed = true;
-    }
+    console.log('APP RECEIVED PROPS', nextProps)
   }
 
-  async checkAuth() {
+  async componentDidMount() {
     if (this.checkingAuth) {
       return;
     }

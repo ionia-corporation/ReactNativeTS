@@ -1,8 +1,7 @@
 import React, { Component, ComponentClass } from 'react';
 import { Provider } from 'react-redux';
 import { Text, Button } from 'react-native';
-import { Authenticated } from './components/authenticated';
-import { App } from './components/app';
+import { Authenticated as App } from './components/authenticated';
 import {
   HeaderProps,
   DrawerNavigator,
@@ -101,8 +100,8 @@ export const createRootNavigator = (signedIn = false) => {
   );
 }
 
-
-let store = configureStore();
+export const store = configureStore();
+console.log('STORE', store.getState());
 class AuthenticatedApp extends React.Component<void, void> {
   render() {
     return (
