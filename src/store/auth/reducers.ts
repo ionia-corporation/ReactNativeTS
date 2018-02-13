@@ -19,13 +19,13 @@ export const reducer: Reducer = (state = InitialState , action) => {
     case actions.AUTH_LOGIN_REQUEST:
       return { ...state, loading: true, error: undefined }
     case actions.AUTH_LOGIN_SUCCESS:
-      return { ...state, isAuthenticated: true };
+      return { ...state, isAuthenticated: true, loading: false };
     case actions.AUTH_LOGIN_FAILURE:
       return { ...state, error: action.payload }
     case actions.AUTH_LOGOUT_REQUEST:
       return { ...state, loading: true, error: undefined }
     case actions.AUTH_LOGOUT_SUCCESS:
-      return { ...state, isAuthenticated: false };
+      return { ...state, isAuthenticated: false, loading: false };
     case actions.AUTH_LOGOUT_FAILURE:
       return { ...state, error: action.payload }
     default:

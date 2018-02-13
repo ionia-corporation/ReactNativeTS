@@ -4,9 +4,6 @@ import * as jwt from 'jwt-decode';
 
 import XivelyComm from './xively-comm';
 
-import { store } from '../../index.ios';
-import { loginSuccess, logoutSuccess } from '../../store/auth/actions';
-
 class IDM {
   config: XivelyConfig;
   authentication: Authentication;
@@ -52,20 +49,9 @@ class Authentication {
     };
 
     return this.comm.getXivelyJson(options, false)
-    .then(res => {
-      console.log('ATTEMPTING DISPATCHafasdf');
-      store.dispatch(loginSuccess());
-      return res;
-    })
-    .catch(err => {
-      // TODO: add a login failure action dispatch
-      console.log('ATTEMPTING DISPATCH err');
-      return err;
-    });
   }
 
   logout() {
-    store.dispatch(logoutSuccess());
     this.comm.clearJwt();
   }
 

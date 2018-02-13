@@ -2,13 +2,26 @@ import * as React from 'react';
 import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
+import { connect, Dispatch } from 'react-redux';
 import Styles from '../styles/main';
+import { AppState } from '../types/index';
+import { login } from '../store/auth/actions';
 
 // TODO: move this enum
 enum RequestStatus { REQUEST_NOT_SENT, REQUEST_ERROR, REQUEST_SENT, REQUEST_SUCCESS };
 
+interface ReduxDispatchProps {
+  login: Function;
+}
+
+interface ReduxStateProps {
+}
+
+
 interface LoginProps extends
-  React.Props<LoginScreen>,
+  ReduxDispatchProps,
+  ReduxStateProps,
+  React.Props<LoginScreenComponent>,
   NavigationScreenConfigProps { }
 
 interface LoginState {
@@ -21,7 +34,7 @@ interface LoginState {
 
 const tabsNames = ['Devices', 'Settings', 'Account', 'Help'];
 
-export class LoginScreen extends React.Component<LoginProps, LoginState> {
+export class LoginScreenComponent extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
     this.state = {
@@ -46,7 +59,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
     try {
 
-      let res = await xively.idm.authentication.login(userOptions);
+      let res = await this.props.login(userOptions);
 
       // Successfully logged in
       if (!res.jwt) {
@@ -71,6 +84,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
   }
 
   render() {
+    console.log('props', this.props);
     const { navigate } = this.props.navigation;
 
     return (
@@ -126,4 +140,17 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
   }
 }
 
-export default LoginScreen;
+function mapStateToProps(state: AppState, ownProps: LoginProps) {
+  return {
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: LoginProps): ReduxDispatchProps {
+  console.log('dispatch', login)
+  return {
+    login: (userOptions) => dispatch(login(userOptions))
+  }
+}
+
+
+export const LoginScreen = connect(mapStateToProps, mapDispatchToProps)(LoginScreenComponent)
