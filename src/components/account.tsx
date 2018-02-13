@@ -1,20 +1,30 @@
 import React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { Container, Content, Button, Text } from 'native-base';
+import { connect, Dispatch } from 'react-redux';
+
 import xively from '../lib/xively';
 import { HeaderComponent } from './index';
 
-interface Props extends NavigationScreenConfigProps {}
+import { AppState } from '../types/index';
+import { logout } from '../store/auth/actions';
+
+interface ReduxStateProps {
+
+}
+
+interface ReduxDispatchProps {
+  logout: Function;
+}
+
+interface Props extends 
+  ReduxStateProps,
+  ReduxDispatchProps,
+  NavigationScreenConfigProps {}
 
 export class AccountComponent extends React.Component<Props> {
   async handleSignOut() {
-    await xively.idm.authentication.logout();
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: 'SignedOut' })],
-      key: null,
-    });
-    this.props.navigation.dispatch(resetAction);
+    await this.props.logout();
   }
 
   render() {
@@ -32,4 +42,15 @@ export class AccountComponent extends React.Component<Props> {
   }
 }
 
-export const Account = AccountComponent;
+function mapStateToProps(state: AppState, ownProps: Props): ReduxStateProps {
+  return {
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: Props): ReduxDispatchProps {
+  return {
+    logout: (userOptions) => dispatch(logout(userOptions))
+  }
+}
+
+export const Account = connect(mapStateToProps, mapDispatchToProps)(AccountComponent);

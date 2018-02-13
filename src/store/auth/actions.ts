@@ -48,3 +48,17 @@ export const login = (userOptions) => {
     }
   }
 }
+
+
+export const logout = (userOptions) => {
+  return async (dispatch) => {
+    try {
+      dispatch(logoutRequest());
+      await xively.idm.authentication.logout();
+      dispatch(logoutSuccess());
+    } catch(err) {
+      dispatch(logoutFailure(err))
+    }
+  }
+}
+

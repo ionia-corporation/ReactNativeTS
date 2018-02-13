@@ -21,7 +21,6 @@ import {
   DeviceList,
   DeviceScreen,
   LoginScreen,
-  LogoutScreen,
   SignUp,
   NavTabs,
   Settings,
@@ -68,9 +67,6 @@ const RootNavigator = StackNavigator({
   },
   SignUp: {
     screen: SignUp
-  },
-  Logout: {
-    screen: LogoutScreen
   },
   Login: {
     screen: LoginScreen

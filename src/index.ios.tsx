@@ -22,7 +22,6 @@ import {
   DeviceList,
   DeviceScreen,
   LoginScreen,
-  LogoutScreen,
   SignUp,
   NavTabs,
   Settings,
