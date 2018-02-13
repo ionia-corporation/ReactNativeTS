@@ -106,7 +106,6 @@ class XivelyComm {
       return new Promise<string>((resolve, reject) => {
         if (savedJwt) {
           // TODO, this is probably not a login, just a saved jwt
-          console.log("its just returning the saved JWT isn''t it? Might want to validate this")
           resolve(savedJwt);
         } else {
           throw new Error('Not logged in');
