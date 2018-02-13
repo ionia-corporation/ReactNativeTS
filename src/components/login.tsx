@@ -7,14 +7,12 @@ import Styles from '../styles/main';
 import { AppState } from '../types/index';
 import { login } from '../store/auth/actions';
 
-// TODO: move this enum
-enum RequestStatus { REQUEST_NOT_SENT, REQUEST_ERROR, REQUEST_SENT, REQUEST_SUCCESS };
-
 interface ReduxDispatchProps {
   login: Function;
 }
 
 interface ReduxStateProps {
+  error: string;
 }
 
 
@@ -25,7 +23,6 @@ interface LoginProps extends
   NavigationScreenConfigProps { }
 
 interface LoginState {
-  requestStatus?: RequestStatus;
   errors?: string;
   username?: string;
   password?: string;
@@ -38,8 +35,6 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
   constructor(props: LoginProps) {
     super(props);
     this.state = {
-      requestStatus: RequestStatus.REQUEST_NOT_SENT,
-      errors: '',
       username: '',
       password: '',
       rememberMe: false,
@@ -52,39 +47,10 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
       password: this.state.password,
       renewalType: this.state.rememberMe ? 'remembered' : 'short',
     };
-
-    this.setState({
-      requestStatus: RequestStatus.REQUEST_SENT,
-    });
-
-    try {
-
-      let res = await this.props.login(userOptions);
-
-      // Successfully logged in
-      if (!res.jwt) {
-        throw new Error('Not Authorized');
-      }
-
-      this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS });
-    } catch (err) {
-      // Server Error
-      if ( err.message === 'Unauthorized') {
-        this.setState({
-          requestStatus: RequestStatus.REQUEST_ERROR,
-          errors : 'The credentials you provided don\'t match anything in our system. Forgot password?',
-        });
-      } else {
-        this.setState({
-          requestStatus: RequestStatus.REQUEST_ERROR,
-          errors : err.message,
-        });
-      }
-    }
+    await this.props.login(userOptions);
   }
 
   render() {
-    console.log('props', this.props);
     const { navigate } = this.props.navigation;
 
     return (
@@ -127,7 +93,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
         </View>
 
         <Text>
-          { this.state.errors }
+          { this.props.error }
         </Text>
 
         <Button title='Login' onPress={this.submit.bind(this)} />
@@ -142,11 +108,11 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 
 function mapStateToProps(state: AppState, ownProps: LoginProps) {
   return {
+    error: state.auth.error,
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: LoginProps): ReduxDispatchProps {
-  console.log('dispatch', login)
   return {
     login: (userOptions) => dispatch(login(userOptions))
   }

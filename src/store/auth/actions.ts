@@ -44,7 +44,12 @@ export const login = (userOptions) => {
       }
       dispatch(loginSuccess());
     } catch(err) {
-      dispatch(loginFailure(err))
+      console.log('LOGIN ERROR', err)
+      let message = err.message;
+      if (err.message === 'Unauthorized') {
+        message = 'The credentials you provided don\'t match anything in our system. Forgot password?';
+      }
+      dispatch(loginFailure(message))
     }
   }
 }
