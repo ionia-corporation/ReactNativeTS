@@ -5,10 +5,6 @@ import { Authorization, CommOptions, XivelyConfig } from './models/index';
 import { AsyncStorage } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
-// Import Redux store in order to dispatch authentication actions.
-import { store } from '../../index.ios';
-import { jwtRenewalFailure } from '../../store/auth/actions';
-
 // TODO: store this somewhere on the phone or at least abstract storage
 export let JWT : string = 'JWT';
 export let JWT_LAST_UPDATED: string = 'JWT_LAST_UPDATED';
@@ -17,7 +13,7 @@ class XivelyComm {
   config: XivelyConfig;
   urlIDM: string;
 
-  constructor(cfg: XivelyConfig) {
+  constructor(cfg: XivelyConfig, private jwtFailureCallback: Function) {
     this.config = cfg;
     this.urlIDM = 'https://id'
       + (this.config.environment.length ? '.' + this.config.environment : '')
@@ -92,7 +88,6 @@ class XivelyComm {
       const lastUpdatedInt = parseInt(await AsyncStorage.getItem(JWT_LAST_UPDATED));
       let lastUpdated = isNaN(lastUpdatedInt) ? null : new Date(lastUpdatedInt);
       let savedJwt = await AsyncStorage.getItem(JWT);
-      console.log('SAVED JWT', savedJwt);
       if (lastUpdated !== null && !!savedJwt) {
         // check if expired
         if (new Date().getTime() - lastUpdated.getTime() > (this.config.jwtExpiration || 600000)) {
@@ -136,8 +131,7 @@ class XivelyComm {
       return this.skimJwt(await comm.getJson(options));
     } catch (err) {
       console.warn('ERROR renewing saved JWT: ' + err);
-      store.dispatch(jwtRenewalFailure(err.message));
-      throw new Error(err.message);
+      await this.jwtFailureCallback();
     }
   }
   private async skimJwt(jwtResponse: any) {

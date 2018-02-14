@@ -1,7 +1,7 @@
 import React, { Component, ComponentClass } from 'react';
 import { Provider } from 'react-redux';
 import { Text, Button } from 'react-native';
-import { Authenticated as App } from './components/authenticated';
+import { App } from './components/app';
 import {
   HeaderProps,
   DrawerNavigator,
@@ -28,7 +28,7 @@ import {
   Account,
   Help
 } from './components/index';
-import configureStore from './store/configure-store';
+import { store } from './store/configure-store';
 import xively from './lib/xively';
 
 const TabsNavigation = TabNavigator({
@@ -75,7 +75,7 @@ export const SignedOut = StackNavigator({
   initialRouteName: 'Login'
 });
 
-export const createRootNavigator = (signedIn = false) => {
+const createRootNavigator = (signedIn = false) => {
   return StackNavigator(
     {
       SignedIn: {
@@ -99,13 +99,11 @@ export const createRootNavigator = (signedIn = false) => {
   );
 }
 
-export const store = configureStore();
-console.log('STORE', store.getState());
 class AuthenticatedApp extends React.Component<void, void> {
   render() {
     return (
       <Provider store={store}>
-        <App />
+        <App createRootNavigator={createRootNavigator}/>
       </Provider>);
   }
 }

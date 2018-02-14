@@ -10,75 +10,117 @@ import xively from '../lib/xively';
 import { batchRequest } from '../store/blueprint/actions';
 import { fetchProfile } from '../store/profile/actions';
 import { actions as mqttActions } from '../store/mqtt';
+import { checkAuthentication } from '../store/auth/actions';
 import Styles from '../styles/main';
-import { createRootNavigator } from '../index.ios';
+import { isEqual } from 'lodash';
 
-interface OwnProps {
-  // Setting children resolves an error with extending ReactRouter and React.props
-  children?: React.ReactElement<any>;
-}
 
 interface ReduxStateProps {
-}
-
-function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
-  return {
-  };
-}
-
-interface ReduxDispatchProps {
-}
-
-function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
-  return {
-  };
-}
-
-interface AuthenticatedProps extends
-  NavigationScreenConfigProps,
-  OwnProps,
-  ReduxStateProps,
-  ReduxDispatchProps { }
-
-interface AuthenticatedState {
+  loading: boolean;
+  devices: Array<Device>;
+  loadedOnce: boolean;
   isAuthenticated: boolean;
 }
 
-class AppComponent extends React.Component<AuthenticatedProps, AuthenticatedState> {
-  subscribed = false;
-  checkingAuth = false;
+interface ReduxDispatchProps {
+  fetch: any;
+  fetchProfile: any;
+  connectToMqtt: any;
+  subscribeDevices: any;
+  checkAuthentication: any;
+}
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      isAuthenticated: false,
-    };
-  }
+interface OwnProps {
+  createRootNavigator: Function
+}
+interface Props extends
+  React.Props<AppComponent>,
+  ReduxStateProps,
+  OwnProps,
+  ReduxDispatchProps { }
 
-  componentWillReceiveProps(nextProps) {
-    console.log('APP RECEIVED PROPS', nextProps)
+function mapStateToProps(state: AppState) {
+  return {
+    loading: state.blueprint.devices.loading || state.blueprint.organizations.loading || state.profile.loading,
+    devices: values(state.blueprint.devices.data),
+    loadedOnce: state.blueprint.devices.loadedOnce,
+    isAuthenticated: state.auth.isAuthenticated,
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps) {
+  return {
+    fetch: () => dispatch(batchRequest()),
+    fetchProfile: () => dispatch(fetchProfile()),
+    connectToMqtt: () => dispatch(mqttActions.connect()),
+    subscribeDevices: (devices: Array<Device>) => devices.forEach((device: Device) => dispatch(mqttActions.subscribeDevice(device))),
+    checkAuthentication: () => dispatch(checkAuthentication())
+  };
+}
+
+interface State {
+  subscribed: boolean;
+}
+class AppComponent extends React.Component<Props, State> {
+  
+  state = {
+    subscribed: false
   }
 
   async componentDidMount() {
-    if (this.checkingAuth) {
-      return;
+    await this.props.checkAuthentication();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      !isEqual(this.props.devices, nextProps.devices) ||
+      this.props.isAuthenticated !== nextProps.isAuthenticated ||
+      this.props.loading !== nextProps.loading ||
+      this.props.loadedOnce !== nextProps.loadedOnce
+     ) {
+       return true;
+     }
+     return false;
+  }
+
+  // Runs before new props
+  // This happens while navigating to different pages on the app
+  // TODO: Is this the source of our rerendering problems!?
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.isAuthenticated && !this.state.subscribed && this.props.devices.length > 0) {
+      // make sure this runs only once
+      this.props.subscribeDevices(this.props.devices);
+      this.setState({ subscribed: true })
     }
 
-    this.checkingAuth = true;
-    try {
-      const isAuthenticated = await xively.comm.checkJwt();
-      this.setState({ isAuthenticated });
-    } catch (e) {
-      console.warn('ERROR checking auth: ' + e.message);
-      this.setState({ isAuthenticated: false })
+    if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
       return;
-    } finally {
-      this.checkingAuth = false;
     }
+    this.init()
+    // this.props.navigation.navigate('SignedIn');
+  }
+
+  init() {
+    this.props.fetch();
+    this.props.fetchProfile();
+    this.props.connectToMqtt();
   }
 
   render() {
-    const { isAuthenticated } = this.state;
+    const { isAuthenticated, createRootNavigator } = this.props;
+    console.log(this.props)
+    // if (!isAuthenticated) {
+    //   return (
+    //     <Container>
+    //       <Content>
+    //         <Title style={Styles.sectionStatus}>
+    //           Loading
+    //         </Title>
+    //       </Content>
+    //     </Container>
+    //   );
+    // }
+
     const Layout = createRootNavigator(isAuthenticated)
     return <Layout />;
   }

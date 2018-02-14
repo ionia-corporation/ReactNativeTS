@@ -4,6 +4,7 @@ import TimeSeries from './timeseries';
 import XivelyComm from './xively-comm';
 import Logs from './logs';
 import { XivelyConfig } from './models/index';
+import { Function0 } from 'lodash';
 
 class Xively {
   comm: XivelyComm;
@@ -13,14 +14,16 @@ class Xively {
   idm: IDM;
   logs: Logs;
   timeseries: TimeSeries;
+  jwtFailureCallback?: Function;
 
-  constructor(cfg: XivelyConfig) {
-    this.comm = new XivelyComm(cfg);
+  constructor(cfg: XivelyConfig, jwtFailureCallback?: Function) {
+    this.comm = new XivelyComm(cfg, jwtFailureCallback);
     this.config = cfg;
     this.blueprint = new Blueprint(cfg, this.comm);
     this.idm = new IDM(cfg, this.comm);
     this.logs = new Logs(cfg, this.comm);
     this.timeseries = new TimeSeries(cfg, this.comm);
+    this.jwtFailureCallback = jwtFailureCallback;
   }
 }
 

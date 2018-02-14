@@ -7,7 +7,7 @@ import { applyMiddleware, createStore, compose } from 'redux';
 import { AppState } from './reducers';
 import { composeWithDevTools } from 'remote-redux-devtools';
 
-export default function configureStore(): Redux.Store<AppState> {
+export function configureStore(): Redux.Store<AppState> {
   const logger = createLogger();
   const middlewareArray: Redux.Middleware[] = [
       reduxThunk,
@@ -25,3 +25,5 @@ export default function configureStore(): Redux.Store<AppState> {
 
   return store;
 }
+
+export const store = configureStore();
