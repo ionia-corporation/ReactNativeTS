@@ -5,7 +5,6 @@ import reducers from './reducers';
 import reduxThunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { AppState } from './reducers';
-import { composeWithDevTools } from 'remote-redux-devtools';
 
 export function configureStore(): Redux.Store<AppState> {
   const logger = createLogger();
@@ -15,7 +14,6 @@ export function configureStore(): Redux.Store<AppState> {
       logger,
   ];
 
-  // const composeEnhancers = composeWithDevTools({ realtime: true, port: 8000 })
   const enhancer = compose(
     // Function.prototype.apply
     applyMiddleware.apply(null, middlewareArray),

@@ -4,7 +4,6 @@ import TimeSeries from './timeseries';
 import XivelyComm from './xively-comm';
 import Logs from './logs';
 import { XivelyConfig } from './models/index';
-import { Function0 } from 'lodash';
 
 class Xively {
   comm: XivelyComm;
