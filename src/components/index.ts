@@ -11,3 +11,4 @@ export * from './nav-tabs';
 export * from './settings';
 export * from './account';
 export * from './help';
+export * from './add-bar';

@@ -8,12 +8,10 @@ import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { getTopLevelOrganizations } from '../store/blueprint/organizations/reducers';
-import { TopicData } from '../store/mqtt/reducers';
-import { topic } from '../store/mqtt/utils';
 import { Devices, Organizations } from '../lib/xively/models/index';
 import { DeviceList as DeviceListShared } from './shared';
 import Styles from '../styles/main';
-import { HeaderComponent } from './index';
+import { HeaderComponent, AddBar } from './index';
 import { GroupList as GroupListShared } from './shared';
 
 interface ReduxStateProps {
@@ -50,9 +48,11 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
   render() {
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='Devices'/>
+        <HeaderComponent title='Devices' searchButton={true}/>
 
         <Content>
+          <AddBar/>
+
           <GroupListShared
             groups={this.props.groups}
             onPress={(group) => {

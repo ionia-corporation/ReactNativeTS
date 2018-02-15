@@ -1,13 +1,8 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { NavigationScreenConfigProps } from 'react-navigation';
-import { Authenticated } from '../authenticated';
-import { Organizations } from '../../lib/xively/models/index';
 import { Content, List, ListItem, Text } from 'native-base';
 
-import { ListViewDataSource } from "react-native";
 import Styles from '../../styles/main';
+import { Organizations } from '../../lib/xively/models/index';
 
 interface GroupListProps extends
   React.Props<GroupList> {
@@ -25,9 +20,12 @@ export class GroupList extends React.Component<GroupListProps, GroupListState> {
         dataArray={this.props.groups}
         renderRow={(group: Organizations.Organization) => {
           return (
-            <ListItem>
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+              <Text style={Styles.listItemSubtitle}>Group</Text>
+
               <Text
-                style={Styles.listItemText}
+                numberOfLines={1}
+                style={Styles.listItemTitle}
                 onPress={() => {
                   this.props.onPress(group);
                 }}>

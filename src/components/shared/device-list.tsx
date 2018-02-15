@@ -1,16 +1,8 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'redux';
-import { NavigationScreenConfigProps } from 'react-navigation'
-import { ListView, ListViewDataSource, Image } from "react-native";
+import { Image } from "react-native";
 import { Content, List, ListItem, Text } from 'native-base';
 
-import { AppState, DeviceWithData } from '../../types/index';
-import { Authenticated } from '../authenticated';
-import { getDevices } from '../../store/blueprint/devices/reducers';
-import { TopicData } from '../../store/mqtt/reducers';
-import { topic } from '../../store/mqtt/utils';
-import { Devices } from '../../lib/xively/models/index';
+import { DeviceWithData } from '../../types/index';
 import Styles from '../../styles/main';
 
 interface DeviceListProps extends
@@ -43,9 +35,11 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
                 source={connected ? this.connectedImage : this.disconnectedImage}
               />
 
-              <Text style={Styles.listItemText} onPress={() => {
-                this.props.onPress(deviceWithData);
-              }}>
+              <Text
+                style={Styles.listItemTitle}
+                onPress={() => {
+                  this.props.onPress(deviceWithData);
+                }}>
                 {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
               </Text>
             </ListItem>
