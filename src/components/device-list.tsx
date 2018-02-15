@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { Container } from 'native-base';
+import { Container, Content } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
@@ -52,25 +52,27 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
       <Container style={Styles.viewContainer}>
         <HeaderComponent title='Devices'/>
 
-        <GroupListShared
-          groups={this.props.groups}
-          onPress={(group) => {
-            this.props.navigation.navigate('Group', {
-              groupId: group.id,
-              groupName: group.name || 'no name',
-            });
-          }}
-        />
+        <Content>
+          <GroupListShared
+            groups={this.props.groups}
+            onPress={(group) => {
+              this.props.navigation.navigate('Group', {
+                groupId: group.id,
+                groupName: group.name || 'no name',
+              });
+            }}
+          />
 
-        <DeviceListShared
-          devices={this.props.devices}
-          onPress={(device) => {
-            this.props.navigation.navigate('Device', {
-              deviceId: device.device.id,
-              deviceName: device.device.name || device.device.serialNumber,
-            });
-          }}
-        />
+          <DeviceListShared
+            devices={this.props.devices}
+            onPress={(device) => {
+              this.props.navigation.navigate('Device', {
+                deviceId: device.device.id,
+                deviceName: device.device.name || device.device.serialNumber,
+              });
+            }}
+          />
+        </Content>
       </Container>
     );
   }

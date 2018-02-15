@@ -15,7 +15,6 @@ import {
 
 import {
   HomeScreen,
-  GroupList,
   SubGroupsScreen,
   GroupDevices,
   DeviceList,

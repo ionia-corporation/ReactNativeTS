@@ -5,7 +5,6 @@ export * from './login';
 export * from './logout';
 export * from './sign-up';
 export * from './header';
-export * from './group-list';
 export * from './group-subgroups';
 export * from './group-devices';
 export * from './nav-tabs';

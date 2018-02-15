@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { NavigationScreenConfigProps } from 'react-navigation';
-// import { View, Text, Button, ListView, ListViewDataSource, Image } from "react-native";
+import { NavigationScreenConfigProps } from 'react-navigation'
 import { ListView, ListViewDataSource, Image } from "react-native";
 import { Content, List, ListItem, Text } from 'native-base';
 
@@ -20,9 +19,7 @@ interface DeviceListProps extends
   devices: DeviceWithData[];
 }
 
-interface DeviceListState {
-  deviceDataSource: ListViewDataSource;
-}
+interface DeviceListState {}
 
 export class DeviceList extends React.Component<DeviceListProps, DeviceListState> {
   connectedImage = require('../../../images/device_on.png');
@@ -30,34 +27,32 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
 
   render() {
     return (
-      <Content>
-        <List
-          enableEmptySections
-          dataArray={this.props.devices}
-          renderRow={(deviceWithData: DeviceWithData) => {
-            const curMessage = deviceWithData.mqttData['_updates/fields'];
-            const device = deviceWithData.device;
-            const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
-            const connected = curData ? curData.state.connected : false;
+      <List
+        enableEmptySections
+        dataArray={this.props.devices}
+        renderRow={(deviceWithData: DeviceWithData) => {
+          const curMessage = deviceWithData.mqttData['_updates/fields'];
+          const device = deviceWithData.device;
+          const curData = curMessage && curMessage.message ? curMessage.message.parsedPayload : null;
+          const connected = curData ? curData.state.connected : false;
 
-            return (
-              <ListItem>
-                <Image
-                  style={Styles.deviceConnectedImage}
-                  source={connected ? this.connectedImage : this.disconnectedImage}
-                />
+          return (
+            <ListItem>
+              <Image
+                style={Styles.deviceConnectedImage}
+                source={connected ? this.connectedImage : this.disconnectedImage}
+              />
 
-                <Text style={Styles.listItemText} onPress={() => {
-                  this.props.onPress(deviceWithData);
-                }}>
-                  {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
-                </Text>
-              </ListItem>
-            );
-            }
+              <Text style={Styles.listItemText} onPress={() => {
+                this.props.onPress(deviceWithData);
+              }}>
+                {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
+              </Text>
+            </ListItem>
+          );
           }
-        />
-      </Content>
+        }
+      />
     );
   }
 }
