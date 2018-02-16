@@ -48,7 +48,7 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
   render() {
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='Devices' searchButton={true}/>
+        <HeaderComponent title='All Devices' searchButton={true}/>
 
         <Content>
           <AddBar/>

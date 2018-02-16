@@ -2,19 +2,22 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
+import { Container, Content } from 'native-base';
+
 import { AppState, DeviceWithData } from '../types/index';
 import { Authenticated } from './authenticated';
-import { getOrganization, getDescendants } from '../store/blueprint/organizations/reducers';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
-import { Organizations } from '../lib/xively/models/index';
-import { DeviceList, GroupList } from './shared';
-
-import { View, Text, Button, Image, ScrollView } from "react-native";
+import { getOrganization, getDescendants } from '../store/blueprint/organizations/reducers';
+import { Devices, Organizations } from '../lib/xively/models/index';
+import { DeviceList as DeviceListShared } from './shared';
 import Styles from '../styles/main';
+import { HeaderComponent, AddBar } from './index';
+import { GroupList as GroupListShared } from './shared';
 
 interface ReduxStateProps {
   group: Organizations.Organization;
   devices: DeviceWithData[];
+  subGroups: Organizations.Organization[];
 }
 
 interface ReduxDispatchProps {
@@ -28,51 +31,56 @@ interface GroupProps extends
 }
 
 function mapStateToProps(state: AppState, ownProps: GroupProps) {
-  const group = getOrganization(state, ownProps.navigation.state.params.groupId);
-  const devices = getDevicesWithData(state, ownProps.navigation.state.params.groupId);
-    return {
-      group,
-      devices,
-    };
+  const { groupId } = ownProps.navigation.state.params;
+  const group = getOrganization(state, groupId);
+  const devices = getDevicesWithData(state, groupId);
+  const subGroups = getDescendants(state, groupId);
+
+  return {
+    group,
+    devices,
+  };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: GroupProps) {
-    return {
-    }
+  return {
+  }
 }
 
-interface GroupState {
-}
 
-export class GroupDevicesScreenComponent extends React.Component<GroupProps, GroupState> {
+export class GroupDevicesScreenComponent extends React.Component<GroupProps> {
   render() {
-    if (!this.props || !this.props.group) {
-      return (
-        <View style={Styles.container}>
-          <Text style={Styles.title}>
-            loading
-          </Text>
-        </View>
-      );
-    }
-
-    let devices = <Text>(none)</Text>;
-
-    if (this.props.devices && this.props.devices.length) {
-      devices = <DeviceList devices={this.props.devices} onPress={(device) => {
-        this.props.navigation.navigate('Device', {
-            deviceId: device.device.id,
-            deviceName: device.device.name || device.device.serialNumber,
-        });
-    }} />;
-    }
+    const { groupName } = this.props.navigation.state.params;
 
     return (
-      <View style={Styles.container}>
-        <View>
-          {devices}
-        </View>
-      </View>
+      <Container style={Styles.viewContainer}>
+        <HeaderComponent
+          title={groupName}
+          backButton={() => this.props.navigation.goBack()}
+          searchButton={true}/>
+
+        <Content>
+          <GroupListShared
+            groups={this.props.subGroups}
+            onPress={(group) => {
+              this.props.navigation.navigate('Group', {
+                groupId: group.id,
+                groupName: group.name || 'no name',
+              });
+            }}
+          />
+
+          <DeviceListShared
+            devices={this.props.devices}
+            onPress={(device) => {
+              this.props.navigation.navigate('Device', {
+                deviceId: device.device.id,
+                deviceName: device.device.name || device.device.serialNumber,
+              });
+            }}
+          />
+        </Content>
+      </Container>
     );
   }
 }

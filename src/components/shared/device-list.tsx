@@ -29,17 +29,19 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
           const connected = curData ? curData.state.connected : false;
 
           return (
-            <ListItem>
+            <ListItem
+              style={Styles.listItem}
+              onPress={() => {
+                this.props.onPress(deviceWithData);
+              }}>
               <Image
                 style={Styles.deviceConnectedImage}
                 source={connected ? this.connectedImage : this.disconnectedImage}
               />
 
               <Text
-                style={Styles.listItemTitle}
-                onPress={() => {
-                  this.props.onPress(deviceWithData);
-                }}>
+                numberOfLines={1}
+                style={Styles.listItemTitle}>
                 {device.name || device.serialNumber || '(no name)'} {curData ? curData.state.firmwareVersion : ''}
               </Text>
             </ListItem>

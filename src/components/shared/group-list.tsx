@@ -20,15 +20,16 @@ export class GroupList extends React.Component<GroupListProps, GroupListState> {
         dataArray={this.props.groups}
         renderRow={(group: Organizations.Organization) => {
           return (
-            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+            <ListItem 
+              style={[Styles.listItem, Styles.listItemGroup]}
+              onPress={() => {
+                this.props.onPress(group);
+              }}>
               <Text style={Styles.listItemSubtitle}>Group</Text>
 
               <Text
                 numberOfLines={1}
-                style={Styles.listItemTitle}
-                onPress={() => {
-                  this.props.onPress(group);
-                }}>
+                style={Styles.listItemTitle}>
                 {group.name}
               </Text>
             </ListItem>

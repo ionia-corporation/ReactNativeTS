@@ -43,6 +43,18 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.neonRed
   } as ViewStyle,
 
+  headerBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  } as ViewStyle,
+
+  headerSide: {
+    display: 'flex',
+    flex: 0,
+    minWidth: '15%'
+  } as ViewStyle,
+
   headerTitle: {
     fontWeight: 'bold',
     fontSize: 25,
@@ -87,13 +99,16 @@ export const Styles = StyleSheet.create({
 
   deviceConnectedImage: {
     marginTop: 2,
+    marginRight: 10
   } as TextStyle,
 
   listItem: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     marginLeft: 0,
-    padding: 20
+    padding: 20,
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: 1
   } as ViewStyle,
 
   listItemTitle: {
@@ -110,6 +125,7 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   listItemGroup: {
+    flexDirection: 'column',
     backgroundColor: Colors.black
   } as ViewStyle,
 
