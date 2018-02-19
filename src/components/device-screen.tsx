@@ -105,10 +105,7 @@ export class DeviceScreenComponent extends React.Component<DeviceProps, DeviceSt
       <Container>
         <HeaderComponent
           title={ navigation.state.params.deviceName }
-          leftButton={{
-            text: 'Back',
-            onPess: () => navigation.goBack()
-          }}
+          backButton={() => this.props.navigation.goBack()}
         />
 
         <ScrollView>

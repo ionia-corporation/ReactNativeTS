@@ -18,10 +18,12 @@ export const Colors = {
   white: '#ffffff',
   gray: '#555555',
   neonRed: '#fb0240',
+  lightGray: '#9c9c9c',
   darkGray: '#323232',
   claret: '#6c001b',
   black: '#101010',
-  warmGrey: '#7c7c7c'
+  warmGrey: '#7c7c7c',
+  offGray: '#434343'
 };
 
 export const Styles = StyleSheet.create({
@@ -63,7 +65,9 @@ export const Styles = StyleSheet.create({
 
   headerIcon: {
     fontSize: 25,
-    color: Colors.black
+    color: Colors.black,
+    paddingLeft: 10,
+    paddingRight: 10
   } as TextStyle,
 
   title: {
@@ -97,11 +101,6 @@ export const Styles = StyleSheet.create({
     paddingRight: 20,
   } as ViewStyle,
 
-  deviceConnectedImage: {
-    marginTop: 2,
-    marginRight: 10
-  } as TextStyle,
-
   listItem: {
     display: 'flex',
     flexDirection: 'row',
@@ -110,6 +109,20 @@ export const Styles = StyleSheet.create({
     borderBottomColor: Colors.gray,
     borderBottomWidth: 1
   } as ViewStyle,
+
+  listItemStatus: {
+    color: Colors.lightGray,
+    borderRadius: 50,
+    backgroundColor: Colors.offGray,
+    marginTop: 2,
+    marginRight: 13,
+    padding: 12
+  } as TextStyle,
+
+  listItemStatusOn: {
+    color: Colors.white,
+    backgroundColor: Colors.neonRed
+  } as TextStyle,
 
   listItemTitle: {
     color: Colors.white,
@@ -185,13 +198,14 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   addBarIcon: {
-    fontSize: 20,
+    fontSize: 25,
     color: Colors.neonRed
   } as TextStyle,
 
   addBarText: {
     color: Colors.neonRed,
-    marginLeft: -7
+    marginLeft: -7,
+    fontSize: 15
   } as TextStyle
 });
 

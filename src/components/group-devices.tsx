@@ -39,6 +39,7 @@ function mapStateToProps(state: AppState, ownProps: GroupProps) {
   return {
     group,
     devices,
+    subGroups
   };
 }
 

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Image } from "react-native";
 import { Content, List, ListItem, Text } from 'native-base';
 
 import { DeviceWithData } from '../../types/index';
@@ -14,9 +13,6 @@ interface DeviceListProps extends
 interface DeviceListState {}
 
 export class DeviceList extends React.Component<DeviceListProps, DeviceListState> {
-  connectedImage = require('../../../images/device_on.png');
-  disconnectedImage = require('../../../images/device_off.png');
-
   render() {
     return (
       <List
@@ -34,10 +30,10 @@ export class DeviceList extends React.Component<DeviceListProps, DeviceListState
               onPress={() => {
                 this.props.onPress(deviceWithData);
               }}>
-              <Image
-                style={Styles.deviceConnectedImage}
-                source={connected ? this.connectedImage : this.disconnectedImage}
-              />
+              
+              <Text style={[Styles.listItemStatus, connected && Styles.listItemStatusOn]}>
+                {connected ? 'On' : 'Off'}
+              </Text>
 
               <Text
                 numberOfLines={1}
