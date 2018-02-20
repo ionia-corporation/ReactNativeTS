@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { Container, Header, Content, Form, Item, Input, Text, Button, View } from 'native-base';
+import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
+import  Icon  from 'react-native-vector-icons/Ionicons';
 import { Image, Switch } from "react-native";
 
 import xively from '../lib/xively';
@@ -96,6 +97,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { username, password } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
@@ -108,46 +110,72 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
             </Text>
           </View>
 
-          <Form>
-            <Item>
-              <Input
-                placeholder='Username'
-                keyboardType='email-address'
-                autoCapitalize='none'
-                autoCorrect={false}
-                onChangeText={(text) => this.setState({ username: text })}/>
-            </Item>
+          <View style={Styles.loginBody}>
+            <Form style={Styles.form}>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ username ? 'Email' : '' }</Label>
 
-            <Item last>
-              <Input
-                placeholder='Password'
-                secureTextEntry={true}
-                onChangeText={(text) => this.setState({ password: text })}/>
-            </Item>
-          </Form>
+                <Input
+                  style={Styles.forminput}
+                  placeholder='Email'
+                  keyboardType='email-address'
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  onChangeText={(text) => this.setState({ username: text })}
+                />
+              </Item>
 
-          <View style={Styles.switchContainer}>
-            <Switch
-              value={this.state.rememberMe}
-              onValueChange={(value) => this.setState({rememberMe: value})}
-            />
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ password ? 'Password' : '' }</Label>
+
+                <Input
+                  style={Styles.forminput}
+                  placeholder='Password'
+                  secureTextEntry={true}
+                  onChangeText={(text) => this.setState({ password: text })}
+                />
+              </Item>
+
+              <View style={Styles.switchContainer}>
+                <Switch
+                  value={this.state.rememberMe}
+                  onValueChange={(value) => this.setState({rememberMe: value})}
+                />
+
+                <Text style={Styles.switchText}>
+                  Stay signed in
+                </Text>
+              </View>
+            </Form>
 
             <Text>
-              Stay signed in
+              { this.state.errors }
             </Text>
+
+            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+              <Text>SIGN IN</Text>
+            </Button>
+
+            <Text style={Styles.formParagraph}>
+              Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
+            </Text>
+
+            <Button style={Styles.formButton} rounded>
+              <Icon name='logo-facebook'/>
+
+              <Text>
+                Log in with Facebook
+              </Text>
+            </Button>
+
+            <Button style={Styles.formButton} rounded>
+              <Icon name='logo-google'/>
+
+              <Text>
+                Log in with Google
+              </Text>
+            </Button>
           </View>
-
-          <Text>
-            { this.state.errors }
-          </Text>
-
-          <Button rounded dark onPress={() => this.submit()}>
-            <Text>Login</Text>
-          </Button>
-
-          <Text style={Styles.paragraph}>
-            Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
-          </Text>
         </Content>
       </Container>
     );

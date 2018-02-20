@@ -46,8 +46,14 @@ export const Styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 50,
-    paddingBottom: 50
+    paddingTop: 40,
+    paddingBottom: 40
+  } as ViewStyle,
+
+  loginBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   } as ViewStyle,
 
   loginHeaderImage: {
@@ -180,24 +186,12 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   link: {
-    color: '#11A0F8',
+    color: Colors.neonRed,
   } as TextStyle,
 
   paragraph,
 
   errorMessage,
-
-  switchContainer: {
-    width: DEVICE_WIDTH,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    alignContent: 'center',
-    paddingLeft: 25,
-    marginTop: -5,
-    paddingTop: 0,
-  } as ViewStyle,
 
   footerTab: {
     backgroundColor: '#131313'
@@ -224,6 +218,43 @@ export const Styles = StyleSheet.create({
     color: Colors.neonRed,
     marginLeft: -7,
     fontSize: 15
+  } as TextStyle,
+
+  form: {
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column'
+  } as ViewStyle,
+
+  formItem: {
+    marginLeft: 0
+  } as TextStyle,
+
+  forminput: {
+    color: Colors.white
+  } as TextStyle,
+
+  formButton: {
+    alignSelf: 'center',
+    paddingLeft: 70,
+    paddingRight: 70,
+    marginTop: 15
+  } as ViewStyle,
+
+  formParagraph: {
+    ...paragraph,
+    color: Colors.white
+  } as TextStyle,
+
+  switchContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    marginTop: 10
+  } as ViewStyle,
+
+  switchText: {
+    color: Colors.white
   } as TextStyle
 });
 
