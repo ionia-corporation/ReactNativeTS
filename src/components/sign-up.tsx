@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, ScrollView } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
 import { connect, Dispatch } from 'react-redux';
 
 import Styles from '../styles/main';
