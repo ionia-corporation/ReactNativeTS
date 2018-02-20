@@ -41,6 +41,24 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.darkGray
   } as ViewStyle,
 
+  loginHeader: {
+    backgroundColor: Colors.neonRed,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: 50,
+    paddingBottom: 50
+  } as ViewStyle,
+
+  loginHeaderImage: {
+    transform: [{ scaleX: .7 }, {scaleY: .7}]
+  } as ImageStyle,
+
+  loginHeaderTitle: {
+    fontSize: 30,
+    fontWeight: 'bold'
+  } as TextStyle,
+
   header: {
     backgroundColor: Colors.neonRed
   } as ViewStyle,

@@ -1,7 +1,9 @@
 import * as React from 'react';
-import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
+import { Container, Header, Content, Form, Item, Input, Text, Button, View } from 'native-base';
+import { Image, Switch } from "react-native";
+
+import xively from '../lib/xively';
 import Styles from '../styles/main';
 
 // TODO: move this enum
@@ -96,54 +98,58 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
     const { navigate } = this.props.navigation;
 
     return (
-      <KeyboardAvoidingView behavior='padding' style={Styles.container}>
-        <Image style={Styles.logo} source={require('../../images/logo.png')} />
+      <Container style={Styles.viewContainer}>
+        <Content>
+          <View style={Styles.loginHeader}>
+            <Image source={require('../../images/g-logo.png')} style={Styles.loginHeaderImage} />
 
-        <Text style={Styles.title}>
-          Sign In
-        </Text>
+            <Text style={Styles.loginHeaderTitle}>
+              GENERIC SYSTEMS
+            </Text>
+          </View>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            keyboardType='email-address'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder='Email Address'
-            onChangeText={(text) => this.setState({ username: text })}
-            style={Styles.input}
-          />
-        </View>
+          <Form>
+            <Item>
+              <Input
+                placeholder='Username'
+                keyboardType='email-address'
+                autoCapitalize='none'
+                autoCorrect={false}
+                onChangeText={(text) => this.setState({ username: text })}/>
+            </Item>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            placeholder='Password'
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({ password: text })}
-            style={Styles.input}
-          />
-        </View>
+            <Item last>
+              <Input
+                placeholder='Password'
+                secureTextEntry={true}
+                onChangeText={(text) => this.setState({ password: text })}/>
+            </Item>
+          </Form>
 
-        <View style={Styles.switchContainer}>
-          <Switch
-            value={this.state.rememberMe}
-            onValueChange={(value) => this.setState({rememberMe: value})}
-          />
+          <View style={Styles.switchContainer}>
+            <Switch
+              value={this.state.rememberMe}
+              onValueChange={(value) => this.setState({rememberMe: value})}
+            />
+
+            <Text>
+              Stay signed in
+            </Text>
+          </View>
 
           <Text>
-            Stay signed in
+            { this.state.errors }
           </Text>
-        </View>
 
-        <Text>
-          { this.state.errors }
-        </Text>
+          <Button rounded dark onPress={() => this.submit()}>
+            <Text>Login</Text>
+          </Button>
 
-        <Button title='Login' onPress={() => { this.submit(); }} />
-
-        <Text style={Styles.paragraph}>
-          Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
-        </Text>
-      </KeyboardAvoidingView>
+          <Text style={Styles.paragraph}>
+            Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
+          </Text>
+        </Content>
+      </Container>
     );
   }
 }
