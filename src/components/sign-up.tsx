@@ -55,7 +55,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   async submit() {
     this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
 
-    let userOptions = {
+    const userOptions = {
       emailAddress : this.state.email,
       password : this.state.password,
       passwordConfirm : this.state.passwordConfirm,
@@ -68,7 +68,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         throw new Error('Password does not match the confirm password.');
       }
 
-      let res = await xively.idm.authentication.createUser(userOptions);
+      const res = await xively.idm.authentication.createUser(userOptions);
 
       if (!res.userId) {
         // TODO: Throw something better
@@ -87,7 +87,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       });
 
         // Create new org and end user in that org
-      let orgRes = await xively.blueprint.organizations.createOrganization({
+      const orgRes = await xively.blueprint.organizations.createOrganization({
         accountId: accountId,
         name: 'Organization for ' + this.state.email,
         organizationTemplateId: orgTemplateId,
