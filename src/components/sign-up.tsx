@@ -122,7 +122,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
             characters in length. It must not repeat 3 characters in a row. It must not
             contain any of the top 20 passwords. It must not contain your email username.`;
         }
-      } if (err.message) {
+      } else if (err.message) {
         errorMsg = err.message;
       }
 
