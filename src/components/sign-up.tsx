@@ -234,8 +234,8 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           }}
         />
 
-        <Text style={Styles.paragraph}>
-          Already have an account? <Text style={Styles.link} onPress={() => navigate('Login')}>Sign in</Text>
+        <Text style={Styles.paragraph} onPress={() => navigate('Login')}>
+          Already have an account? <Text style={Styles.link} >Sign in</Text>
         </Text>
       </KeyboardAvoidingView>
     );

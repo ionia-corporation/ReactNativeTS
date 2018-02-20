@@ -98,8 +98,8 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 
         <Button title='Login' onPress={this.submit.bind(this)} />
 
-        <Text style={Styles.paragraph}>
-          Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
+        <Text style={Styles.paragraph} onPress={() => navigate('SignUp')}>
+          Don't have an account? <Text style={Styles.link} >Sign up</Text>
         </Text>
       </KeyboardAvoidingView>
     );
