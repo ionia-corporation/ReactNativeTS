@@ -14,6 +14,13 @@ const errorMessage = Object.assign({}, paragraph, {
   color: '#FF4833',
 } as TextStyle);
 
+const loginSocialButton = {
+  alignSelf: 'center',
+  paddingLeft: 25,
+  paddingRight: 25,
+  marginTop: 15
+} as ViewStyle
+
 export const Colors = {
   white: '#ffffff',
   gray: '#555555',
@@ -46,8 +53,8 @@ export const Styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: 40,
-    paddingBottom: 40
+    paddingTop: 50,
+    paddingBottom: 50
   } as ViewStyle,
 
   loginBody: {
@@ -57,12 +64,37 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   loginHeaderImage: {
-    transform: [{ scaleX: .7 }, {scaleY: .7}]
+    flex: 1,
+    width: 100,
+    height: 100,
+    resizeMode: 'contain'
   } as ImageStyle,
 
   loginHeaderTitle: {
-    fontSize: 30,
-    fontWeight: 'bold'
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginTop: 15
+  } as TextStyle,
+
+  loginSocialButton,
+
+  loginFacebookButton: {
+    ...loginSocialButton,
+    backgroundColor: '#293e6a'
+  } as ViewStyle,
+
+  loginGoogleButton: {
+    ...loginSocialButton,
+    backgroundColor: '#2e5cab',
+    paddingRight: 35
+  } as ViewStyle,
+
+  loginSocialIcon: {
+    fontSize: 20,
+    color: Colors.white
+  } as TextStyle,
+
+  loginSocialText: {
   } as TextStyle,
 
   header: {
@@ -230,20 +262,40 @@ export const Styles = StyleSheet.create({
     marginLeft: 0
   } as TextStyle,
 
-  forminput: {
-    color: Colors.white
+  formLabel: {
+    fontSize: 20
+  } as TextStyle,
+
+  formInput: {
+    color: Colors.white,
+    fontSize: 20,
+    paddingBottom: 0,
+    paddingTop: 0
+  } as TextStyle,
+
+  formInputPass: {
+    width: '80%'
   } as TextStyle,
 
   formButton: {
     alignSelf: 'center',
     paddingLeft: 70,
     paddingRight: 70,
-    marginTop: 15
+    marginTop: 10
   } as ViewStyle,
 
   formParagraph: {
     ...paragraph,
-    color: Colors.white
+    color: Colors.lightGray
+  } as TextStyle,
+
+  formInputLink: {
+    position: 'absolute',
+    right: 0,
+    bottom: 12,
+    color: Colors.warmGrey,
+    fontWeight: 'bold',
+    fontSize: 14
   } as TextStyle,
 
   switchContainer: {
@@ -254,7 +306,7 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   switchText: {
-    color: Colors.white
+    color: Colors.lightGray
   } as TextStyle
 });
 

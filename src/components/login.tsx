@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
-import  Icon  from 'react-native-vector-icons/Ionicons';
+import  Icon  from 'react-native-vector-icons/FontAwesome';
 import { Image, Switch } from "react-native";
 
 import xively from '../lib/xively';
@@ -116,7 +116,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
                 <Label>{ username ? 'Email' : '' }</Label>
 
                 <Input
-                  style={Styles.forminput}
+                  style={Styles.formInput}
                   placeholder='Email'
                   keyboardType='email-address'
                   autoCapitalize='none'
@@ -129,11 +129,15 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
                 <Label>{ password ? 'Password' : '' }</Label>
 
                 <Input
-                  style={Styles.forminput}
+                  style={[Styles.formInput, Styles.formInputPass]}
                   placeholder='Password'
                   secureTextEntry={true}
                   onChangeText={(text) => this.setState({ password: text })}
                 />
+
+                <Text style={Styles.formInputLink}>
+                  FORGOT?
+                </Text>
               </Item>
 
               <View style={Styles.switchContainer}>
@@ -153,25 +157,25 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
             </Text>
 
             <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
-              <Text>SIGN IN</Text>
+              <Text>sign in</Text>
             </Button>
 
             <Text style={Styles.formParagraph}>
               Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
             </Text>
 
-            <Button style={Styles.formButton} rounded>
-              <Icon name='logo-facebook'/>
+            <Button style={Styles.loginFacebookButton} rounded iconLeft>
+              <Icon name='facebook-f' style={Styles.loginSocialIcon}/>
 
-              <Text>
+              <Text uppercase={false}>
                 Log in with Facebook
               </Text>
             </Button>
 
-            <Button style={Styles.formButton} rounded>
-              <Icon name='logo-google'/>
+            <Button style={Styles.loginGoogleButton} rounded iconLeft>
+              <Icon name='google' style={Styles.loginSocialIcon}/>
 
-              <Text>
+              <Text uppercase={false}>
                 Log in with Google
               </Text>
             </Button>
