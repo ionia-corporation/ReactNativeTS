@@ -10,10 +10,6 @@ const paragraph = {
   paddingRight: 20,
 } as TextStyle;
 
-const errorMessage = Object.assign({}, paragraph, {
-  color: '#FF4833',
-} as TextStyle);
-
 export const Styles = StyleSheet.create({
   container: {
     marginTop: Platform.OS === 'ios' ? 20 : 0,
@@ -107,7 +103,10 @@ export const Styles = StyleSheet.create({
 
   paragraph,
 
-  errorMessage,
+  errorMessage: {
+    ...paragraph,
+    color: '#FF4833'
+  },
 
   switchContainer: {
     width: DEVICE_WIDTH,

@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+<<<<<<< HEAD
 import { connect, Dispatch } from 'react-redux';
+=======
+>>>>>>> dev
 
 import Styles from '../styles/main';
 import { config } from '../config';
@@ -86,7 +89,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         renewalType: 'extended',
       });
 
-        // Create new org and end user in that org
+      // Create new org and end user in that org
       const orgRes = await xively.blueprint.organizations.createOrganization({
         accountId: accountId,
         name: 'Organization for ' + this.state.email,
@@ -109,7 +112,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       // Server Error
       console.log(err);
     
-      let errorMsg = 'An error has occurred. Please try it again.';
+      let errorMsg = err.message || 'An error has occurred. Please try it again.';
 
       // check for Xively error first, then localAPI error
       if (err.response && err.response.body && err.response.body.message) {
@@ -122,8 +125,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
             characters in length. It must not repeat 3 characters in a row. It must not
             contain any of the top 20 passwords. It must not contain your email username.`;
         }
-      } else if (err.message) {
-        errorMsg = err.message;
       }
 
       this.setState({
@@ -131,15 +132,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         requestStatus : RequestStatus.REQUEST_ERROR,
       });
     }
-  }
-
-  handleChange(fieldName, event) {
-    const value = event.target.value;
-
-    this.setState((state) => {
-      state[fieldName] = value;
-      return state;
-    });
   }
 
   userCreatedAlert() {
