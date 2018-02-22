@@ -160,9 +160,13 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
               <Text>sign in</Text>
             </Button>
 
-            <Text style={Styles.formParagraph}>
-              Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
-            </Text>
+            <View style={Styles.loginSignUpText}>
+              <Text style={Styles.formParagraph}>Don't have an account?</Text>
+
+              <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('SignUp')}>
+                <Text uppercase={false} style={Styles.link}>Sign up</Text>
+              </Button>
+            </View>
 
             <Button style={Styles.loginFacebookButton} rounded iconLeft>
               <Icon name='facebook-f' style={Styles.loginSocialIcon}/>

@@ -5,9 +5,7 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const paragraph = {
   paddingTop: 10,
-  paddingBottom: 10,
-  paddingLeft: 20,
-  paddingRight: 20,
+  paddingBottom: 10
 } as TextStyle;
 
 const errorMessage = Object.assign({}, paragraph, {
@@ -77,6 +75,19 @@ export const Styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 15
   } as TextStyle,
+
+  loginSignUpText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%'
+  } as ViewStyle,
+
+  loginSignUpLink: {
+    paddingLeft: 5,
+    paddingTop: 0,
+    paddingBottom: 2
+  } as ViewStyle,
 
   loginSocialButton,
 
@@ -221,6 +232,8 @@ export const Styles = StyleSheet.create({
 
   link: {
     color: Colors.neonRed,
+    paddingLeft: 0,
+    paddingRight: 0
   } as TextStyle,
 
   paragraph,
@@ -289,6 +302,7 @@ export const Styles = StyleSheet.create({
   formParagraph: {
     ...paragraph,
     color: Colors.lightGray
+
   } as TextStyle,
 
   formInputLink: {
