@@ -1,7 +1,7 @@
 import * as React from 'react';
 import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
 import Styles from '../styles/main';
 
 // TODO: move this enum
@@ -35,7 +35,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
     let userOptions = {
       emailAddress: this.state.username,
       password: this.state.password,
-      renewalType: this.state.rememberMe === true ? 'remembered' : 'short',
+      renewalType: this.state.rememberMe ? 'remembered' : 'short',
     };
 
     this.setState({
@@ -87,12 +87,16 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
   }
 
   render() {
+    const { navigate } = this.props.navigation;
+
     return (
       <KeyboardAvoidingView behavior='padding' style={Styles.container}>
         <Image style={Styles.logo} source={require('../../images/logo.png')} />
+
         <Text style={Styles.title}>
           Sign In
         </Text>
+
         <View style={Styles.inputWrapper}>
           <TextInput
             keyboardType='email-address'
@@ -103,6 +107,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
             style={Styles.input}
           />
         </View>
+
         <View style={Styles.inputWrapper}>
           <TextInput
             placeholder='Password'
@@ -112,12 +117,26 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
           />
         </View>
 
+        <View style={Styles.switchContainer}>
+          <Switch
+            value={this.state.rememberMe}
+            onValueChange={(value) => this.setState({rememberMe: value})}
+          />
+
+          <Text>
+            Stay signed in
+          </Text>
+        </View>
+
         <Text>
           { this.state.errors }
         </Text>
 
         <Button title='Login' onPress={() => { this.submit(); }} />
 
+        <Text style={Styles.paragraph}>
+          Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
+        </Text>
       </KeyboardAvoidingView>
     );
   }

@@ -20,7 +20,8 @@ import {
     DeviceScreen,
     LoginScreen,
     LogoutScreen,
-    headerRight
+    headerRight,
+    SignUp
 } from './components/index';
 import configureStore from './store/configure-store';
 import xively from './lib/xively';
@@ -105,13 +106,26 @@ const Navigator = DrawerNavigator({
     },
 });
 
+const RootNavigator = StackNavigator({
+    Drawer: {
+        name: 'Drawer',
+        screen: Navigator,
+    },
+    SignUp: {
+        screen: SignUp,
+    }
+},
+{
+    headerMode: 'none'
+});
+
 let store = configureStore();
 
 class App extends React.Component<void, void> {
     render() {
         return (
             <Provider store={store}>
-                <Navigator />
+                <RootNavigator />
             </Provider>);
     }
 }
