@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, ScrollView } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
 
 import Styles from '../styles/main';
 import { config } from '../config';
@@ -41,7 +41,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   async submit() {
     this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
 
-    let userOptions = {
+    const userOptions = {
       emailAddress : this.state.email,
       password : this.state.password,
       passwordConfirm : this.state.passwordConfirm,
@@ -54,7 +54,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         throw new Error('Password does not match the confirm password.');
       }
 
-      let res = await xively.idm.authentication.createUser(userOptions);
+      const res = await xively.idm.authentication.createUser(userOptions);
 
       if (!res.userId) {
         // TODO: Throw something better
@@ -72,8 +72,8 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         renewalType: 'extended',
       });
 
-        // Create new org and end user in that org
-      let orgRes = await xively.blueprint.organizations.createOrganization({
+      // Create new org and end user in that org
+      const orgRes = await xively.blueprint.organizations.createOrganization({
         accountId: accountId,
         name: 'Organization for ' + this.state.email,
         organizationTemplateId: orgTemplateId,
@@ -95,7 +95,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       // Server Error
       console.log(err);
     
-      let errorMsg = 'An error has occurred. Please try it again.';
+      let errorMsg = err.message || 'An error has occurred. Please try it again.';
 
       // check for Xively error first, then localAPI error
       if (err.response && err.response.body && err.response.body.message) {
@@ -108,8 +108,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
             characters in length. It must not repeat 3 characters in a row. It must not
             contain any of the top 20 passwords. It must not contain your email username.`;
         }
-      } if (err.message) {
-        errorMsg = err.message;
       }
 
       this.setState({
@@ -117,15 +115,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         requestStatus : RequestStatus.REQUEST_ERROR,
       });
     }
-  }
-
-  handleChange(fieldName, event) {
-    const value = event.target.value;
-
-    this.setState((state) => {
-      state[fieldName] = value;
-      return state;
-    });
   }
 
   userCreatedAlert() {
