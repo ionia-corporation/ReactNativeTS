@@ -30,7 +30,9 @@ export const Colors = {
   claret: '#6c001b',
   black: '#101010',
   warmGrey: '#7c7c7c',
-  offGray: '#434343'
+  offGray: '#434343',
+  facebook: '#293e6a',
+  google: '#2e5cab'
 };
 
 export const Styles = StyleSheet.create({
@@ -55,7 +57,7 @@ export const Styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 50,
     paddingBottom: 50
-  } as ViewStyle,
+  } as ImageStyle,
 
   loginBody: {
     display: 'flex',
@@ -80,12 +82,12 @@ export const Styles = StyleSheet.create({
 
   loginFacebookButton: {
     ...loginSocialButton,
-    backgroundColor: '#293e6a'
+    backgroundColor: Colors.facebook
   } as ViewStyle,
 
   loginGoogleButton: {
     ...loginSocialButton,
-    backgroundColor: '#2e5cab',
+    backgroundColor: Colors.google,
     paddingRight: 35
   } as ViewStyle,
 

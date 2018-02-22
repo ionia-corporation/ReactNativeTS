@@ -2,7 +2,7 @@ import * as React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
 import  Icon  from 'react-native-vector-icons/FontAwesome';
-import { Image, Switch } from "react-native";
+import { Image, Switch, ImageBackground } from "react-native";
 
 import xively from '../lib/xively';
 import Styles from '../styles/main';
@@ -102,13 +102,13 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
     return (
       <Container style={Styles.viewContainer}>
         <Content>
-          <View style={Styles.loginHeader}>
+          <ImageBackground style={Styles.loginHeader} source={require('../../images/loginHeader.png')}>
             <Image source={require('../../images/g-logo.png')} style={Styles.loginHeaderImage} />
 
             <Text style={Styles.loginHeaderTitle}>
               GENERIC SYSTEMS
             </Text>
-          </View>
+          </ImageBackground>
 
           <View style={Styles.loginBody}>
             <Form style={Styles.form}>
