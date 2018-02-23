@@ -19,6 +19,8 @@ interface LoginState {
   rememberMe?: boolean;
 }
 
+const tabsNames = ['Devices', 'Settings', 'Account', 'Help'];
+
 export class LoginScreen extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
@@ -50,13 +52,16 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
       if (!res.jwt) {
         throw new Error('Not Authorized');
       }
+
       this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS });
 
       // TODO: select the correct route
-      const routeName = this.props.navigation.state.params
-        && this.props.navigation.state.params.nextRoute || 'DeviceList';
-      const params = this.props.navigation.state.params
-        && this.props.navigation.state.params.nextRouteParams || {};
+      const { state } = this.props.navigation;
+
+      let routeName = state.params && state.params.nextRoute || 'App';
+      routeName = tabsNames.indexOf(routeName) !== -1 ? 'App' : routeName;
+
+      const params = state.params && state.params.nextRouteParams || {};
 
       // reset nav stack
       const resetAction = NavigationActions.reset({
@@ -65,6 +70,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
           NavigationActions.navigate({ routeName, params }),
         ]
       });
+
       this.props.navigation.dispatch(resetAction);
 
       // // Login is now in a drawer navigator, so don't have to reset stack

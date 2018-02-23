@@ -8,3 +8,7 @@ export * from './header';
 export * from './group-list';
 export * from './group-subgroups';
 export * from './group-devices';
+export * from './nav-tabs';
+export * from './settings';
+export * from './account';
+export * from './help';

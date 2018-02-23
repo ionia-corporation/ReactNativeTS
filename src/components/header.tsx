@@ -1,17 +1,44 @@
-import * as React from 'react';
-import { View, Text, Button } from "react-native";
-import Styles from '../styles/main';
-import { NavigationScreenProp, NavigationRoute, NavigationStackAction } from 'react-navigation';
+import React from 'react';
+import { Header, Body, Title, Button, Left, Text } from 'native-base';
 
-// TODO: seems to be a bug in the typings that requires us
-//       declaring this parameter as 'any' right now.
-export function headerRight(navigation: any) {
+import { Styles , Colors} from '../styles/main';
 
-    return (
-        <Button
-            onPress={() => navigation.navigate('DrawerOpen')}
-            title='... ' />
-    );
+interface Props {
+  title: string;
+  leftButton?: {
+    text?: string;
+    icon?: string;
+    onPess: Function;
+  };
 }
 
-export default headerRight;
+export class HeaderComponent extends React.Component<Props> {
+  render () {
+    const { title, leftButton } = this.props;
+
+    return (
+      <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
+        {
+          leftButton && 
+          <Left>
+            <Button onPress={() => {
+              if (leftButton.onPess) leftButton.onPess();
+            }}>
+              <Text>
+                { leftButton.text || '' }
+              </Text>
+            </Button>
+          </Left>
+        }
+
+        <Body style={{alignItems: leftButton ? 'flex-start' : 'center'}}>
+          <Title>
+            <Text style={Styles.headerTitle}>{ title }</Text>
+          </Title>
+        </Body>
+      </Header>
+    );
+  }
+}
+
+export default HeaderComponent;
