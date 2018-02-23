@@ -3,8 +3,8 @@ import { config } from '../config';
 import { store } from '../store/configure-store';
 import { jwtRenewalFailure } from '../store/auth/actions';
 
-const jwtFailureCallback = async () => {
-  await store.dispatch(jwtRenewalFailure)
+const jwtFailureCallback = async (error) => {
+  await store.dispatch(jwtRenewalFailure(error))
 }
 
 export const xively = new Xively(config.xively, jwtFailureCallback);
@@ -19,7 +19,7 @@ setInterval(
         // do nothing
       })
       .catch((e) => {
-        jwtFailureCallback();
+        jwtFailureCallback(e);
         // TODO: do we redirect to login here?
         // TODO: do we just replace this whole thing with a re-run of the logic
         //       from inside of `authenticated.tsx`?
