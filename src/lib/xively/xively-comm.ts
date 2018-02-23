@@ -130,8 +130,7 @@ class XivelyComm {
 
       return this.skimJwt(await comm.getJson(options));
     } catch (err) {
-      console.warn('ERROR renewing saved JWT: ' + err);
-      await this.jwtFailureCallback(err);
+      await this.jwtFailureCallback('Error renewing saved JWT');
     }
   }
   private async skimJwt(jwtResponse: any) {
