@@ -42,7 +42,7 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
 
   render() {
     return (
-      <Container>
+      <Container style={Styles.viewContainer}>
         <HeaderComponent title='Devices'/>
 
         <DeviceListShared

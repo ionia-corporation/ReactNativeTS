@@ -5,6 +5,7 @@ import { connect, Dispatch } from 'react-redux';
 
 import xively from '../lib/xively';
 import { HeaderComponent } from './index';
+import Styles from '../styles/main';
 
 import { AppState } from '../types/index';
 import { logout } from '../store/auth/actions';
@@ -29,7 +30,7 @@ export class AccountComponent extends React.Component<Props> {
 
   render() {
     return (
-      <Container>
+      <Container style={Styles.viewContainer}>
         <HeaderComponent title='Account'/>
 
         <Content>

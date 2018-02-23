@@ -10,6 +10,13 @@ const paragraph = {
   paddingRight: 20,
 } as TextStyle;
 
+export const Colors = {
+  white: '#ffffff',
+  gray: '#555555',
+  neonRed: '#fb0240',
+  darkGray: '#323232'
+};
+
 export const Styles = StyleSheet.create({
   container: {
     marginTop: Platform.OS === 'ios' ? 20 : 0,
@@ -20,6 +27,20 @@ export const Styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   } as ViewStyle,
+
+  viewContainer: {
+    backgroundColor: Colors.darkGray
+  } as ViewStyle,
+
+  header: {
+    backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
+  headerTitle: {
+    fontWeight: 'bold',
+    fontSize: 25,
+    color: Colors.white
+  } as TextStyle,
 
   title: {
     fontSize: 20,
@@ -76,6 +97,7 @@ export const Styles = StyleSheet.create({
   listItemText: {
     paddingLeft: 15,
     paddingBottom: 4,
+    color: Colors.white
   } as TextStyle,
 
   sectionTitle: {
@@ -119,6 +141,10 @@ export const Styles = StyleSheet.create({
     marginTop: -5,
     paddingTop: 0,
   } as ViewStyle,
+
+  footerTab: {
+    backgroundColor: '#131313'
+  }
 });
 
 export default Styles;
