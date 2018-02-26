@@ -48,8 +48,7 @@ class Authentication {
       },
     };
 
-    // TODO: any error message logic
-    return this.comm.getXivelyJson(options, false);
+    return this.comm.getXivelyJson(options, false)
   }
 
   logout() {

@@ -1,6 +1,7 @@
 import React, { Component, ComponentClass } from 'react';
 import { Provider } from 'react-redux';
 import { Text, Button } from 'react-native';
+import { App } from './components/app';
 import {
   HeaderProps,
   DrawerNavigator,
@@ -18,15 +19,15 @@ import {
   DeviceList,
   DeviceScreen,
   LoginScreen,
-  LogoutScreen,
   SignUp,
   NavTabs,
   Settings,
   Account,
   Help
 } from './components/index';
-import configureStore from './store/configure-store';
+import { store } from './store/configure-store';
 import xively from './lib/xively';
+
 
 const TabsNavigation = TabNavigator({
   Devices: {
@@ -57,39 +58,57 @@ const MainNavigation = StackNavigator({
   Group: {
     screen: GroupDevices
   }
-}, {
+},
+{
   initialRouteName: 'TabsNavigation',
   headerMode: 'none'
 });
 
-const RootNavigator = StackNavigator({
-  App: {
-    screen: MainNavigation
-  },
+export const SignedOut = StackNavigator({
   SignUp: {
-    screen: SignUp
-  },
-  Logout: {
-    screen: LogoutScreen
+    screen: SignUp,
   },
   Login: {
-    screen: LoginScreen
-  },
-}, {
-  initialRouteName: 'App',
+    screen: LoginScreen,
+  }
+},
+{
+  initialRouteName: 'Login',
   headerMode: 'none'
 });
 
-let store = configureStore();
+export const createRootNavigator = (signedIn = false) => {
+  return StackNavigator(
+    {
+      SignedIn: {
+        screen: MainNavigation,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      },
+      SignedOut: {
+        screen: SignedOut,
+        navigationOptions: {
+          gesturesEnabled: false
+        }
+      }
+    },
+    {
+      headerMode: "none",
+      mode: "modal",
+      initialRouteName: signedIn ? "SignedIn" : "SignedOut"
+    }
+  );
+}
 
-class App extends React.Component<void, void> {
+class AuthenticatedApp extends React.Component<void, void> {
   render() {
     return (
       <Provider store={store}>
-        <RootNavigator />
+        <App createRootNavigator={createRootNavigator}/>
       </Provider>
     );
   }
 }
 
-export default App;
+export default AuthenticatedApp;

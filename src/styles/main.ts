@@ -10,10 +10,6 @@ const paragraph = {
   paddingRight: 20,
 } as TextStyle;
 
-const errorMessage = Object.assign({}, paragraph, {
-  color: '#FF4833',
-} as TextStyle);
-
 const loginSocialButton = {
   alignSelf: 'center',
   paddingLeft: 25,
@@ -225,7 +221,10 @@ export const Styles = StyleSheet.create({
 
   paragraph,
 
-  errorMessage,
+  errorMessage: {
+    ...paragraph,
+    color: '#FF4833'
+  },
 
   footerTab: {
     backgroundColor: '#131313'
