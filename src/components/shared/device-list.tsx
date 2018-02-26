@@ -7,7 +7,6 @@ import { ListView, ListViewDataSource, Image } from "react-native";
 import { Content, List, ListItem, Text } from 'native-base';
 
 import { AppState, DeviceWithData } from '../../types/index';
-import { Authenticated } from '../authenticated';
 import { getDevices } from '../../store/blueprint/devices/reducers';
 import { TopicData } from '../../store/mqtt/reducers';
 import { topic } from '../../store/mqtt/utils';

@@ -3,6 +3,7 @@
 import * as comm from '../comm';
 import { Authorization, CommOptions, XivelyConfig } from './models/index';
 import { AsyncStorage } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 
 // TODO: store this somewhere on the phone or at least abstract storage
 export let JWT : string = 'JWT';
@@ -12,7 +13,7 @@ class XivelyComm {
   config: XivelyConfig;
   urlIDM: string;
 
-  constructor(cfg: XivelyConfig) {
+  constructor(cfg: XivelyConfig, private jwtFailureCallback: Function) {
     this.config = cfg;
     this.urlIDM = 'https://id'
       + (this.config.environment.length ? '.' + this.config.environment : '')
@@ -99,13 +100,17 @@ class XivelyComm {
       }
       return new Promise<string>((resolve, reject) => {
         if (savedJwt) {
+          // TODO, this is probably not a login, just a saved jwt
           resolve(savedJwt);
         } else {
           throw new Error('Not logged in');
         }
       });
     } catch (err) {
-      console.warn('ERROR checking saved JWT: ' + JSON.stringify(err));
+      if (err.message === 'Not logged in') {
+        return;
+      }
+      console.warn('ERROR checking saved JWT: ' + err);
     }
   }
 
@@ -125,7 +130,7 @@ class XivelyComm {
 
       return this.skimJwt(await comm.getJson(options));
     } catch (err) {
-      console.warn('ERROR renewing saved JWT: ' + JSON.stringify(err));
+      await this.jwtFailureCallback('Error renewing saved JWT');
     }
   }
   private async skimJwt(jwtResponse: any) {

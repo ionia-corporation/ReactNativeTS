@@ -1,14 +1,28 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { connect, Dispatch } from 'react-redux';
 
 import Styles from '../styles/main';
 import { config } from '../config';
 import xively from '../lib/xively';
 import { RequestStatus } from '../types/index';
 import * as localAPI from '../lib/local-api/index';
+import { AppState } from '../types/index';
+import { login } from '../store/auth/actions';
 
-interface SignUpProps extends NavigationScreenConfigProps {
+interface ReduxDispatchProps {
+  login: Function;
+}
+
+interface ReduxStateProps {
+}
+
+interface SignUpProps extends 
+  ReduxDispatchProps, 
+  ReduxStateProps,
+  React.Props<SignUpComponent>,
+  NavigationScreenConfigProps {
 }
 
 interface SignUpState {
@@ -66,7 +80,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       const orgTemplateId = config.xively.baseOrgTemplate;
 
       // Login user to obtain JWT
-      await xively.idm.authentication.login({
+      await this.props.login({
         emailAddress : this.state.email,
         password : this.state.password,
         renewalType: 'extended',
@@ -209,14 +223,23 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           }}
         />
 
-        <Text style={Styles.paragraph}>
-          Already have an account? <Text style={Styles.link} onPress={() => navigate('Login')}>Sign in</Text>
+        <Text style={Styles.paragraph} onPress={() => navigate('Login')}>
+          Already have an account? <Text style={Styles.link} >Sign in</Text>
         </Text>
       </KeyboardAvoidingView>
     );
   }
 }
 
-export const SignUp = SignUpComponent;
+function mapStateToProps(state: AppState) {
+  return {
+  };
+}
 
-export default SignUp;
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: SignUpProps): ReduxDispatchProps {
+  return {
+    login: (userOptions) => dispatch(login(userOptions))
+  }
+}
+
+export const SignUp = connect(mapStateToProps, mapDispatchToProps)(SignUpComponent);

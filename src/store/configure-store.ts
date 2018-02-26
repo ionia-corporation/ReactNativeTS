@@ -1,19 +1,20 @@
 import * as Redux from 'redux';
-import createBlueprintMiddleware from './blueprint/middleware';
+import {createBlueprintMiddleware } from './blueprint/middleware';
+import { createLogger } from 'redux-logger';
 import reducers from './reducers';
 import reduxThunk from 'redux-thunk';
 import { applyMiddleware, createStore, compose } from 'redux';
 import { AppState } from './reducers';
 
-export default function configureStore(): Redux.Store<AppState> {
+export function configureStore(): Redux.Store<AppState> {
+  const logger = createLogger();
   const middlewareArray: Redux.Middleware[] = [
       reduxThunk,
       createBlueprintMiddleware(),
+      logger,
   ];
 
-  let composeEnhancers = compose;
-
-  const enhancer = composeEnhancers(
+  const enhancer = compose(
     // Function.prototype.apply
     applyMiddleware.apply(null, middlewareArray),
   );
@@ -22,3 +23,5 @@ export default function configureStore(): Redux.Store<AppState> {
 
   return store;
 }
+
+export const store = configureStore();

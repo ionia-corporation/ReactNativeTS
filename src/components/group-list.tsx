@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { AppState } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getTopLevelOrganizations } from '../store/blueprint/organizations/reducers';
 import { Organizations } from '../lib/xively/models/index';
 import { GroupList as GroupListShared } from './shared';
@@ -55,5 +54,5 @@ export class GroupListComponent extends React.Component<GroupListProps, null> {
     }
 }
 
-export let GroupList = Authenticated(connect(mapStateToProps, mapDispatchToProps)(GroupListComponent));
+export let GroupList = connect(mapStateToProps, mapDispatchToProps)(GroupListComponent);
 export default GroupList;
