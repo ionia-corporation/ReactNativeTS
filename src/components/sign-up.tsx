@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
 import { connect, Dispatch } from 'react-redux';
 
 import Styles from '../styles/main';
@@ -10,6 +10,7 @@ import { RequestStatus } from '../types/index';
 import * as localAPI from '../lib/local-api/index';
 import { AppState } from '../types/index';
 import { login } from '../store/auth/actions';
+import { HeaderComponent, AddBar } from './index';
 
 interface ReduxDispatchProps {
   login: Function;
@@ -146,87 +147,96 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
 
   render() {
     const { navigate } = this.props.navigation;
+    const { firstName, lastName, email, password, passwordConfirm } = this.state;
 
     if (this.state.requestStatus === RequestStatus.REQUEST_SUCCESS) {
       return this.userCreatedAlert();
     }
 
     return (
-      <KeyboardAvoidingView keyboardVerticalOffset={0} style={Styles.container}>
-        <Image style={Styles.logo} source={require('../../images/logo.png')} />
+      <Container style={Styles.viewContainer}>
+        <HeaderComponent title='Sign Up'/>
 
-        <Text style={Styles.title}>
-          Sign up
-        </Text>
+        <Content>
+          <Form style={Styles.form}>
+            <Item style={Styles.formItem} stackedLabel>
+              <Label>{ firstName ? 'Email' : '' }</Label>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            keyboardType='default'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder='First Name'
-            onChangeText={(text) => this.setState({ firstName: text })}
-            style={Styles.input}
-          />
-        </View>
+              <Input
+                style={Styles.formInput}
+                autoCapitalize='none'
+                autoCorrect={false}
+                placeholder='First Name'
+                onChangeText={(text) => this.setState({ firstName: text })}
+              />
+            </Item>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            keyboardType='default'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder='Last Name'
-            onChangeText={(text) => this.setState({ lastName: text })}
-            style={Styles.input}
-          />
-        </View>
+            <Item style={Styles.formItem} stackedLabel>
+              <Label>{ lastName ? 'Last Name' : '' }</Label>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            keyboardType='email-address'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder='Email Address'
-            onChangeText={(text) => this.setState({ email: text })}
-            style={Styles.input}
-          />
-        </View>
+              <Input
+                style={Styles.formInput}
+                autoCapitalize='none'
+                autoCorrect={false}
+                placeholder='Last Name'
+                onChangeText={(text) => this.setState({ lastName: text })}
+              />
+            </Item>
 
-        <Text style={Styles.paragraph}>
-          Please enter a password. It should contain at least 8 characters including one capital letter, one number, and one special character.
-        </Text>
+            <Item style={Styles.formItem} stackedLabel>
+              <Label>{ email ? 'Email Address' : '' }</Label>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            placeholder='Password'
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({ password: text })}
-            style={Styles.input}
-          />
-        </View>
+              <Input
+                keyboardType='email-address'
+                autoCapitalize='none'
+                autoCorrect={false}
+                placeholder='Email Address'
+                onChangeText={(text) => this.setState({ email: text })}
+              />
+            </Item>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            placeholder='Confirm Password'
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({ passwordConfirm: text })}
-            style={Styles.input}
-          />
-        </View>
+            <Text style={Styles.formParagraph}>
+              Please enter a password. It should contain at least 8 characters including one capital letter, one number, and one special character.
+            </Text>
 
-        <Text style={Styles.errorMessage}>
-          { this.state.error }
-        </Text>
+            <Item style={Styles.formItem} stackedLabel>
+              <Label>{ password ? 'Password' : '' }</Label>
 
-        <Button title='Login' onPress={() => { 
-            this.submit();
-          }}
-        />
+              <Input
+                placeholder='Password'
+                secureTextEntry={true}
+                onChangeText={(text) => this.setState({ password: text })}
+              />
+            </Item>
 
-        <Text style={Styles.paragraph} onPress={() => navigate('Login')}>
-          Already have an account? <Text style={Styles.link} >Sign in</Text>
-        </Text>
-      </KeyboardAvoidingView>
+            <Item style={Styles.formItem} stackedLabel>
+              <Label>{ passwordConfirm ? 'Confirm Password' : '' }</Label>
+
+              <Input
+                placeholder='Confirm Password'
+                secureTextEntry={true}
+                onChangeText={(text) => this.setState({ passwordConfirm: text })}
+              />
+            </Item>
+          </Form>
+
+          <Text style={Styles.errorMessage}>
+            { this.state.error }
+          </Text>
+
+          <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+            <Text>Login</Text>
+          </Button>
+
+          <View style={Styles.loginSignUpText}>
+            <Text style={Styles.formParagraph}>Already have an account?</Text>
+
+            <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('Login')}>
+              <Text uppercase={false} style={Styles.link}>Sign in</Text>
+            </Button>
+          </View>
+        </Content>
+      </Container>
     );
   }
 }
