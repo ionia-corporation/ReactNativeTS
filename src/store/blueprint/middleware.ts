@@ -70,7 +70,7 @@ const batchRequest = async (store: any, action: BatchRequest) => {
   }
 };
 
-export default function createBlueprintMiddleware() {
+export  function createBlueprintMiddleware() {
   // TODO: Better typings
   const xivelyMiddleware: Redux.Middleware = (store) => (next) => (action) => {
     const actionMap = {

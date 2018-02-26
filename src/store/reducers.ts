@@ -3,12 +3,14 @@ import { combineReducers, AnyAction } from 'redux';
 import { Action } from 'redux-actions';
 import { reducer as blueprint, BlueprintState } from './blueprint/reducers';
 import { reducer as profile, ProfileState } from './profile/reducers';
+import { reducer as auth, AuthorizationState} from './auth/reducers';
 import { default as createMqttReducer, MqttState, defaultParser, updatesParser } from './mqtt';
 
 export type AppState = {
-  blueprint: BlueprintState,
-  profile: ProfileState,
+  blueprint: BlueprintState;
+  profile: ProfileState;
   mqtt: MqttState;
+  auth: AuthorizationState;
 };
 
 export const constants = {
@@ -22,6 +24,7 @@ const appReducer = combineReducers({
     _log: defaultParser,
     '_updates/fields': updatesParser,
   }),
+  auth,
 });
 
 const rootReducer = (state: AppState, action: Action<any>) => {

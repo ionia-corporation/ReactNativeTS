@@ -5,7 +5,6 @@ import { NavigationScreenConfigProps } from 'react-navigation';
 import { Container, Content } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { getOrganization, getDescendants } from '../store/blueprint/organizations/reducers';
 import { Devices, Organizations } from '../lib/xively/models/index';
@@ -86,5 +85,5 @@ export class GroupDevicesScreenComponent extends React.Component<GroupProps> {
   }
 }
 
-export let GroupDevices = Authenticated(connect(mapStateToProps, mapDispatchToProps)(GroupDevicesScreenComponent));
+export let GroupDevices = connect(mapStateToProps, mapDispatchToProps)(GroupDevicesScreenComponent);
 export default GroupDevices;

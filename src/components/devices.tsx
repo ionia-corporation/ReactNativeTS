@@ -5,7 +5,6 @@ import { NavigationScreenConfigProps } from 'react-navigation';
 import { Container, Content } from 'native-base';
 
 import { AppState, DeviceWithData } from '../types/index';
-import { Authenticated } from './authenticated';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
 import { getTopLevelOrganizations } from '../store/blueprint/organizations/reducers';
 import { Devices, Organizations } from '../lib/xively/models/index';
@@ -78,5 +77,5 @@ export class DeviceListComponent extends React.Component<DeviceListProps, null> 
   }
 }
 
-export let DeviceList = Authenticated(connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent));
+export let DeviceList = connect(mapStateToProps, mapDispatchToProps)(DeviceListComponent);
 export default DeviceList;
