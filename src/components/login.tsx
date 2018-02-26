@@ -2,17 +2,27 @@ import * as React from 'react';
 import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
+import { connect, Dispatch } from 'react-redux';
 import Styles from '../styles/main';
+import { AppState } from '../types/index';
+import { login } from '../store/auth/actions';
 
-// TODO: move this enum
-enum RequestStatus { REQUEST_NOT_SENT, REQUEST_ERROR, REQUEST_SENT, REQUEST_SUCCESS };
+interface ReduxDispatchProps {
+  login: Function;
+}
+
+interface ReduxStateProps {
+  error: string;
+}
+
 
 interface LoginProps extends
-  React.Props<LoginScreen>,
+  ReduxDispatchProps,
+  ReduxStateProps,
+  React.Props<LoginScreenComponent>,
   NavigationScreenConfigProps { }
 
 interface LoginState {
-  requestStatus?: RequestStatus;
   errors?: string;
   username?: string;
   password?: string;
@@ -21,12 +31,10 @@ interface LoginState {
 
 const tabsNames = ['Devices', 'Settings', 'Account', 'Help'];
 
-export class LoginScreen extends React.Component<LoginProps, LoginState> {
+export class LoginScreenComponent extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props);
     this.state = {
-      requestStatus: RequestStatus.REQUEST_NOT_SENT,
-      errors: '',
       username: '',
       password: '',
       rememberMe: false,
@@ -39,57 +47,7 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
       password: this.state.password,
       renewalType: this.state.rememberMe ? 'remembered' : 'short',
     };
-
-    this.setState({
-      requestStatus: RequestStatus.REQUEST_SENT,
-    });
-
-    try {
-
-      let res = await xively.idm.authentication.login(userOptions);
-
-      // Successfully logged in
-      if (!res.jwt) {
-        throw new Error('Not Authorized');
-      }
-
-      this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS });
-
-      // TODO: select the correct route
-      const { state } = this.props.navigation;
-
-      let routeName = state.params && state.params.nextRoute || 'App';
-      routeName = tabsNames.indexOf(routeName) !== -1 ? 'App' : routeName;
-
-      const params = state.params && state.params.nextRouteParams || {};
-
-      // reset nav stack
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({ routeName, params }),
-        ]
-      });
-
-      this.props.navigation.dispatch(resetAction);
-
-      // // Login is now in a drawer navigator, so don't have to reset stack
-      // this.props.navigation.navigate(routeName, params);
-
-    } catch (err) {
-      // Server Error
-      if ( err.message === 'Unauthorized') {
-        this.setState({
-          requestStatus: RequestStatus.REQUEST_ERROR,
-          errors : 'The credentials you provided don\'t match anything in our system. Forgot password?',
-        });
-      } else {
-        this.setState({
-          requestStatus: RequestStatus.REQUEST_ERROR,
-          errors : err.message,
-        });
-      }
-    }
+    await this.props.login(userOptions);
   }
 
   render() {
@@ -135,17 +93,30 @@ export class LoginScreen extends React.Component<LoginProps, LoginState> {
         </View>
 
         <Text>
-          { this.state.errors }
+          { this.props.error }
         </Text>
 
-        <Button title='Login' onPress={() => { this.submit(); }} />
+        <Button title='Login' onPress={this.submit.bind(this)} />
 
-        <Text style={Styles.paragraph}>
-          Don't have an account? <Text style={Styles.link} onPress={() => navigate('SignUp')}>Sign up</Text>
+        <Text style={Styles.paragraph} onPress={() => navigate('SignUp')}>
+          Don't have an account? <Text style={Styles.link} >Sign up</Text>
         </Text>
       </KeyboardAvoidingView>
     );
   }
 }
 
-export default LoginScreen;
+function mapStateToProps(state: AppState, ownProps: LoginProps) {
+  return {
+    error: state.auth.error,
+  };
+}
+
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: LoginProps): ReduxDispatchProps {
+  return {
+    login: (userOptions) => dispatch(login(userOptions))
+  }
+}
+
+
+export const LoginScreen = connect(mapStateToProps, mapDispatchToProps)(LoginScreenComponent)

@@ -10,10 +10,6 @@ const paragraph = {
   paddingRight: 20,
 } as TextStyle;
 
-const errorMessage = Object.assign({}, paragraph, {
-  color: '#FF4833',
-} as TextStyle);
-
 export const Colors = {
   white: '#ffffff',
   gray: '#555555',
@@ -167,7 +163,10 @@ export const Styles = StyleSheet.create({
 
   paragraph,
 
-  errorMessage,
+  errorMessage: {
+    ...paragraph,
+    color: '#FF4833'
+  },
 
   switchContainer: {
     width: DEVICE_WIDTH,

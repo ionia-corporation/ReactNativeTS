@@ -1,14 +1,28 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, ScrollView } from "react-native";
+import { KeyboardAvoidingView, View, Text, TextInput, Button, Image } from "react-native";
+import { connect, Dispatch } from 'react-redux';
 
 import Styles from '../styles/main';
 import { config } from '../config';
 import xively from '../lib/xively';
 import { RequestStatus } from '../types/index';
 import * as localAPI from '../lib/local-api/index';
+import { AppState } from '../types/index';
+import { login } from '../store/auth/actions';
 
-interface SignUpProps extends NavigationScreenConfigProps {
+interface ReduxDispatchProps {
+  login: Function;
+}
+
+interface ReduxStateProps {
+}
+
+interface SignUpProps extends 
+  ReduxDispatchProps, 
+  ReduxStateProps,
+  React.Props<SignUpComponent>,
+  NavigationScreenConfigProps {
 }
 
 interface SignUpState {
@@ -41,7 +55,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   async submit() {
     this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
 
-    let userOptions = {
+    const userOptions = {
       emailAddress : this.state.email,
       password : this.state.password,
       passwordConfirm : this.state.passwordConfirm,
@@ -54,7 +68,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         throw new Error('Password does not match the confirm password.');
       }
 
-      let res = await xively.idm.authentication.createUser(userOptions);
+      const res = await xively.idm.authentication.createUser(userOptions);
 
       if (!res.userId) {
         // TODO: Throw something better
@@ -66,14 +80,14 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       const orgTemplateId = config.xively.baseOrgTemplate;
 
       // Login user to obtain JWT
-      await xively.idm.authentication.login({
+      await this.props.login({
         emailAddress : this.state.email,
         password : this.state.password,
         renewalType: 'extended',
       });
 
-        // Create new org and end user in that org
-      let orgRes = await xively.blueprint.organizations.createOrganization({
+      // Create new org and end user in that org
+      const orgRes = await xively.blueprint.organizations.createOrganization({
         accountId: accountId,
         name: 'Organization for ' + this.state.email,
         organizationTemplateId: orgTemplateId,
@@ -95,7 +109,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       // Server Error
       console.log(err);
     
-      let errorMsg = 'An error has occurred. Please try it again.';
+      let errorMsg = err.message || 'An error has occurred. Please try it again.';
 
       // check for Xively error first, then localAPI error
       if (err.response && err.response.body && err.response.body.message) {
@@ -108,8 +122,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
             characters in length. It must not repeat 3 characters in a row. It must not
             contain any of the top 20 passwords. It must not contain your email username.`;
         }
-      } if (err.message) {
-        errorMsg = err.message;
       }
 
       this.setState({
@@ -117,15 +129,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         requestStatus : RequestStatus.REQUEST_ERROR,
       });
     }
-  }
-
-  handleChange(fieldName, event) {
-    const value = event.target.value;
-
-    this.setState((state) => {
-      state[fieldName] = value;
-      return state;
-    });
   }
 
   userCreatedAlert() {
@@ -220,14 +223,23 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           }}
         />
 
-        <Text style={Styles.paragraph}>
-          Already have an account? <Text style={Styles.link} onPress={() => navigate('Login')}>Sign in</Text>
+        <Text style={Styles.paragraph} onPress={() => navigate('Login')}>
+          Already have an account? <Text style={Styles.link} >Sign in</Text>
         </Text>
       </KeyboardAvoidingView>
     );
   }
 }
 
-export const SignUp = SignUpComponent;
+function mapStateToProps(state: AppState) {
+  return {
+  };
+}
 
-export default SignUp;
+function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: SignUpProps): ReduxDispatchProps {
+  return {
+    login: (userOptions) => dispatch(login(userOptions))
+  }
+}
+
+export const SignUp = connect(mapStateToProps, mapDispatchToProps)(SignUpComponent);
