@@ -136,12 +136,15 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     const { navigate } = this.props.navigation;
 
     return (
-      <View>
-        <Text>
-          Registration successful! 
-          <Text style={Styles.link} onPress={() => navigate('Devices')}>Please click here to proceed.</Text>
-        </Text>
-      </View>
+      <Container style={Styles.viewContainer}>
+        <HeaderComponent title='Registration successful!'/>
+
+        <Content style={Styles.signupSuccessful}>
+          <Button style={Styles.button} onPress={() => navigate('SignedIn')}>
+            <Text>Please tap here to proceed</Text>
+          </Button>
+        </Content>
+      </Container>
     );
   }
 
@@ -157,84 +160,89 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       <Container style={Styles.viewContainer}>
         <HeaderComponent title='Sign Up'/>
 
-        <Content>
-          <Form style={Styles.form}>
-            <Item style={Styles.formItem} stackedLabel>
-              <Label>{ firstName ? 'Email' : '' }</Label>
+        <Content style={Styles.signupContent}>
+          <View style={Styles.formContainer}>
+            <Form style={Styles.form}>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ firstName ? 'Email' : '' }</Label>
 
-              <Input
-                style={Styles.formInput}
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholder='First Name'
-                onChangeText={(text) => this.setState({ firstName: text })}
-              />
-            </Item>
+                <Input
+                  style={Styles.formInput}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  placeholder='First Name'
+                  onChangeText={(text) => this.setState({ firstName: text })}
+                />
+              </Item>
 
-            <Item style={Styles.formItem} stackedLabel>
-              <Label>{ lastName ? 'Last Name' : '' }</Label>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ lastName ? 'Last Name' : '' }</Label>
 
-              <Input
-                style={Styles.formInput}
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholder='Last Name'
-                onChangeText={(text) => this.setState({ lastName: text })}
-              />
-            </Item>
+                <Input
+                  style={Styles.formInput}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  placeholder='Last Name'
+                  onChangeText={(text) => this.setState({ lastName: text })}
+                />
+              </Item>
 
-            <Item style={Styles.formItem} stackedLabel>
-              <Label>{ email ? 'Email Address' : '' }</Label>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ email ? 'Email Address' : '' }</Label>
 
-              <Input
-                keyboardType='email-address'
-                autoCapitalize='none'
-                autoCorrect={false}
-                placeholder='Email Address'
-                onChangeText={(text) => this.setState({ email: text })}
-              />
-            </Item>
+                <Input
+                  style={Styles.formInput}
+                  keyboardType='email-address'
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  placeholder='Email Address'
+                  onChangeText={(text) => this.setState({ email: text })}
+                />
+              </Item>
 
-            <Text style={Styles.formParagraph}>
-              Please enter a password. It should contain at least 8 characters including one capital letter, one number, and one special character.
+              <Text style={Styles.formParagraph}>
+                Please enter a password. It should contain at least 8 characters including one capital letter, one number, and one special character.
+              </Text>
+
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ password ? 'Password' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder='Password'
+                  secureTextEntry={true}
+                  onChangeText={(text) => this.setState({ password: text })}
+                />
+              </Item>
+
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ passwordConfirm ? 'Confirm Password' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder='Confirm Password'
+                  secureTextEntry={true}
+                  onChangeText={(text) => this.setState({ passwordConfirm: text })}
+                />
+              </Item>
+            </Form>
+
+            <Text style={Styles.errorMessage}>
+              { this.state.error }
             </Text>
 
-            <Item style={Styles.formItem} stackedLabel>
-              <Label>{ password ? 'Password' : '' }</Label>
-
-              <Input
-                placeholder='Password'
-                secureTextEntry={true}
-                onChangeText={(text) => this.setState({ password: text })}
-              />
-            </Item>
-
-            <Item style={Styles.formItem} stackedLabel>
-              <Label>{ passwordConfirm ? 'Confirm Password' : '' }</Label>
-
-              <Input
-                placeholder='Confirm Password'
-                secureTextEntry={true}
-                onChangeText={(text) => this.setState({ passwordConfirm: text })}
-              />
-            </Item>
-          </Form>
-
-          <Text style={Styles.errorMessage}>
-            { this.state.error }
-          </Text>
-
-          <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
-            <Text>Login</Text>
-          </Button>
-
-          <View style={Styles.loginSignUpText}>
-            <Text style={Styles.formParagraph}>Already have an account?</Text>
-
-            <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('Login')}>
-              <Text uppercase={false} style={Styles.link}>Sign in</Text>
+            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+              <Text>Login</Text>
             </Button>
-          </View>
+
+            <View style={Styles.loginSignUpText}>
+              <Text style={Styles.formParagraph}>Already have an account?</Text>
+
+              <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('Login')}>
+                <Text uppercase={false} style={Styles.link}>Sign in</Text>
+              </Button>
+            </View>
+            </View>
         </Content>
       </Container>
     );

@@ -64,7 +64,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
             </Text>
           </ImageBackground>
 
-          <View style={Styles.loginBody}>
+          <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.formItem} stackedLabel>
                 <Label>{ username ? 'Email' : '' }</Label>

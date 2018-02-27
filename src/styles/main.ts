@@ -44,6 +44,14 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.darkGray
   } as ViewStyle,
 
+  button: {
+    alignSelf: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 30,
+    backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
   loginHeader: {
     backgroundColor: Colors.neonRed,
     display: 'flex',
@@ -52,12 +60,6 @@ export const Styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 50
   } as ImageStyle,
-
-  loginBody: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  } as ViewStyle,
 
   loginHeaderImage: {
     flex: 1,
@@ -106,6 +108,14 @@ export const Styles = StyleSheet.create({
   loginSocialText: {
   } as TextStyle,
 
+  signupContent: {
+    marginTop: 20
+  } as ViewStyle,
+
+  signupSuccessful: {
+    marginTop: 50
+  } as ViewStyle,
+
   header: {
     backgroundColor: Colors.neonRed
   } as ViewStyle,
@@ -119,7 +129,7 @@ export const Styles = StyleSheet.create({
   headerSide: {
     display: 'flex',
     flex: 0,
-    minWidth: '15%'
+    minWidth: '10%'
   } as ViewStyle,
 
   headerTitle: {
@@ -272,8 +282,15 @@ export const Styles = StyleSheet.create({
     flexDirection: 'column'
   } as ViewStyle,
 
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  } as ViewStyle,
+
   formItem: {
-    marginLeft: 0
+    marginLeft: 0,
+    height: 58
   } as TextStyle,
 
   formLabel: {
@@ -301,7 +318,6 @@ export const Styles = StyleSheet.create({
   formParagraph: {
     ...paragraph,
     color: Colors.lightGray
-
   } as TextStyle,
 
   formInputLink: {
