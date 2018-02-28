@@ -4,19 +4,20 @@ import { Container, Header, Content, Form, Item, Input, Text, Button, View, Labe
 import { connect, Dispatch } from 'react-redux';
 
 import Styles from '../styles/main';
-import { config } from '../config';
-import xively from '../lib/xively';
 import { RequestStatus } from '../types/index';
-import * as localAPI from '../lib/local-api/index';
 import { AppState } from '../types/index';
-import { login } from '../store/auth/actions';
+import { signup, signupAccess, signupFailure } from '../store/auth/actions';
 import { HeaderComponent, AddBar } from './index';
 
 interface ReduxDispatchProps {
-  login: Function;
+  signup: Function;
+  signupAccess: Function;
+  signupFailure: Function;
 }
 
 interface ReduxStateProps {
+  error: string;
+  loading: boolean;
 }
 
 interface SignUpProps extends 
@@ -37,8 +38,6 @@ interface SignUpState {
 }
 
 export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
-  form: any;
-
   constructor(props: SignUpProps) {
     super(props);
 
@@ -53,9 +52,16 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     };
   }
 
-  async submit() {
-    this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
+  componentWillReceiveProps(nextProps) {
+    const { error, loading } = nextProps;
+    const { requestStatus } = this.state;
 
+    if (requestStatus === RequestStatus.REQUEST_SENT && !loading && !error) {
+      this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
+    }
+  }
+
+  submit() {
     const userOptions = {
       emailAddress : this.state.email,
       password : this.state.password,
@@ -64,72 +70,13 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
       lastName: this.state.lastName,
     };
 
-    try {
-      if (userOptions.password !== userOptions.passwordConfirm) {
-        throw new Error('Password does not match the confirm password.');
-      }
-
-      const res = await xively.idm.authentication.createUser(userOptions);
-
-      if (!res.userId) {
-        // TODO: Throw something better
-        throw new Error('No user ID passed in');
-      }
-
-      const accountId = config.xively.accountId;
-      const endUserTemplateId = config.xively.endUserTemplate;
-      const orgTemplateId = config.xively.baseOrgTemplate;
-
-      // Login user to obtain JWT
-      await this.props.login({
-        emailAddress : this.state.email,
-        password : this.state.password,
-        renewalType: 'extended',
-      });
-
-      // Create new org and end user in that org
-      const orgRes = await xively.blueprint.organizations.createOrganization({
-        accountId: accountId,
-        name: 'Organization for ' + this.state.email,
-        organizationTemplateId: orgTemplateId,
-        endUserTemplateId: endUserTemplateId,
-      });
-
-      if (!orgRes || !orgRes.organization.id || !orgRes.organization.defaultEndUser) {
-        // TODO: Is this block needed?
-        // TODO: Throw something better
-        throw new Error('Org was not created right');
-      }
-
-      // Update status to update the loading indicator
-      this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
-
-      return await localAPI.user.registrationSuccess(res.userId);
-
-    } catch (err) {
-      // Server Error
-      console.log(err);
-    
-      let errorMsg = err.message || 'An error has occurred. Please try it again.';
-
-      // check for Xively error first, then localAPI error
-      if (err.response && err.response.body && err.response.body.message) {
-        // error on HTTP REQUEST
-        if (err.response.body.message === 'The user already exists.') {
-          // TODO: Link to login screen?
-          errorMsg = 'This email is already registered, did you mean to login?';
-        } else if (err.response.body.message.strengthValue >= 0) {
-          errorMsg = `Invalid password. Your password must be between 8 and 128
-            characters in length. It must not repeat 3 characters in a row. It must not
-            contain any of the top 20 passwords. It must not contain your email username.`;
-        }
-      }
-
-      this.setState({
-        error : errorMsg,
-        requestStatus : RequestStatus.REQUEST_ERROR,
-      });
+    if (userOptions.password !== userOptions.passwordConfirm) {
+      return this.props.signupFailure('Password does not match the confirm password.');
     }
+
+    this.props.signup(userOptions);
+
+    this.setState({ requestStatus : RequestStatus.REQUEST_SENT });
   }
 
   userCreatedAlert() {
@@ -140,7 +87,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
         <HeaderComponent title='Registration successful!'/>
 
         <Content style={Styles.signupSuccessful}>
-          <Button style={Styles.button} onPress={() => navigate('SignedIn')}>
+          <Button style={Styles.button} onPress={() => this.props.signupAccess()}>
             <Text>Please tap here to proceed</Text>
           </Button>
         </Content>
@@ -149,10 +96,11 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   }
 
   render() {
+    const { error, loading } = this.props;
     const { navigate } = this.props.navigation;
-    const { firstName, lastName, email, password, passwordConfirm } = this.state;
+    const { firstName, lastName, email, password, passwordConfirm, requestStatus } = this.state;
 
-    if (this.state.requestStatus === RequestStatus.REQUEST_SUCCESS) {
+    if (requestStatus === RequestStatus.REQUEST_SUCCESS) {
       return this.userCreatedAlert();
     }
 
@@ -228,10 +176,15 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
             </Form>
 
             <Text style={Styles.errorMessage}>
-              { this.state.error }
+              { error }
             </Text>
 
-            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+            <Button 
+              style={Styles.formButton}
+              rounded
+              dark
+              disabled={loading}
+              onPress={() => this.submit()}>
               <Text>Login</Text>
             </Button>
 
@@ -251,12 +204,16 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
 
 function mapStateToProps(state: AppState) {
   return {
+    error: state.auth.error,
+    loading: state.auth.loading
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: SignUpProps): ReduxDispatchProps {
   return {
-    login: (userOptions) => dispatch(login(userOptions))
+    signup: (userOptions) => dispatch(signup(userOptions)),
+    signupAccess: () => dispatch(signupAccess()),
+    signupFailure: (error) => dispatch(signupFailure(error))
   }
 }
 

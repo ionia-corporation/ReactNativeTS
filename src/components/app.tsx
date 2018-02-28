@@ -93,11 +93,11 @@ class AppComponent extends React.Component<Props, State> {
       this.setState({ subscribed: true })
     }
 
-    if (!this.props.isAuthenticated || (this.props.loadedOnce && this.props.devices.length > 0)) {
+    if (!this.props.isAuthenticated || this.props.loadedOnce) {
       return;
     }
+
     this.init()
-    // this.props.navigation.navigate('SignedIn');
   }
 
   init() {

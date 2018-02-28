@@ -8,12 +8,15 @@ export interface AuthorizationState {
   loading: boolean;
   error: string;
 }
+
 type Reducer = (state: AuthorizationState, action) => AuthorizationState;
+
 const InitialState = {
   isAuthenticated: false,
   loading: false,
   error: undefined,
 }
+
 export const reducer: Reducer = (state = InitialState , action) => {
   switch (action.type) {
     case actions.AUTH_LOGIN_REQUEST:
@@ -30,6 +33,14 @@ export const reducer: Reducer = (state = InitialState , action) => {
       return { ...state, error: action.payload }
     case actions.AUTH_JWT_RENEWAL_FAILURE:
       return { ...state, isAuthenticated: false, error: action.payload }
+    case actions.AUTH_SIGNUP_REQUEST:
+      return { ...state, loading: true, error: undefined };
+    case actions.AUTH_SIGNUP_FAILURE:
+      return { ...state, error: action.payload, loading: false };
+    case actions.AUTH_SIGNUP_SUCCESS:
+      return { ...state, loading: false };
+    case actions.AUTH_SIGNUP_ACCESS:
+      return { ...state, isAuthenticated: true };
     default:
       return state;
   }
