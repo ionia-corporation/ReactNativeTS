@@ -52,6 +52,10 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.neonRed
   } as ViewStyle,
 
+  switch: {
+    transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
+  } as ViewStyle,
+
   loginHeader: {
     backgroundColor: Colors.neonRed,
     display: 'flex',
@@ -71,7 +75,8 @@ export const Styles = StyleSheet.create({
   loginHeaderTitle: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginTop: 15
+    marginTop: 15,
+    backgroundColor: 'transparent'
   } as TextStyle,
 
   loginSignUpText: {
@@ -84,7 +89,7 @@ export const Styles = StyleSheet.create({
   loginSignUpLink: {
     paddingLeft: 5,
     paddingTop: 0,
-    paddingBottom: 2
+    paddingBottom: Platform.OS === 'ios' ? 5 : 2
   } as ViewStyle,
 
   loginSocialButton,
@@ -245,8 +250,8 @@ export const Styles = StyleSheet.create({
   paragraph,
 
   errorMessage: {
-    ...paragraph,
-    color: '#FF4833'
+    color: '#FF4833',
+    textAlign: 'center'
   },
 
   footerTab: {
@@ -333,6 +338,7 @@ export const Styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10
   } as ViewStyle,
 

@@ -3,10 +3,11 @@ import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 import { NavigationScreenConfigProps } from 'react-navigation';
 import { Container, Content } from 'native-base';
+import { get } from 'lodash';
 
 import { AppState, DeviceWithData } from '../types/index';
 import { getDevicesWithData } from '../store/blueprint/devices/reducers';
-import { getTopLevelOrganizations } from '../store/blueprint/organizations/reducers';
+import { getTopLevelOrganizations, getDescendants, getOrganization } from '../store/blueprint/organizations/reducers';
 import { Devices, Organizations } from '../lib/xively/models/index';
 import { DeviceList as DeviceListShared } from './shared';
 import Styles from '../styles/main';
@@ -16,6 +17,9 @@ import { GroupList as GroupListShared } from './shared';
 interface ReduxStateProps {
   devices: DeviceWithData[];
   groups: Organizations.Organization[];
+  groupId: string;
+  stackGroupsId: string[];
+  group: Organizations.Organization;
 }
 
 interface ReduxDispatchProps {
@@ -29,12 +33,28 @@ interface DeviceListProps extends
 }
 
 function mapStateToProps(state: AppState, ownProps: DeviceListProps) {
-  const devices = getDevicesWithData(state).filter((d) => !d.device.organizationId);
-  const groups = getTopLevelOrganizations(state);
+  const groupId = get(ownProps, 'navigation.state.params.groupId', null);
+  const stackGroupsId = get(ownProps, 'navigation.state.params.stackGroupsId', []);
+
+  let devices;
+  let groups;
+  let group;
+
+  if (!groupId) {
+    devices = getDevicesWithData(state).filter((d) => !d.device.organizationId);
+    groups = getTopLevelOrganizations(state);
+  } else {
+    devices = getDevicesWithData(state, groupId);
+    groups = getDescendants(state, groupId);
+    group = getOrganization(state, groupId);
+  }
 
   return {
     devices,
     groups,
+    groupId,
+    stackGroupsId,
+    group
   }
 }
 
@@ -45,27 +65,41 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: DeviceListPr
 
 export class DeviceListComponent extends React.Component<DeviceListProps, null> {
   render() {
+    const { groupId, navigation, groups, devices, stackGroupsId, group } = this.props;
+
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='All Devices' searchButton={true}/>
+        <HeaderComponent
+          title={get(group, 'name', 'All Devices')}
+          backButton={
+            groupId
+            ? () => navigation.navigate('Devices', { groupId: stackGroupsId.pop(), stackGroupsId })
+            : null
+          }
+          searchButton={true}
+        />
 
         <Content>
           <AddBar/>
 
           <GroupListShared
-            groups={this.props.groups}
+            groups={groups}
             onPress={(group) => {
-              this.props.navigation.navigate('Group', {
+              if (groupId) {
+                stackGroupsId.push(groupId);
+              }
+
+              navigation.navigate('Devices', {
                 groupId: group.id,
-                groupName: group.name || 'no name',
+                stackGroupsId: stackGroupsId
               });
             }}
           />
 
           <DeviceListShared
-            devices={this.props.devices}
+            devices={devices}
             onPress={(device) => {
-              this.props.navigation.navigate('Device', {
+              navigation.navigate('Device', {
                 deviceId: device.device.id,
                 deviceName: device.device.name || device.device.serialNumber,
               });

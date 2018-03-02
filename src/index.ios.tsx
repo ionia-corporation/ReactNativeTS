@@ -15,7 +15,6 @@ import {
 } from 'react-navigation';
 
 import {
-  GroupDevices,
   DeviceList,
   DeviceScreen,
   LoginScreen,
@@ -53,9 +52,6 @@ const MainNavigation = StackNavigator({
   },
   Device : {
     screen: DeviceScreen
-  },
-  Group: {
-    screen: GroupDevices
   }
 },
 {
@@ -72,7 +68,8 @@ export const SignedOut = StackNavigator({
   }
 },
 {
-  initialRouteName: 'Login'
+  initialRouteName: 'Login',
+  headerMode: 'none'
 });
 
 const createRootNavigator = (signedIn = false) => {

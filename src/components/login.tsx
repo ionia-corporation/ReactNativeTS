@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
 import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
-import  Icon  from 'react-native-vector-icons/FontAwesome';
 import { Image, Switch, ImageBackground } from "react-native";
 import { connect, Dispatch } from 'react-redux';
 
 import xively from '../lib/xively';
 import Styles from '../styles/main';
+import { OauthSigninButtons } from './index'
 import { AppState } from '../types/index';
 import { login } from '../store/auth/actions';
 
@@ -96,6 +96,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 
               <View style={Styles.switchContainer}>
                 <Switch
+                  style={Styles.switch}
                   value={this.state.rememberMe}
                   onValueChange={(value) => this.setState({rememberMe: value})}
                 />
@@ -106,12 +107,12 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               </View>
             </Form>
 
-            <Text>
+            <Text style={Styles.errorMessage}>
               { this.props.error }
             </Text>
 
             <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
-              <Text>sign in</Text>
+              <Text>SIGN IN</Text>
             </Button>
 
             <View style={Styles.loginSignUpText}>
@@ -122,21 +123,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               </Button>
             </View>
 
-            <Button style={Styles.loginFacebookButton} rounded iconLeft>
-              <Icon name='facebook-f' style={Styles.loginSocialIcon}/>
-
-              <Text uppercase={false}>
-                Log in with Facebook
-              </Text>
-            </Button>
-
-            <Button style={Styles.loginGoogleButton} rounded iconLeft>
-              <Icon name='google' style={Styles.loginSocialIcon}/>
-
-              <Text uppercase={false}>
-                Log in with Google
-              </Text>
-            </Button>
+            <OauthSigninButtons facebook google/>
           </View>
         </Content>
       </Container>
