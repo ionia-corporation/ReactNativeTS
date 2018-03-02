@@ -15,10 +15,6 @@ import {
 } from 'react-navigation';
 
 import {
-  HomeScreen,
-  GroupList,
-  SubGroupsScreen,
-  GroupDevices,
   DeviceList,
   DeviceScreen,
   LoginScreen,
@@ -55,7 +51,7 @@ const MainNavigation = StackNavigator({
   TabsNavigation: {
     screen: TabsNavigation
   },
-  Device : {
+  Device: {
     screen: DeviceScreen
   }
 },

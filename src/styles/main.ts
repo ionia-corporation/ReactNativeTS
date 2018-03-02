@@ -14,7 +14,12 @@ export const Colors = {
   white: '#ffffff',
   gray: '#555555',
   neonRed: '#fb0240',
-  darkGray: '#323232'
+  lightGray: '#9c9c9c',
+  darkGray: '#323232',
+  claret: '#6c001b',
+  black: '#101010',
+  warmGrey: '#7c7c7c',
+  offGray: '#434343'
 };
 
 export const Styles = StyleSheet.create({
@@ -36,10 +41,29 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.neonRed
   } as ViewStyle,
 
+  headerBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center'
+  } as ViewStyle,
+
+  headerSide: {
+    display: 'flex',
+    flex: 0,
+    minWidth: '15%'
+  } as ViewStyle,
+
   headerTitle: {
     fontWeight: 'bold',
     fontSize: 25,
     color: Colors.white
+  } as TextStyle,
+
+  headerIcon: {
+    fontSize: 25,
+    color: Colors.black,
+    paddingLeft: 10,
+    paddingRight: 10
   } as TextStyle,
 
   title: {
@@ -73,32 +97,46 @@ export const Styles = StyleSheet.create({
     paddingRight: 20,
   } as ViewStyle,
 
-  deviceConnectedImage: {
-    marginTop: 2,
-  } as TextStyle,
-
-  listContainer: {
-    width: DEVICE_WIDTH,
-    padding: 20,
-    display: 'flex',
-    flexDirection: 'column',
-  } as ViewStyle,
-
   listItem: {
-    padding: 5,
-    paddingTop: 10,
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#dce0e6',
-    marginBottom: 10,
-    backgroundColor: '#ffffff',
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 0,
+    padding: 20,
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: 1
   } as ViewStyle,
 
-  listItemText: {
-    paddingLeft: 15,
-    paddingBottom: 4,
-    color: Colors.white
+  listItemStatus: {
+    color: Colors.lightGray,
+    borderRadius: 50,
+    backgroundColor: Colors.offGray,
+    marginTop: 2,
+    marginRight: 13,
+    padding: 12
   } as TextStyle,
+
+  listItemStatusOn: {
+    color: Colors.white,
+    backgroundColor: Colors.neonRed
+  } as TextStyle,
+
+  listItemTitle: {
+    color: Colors.white,
+    margin: 0,
+    width: '100%',
+    fontSize: 20
+  } as TextStyle,
+
+  listItemSubtitle: {
+    color: Colors.warmGrey,
+    margin: 0,
+    width: '100%'
+  } as TextStyle,
+
+  listItemGroup: {
+    flexDirection: 'column',
+    backgroundColor: Colors.black
+  } as ViewStyle,
 
   sectionTitle: {
     fontSize: 20,
@@ -144,7 +182,30 @@ export const Styles = StyleSheet.create({
 
   footerTab: {
     backgroundColor: '#131313'
-  }
+  } as ViewStyle,
+
+  addBarContainer: {
+    flexDirection: 'row',
+    backgroundColor: Colors.claret,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingLeft: 12
+  } as ViewStyle,
+
+  addBarButton: {
+    paddingLeft: 5
+  } as ViewStyle,
+
+  addBarIcon: {
+    fontSize: 25,
+    color: Colors.neonRed
+  } as TextStyle,
+
+  addBarText: {
+    color: Colors.neonRed,
+    marginLeft: -7,
+    fontSize: 15
+  } as TextStyle
 });
 
 export default Styles;

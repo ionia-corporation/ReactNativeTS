@@ -1,41 +1,45 @@
 import React from 'react';
-import { Header, Body, Title, Button, Left, Text } from 'native-base';
+import { ViewStyle } from 'react-native';
+import { Header, Body, Title, Button, Left, Right, Text } from 'native-base';
+import  Icon  from 'react-native-vector-icons/Ionicons';
 
 import { Styles , Colors} from '../styles/main';
 
 interface Props {
   title: string;
-  leftButton?: {
-    text?: string;
-    icon?: string;
-    onPess: Function;
-  };
+  backButton?: Function;
+  searchButton?: boolean;
 }
 
 export class HeaderComponent extends React.Component<Props> {
   render () {
-    const { title, leftButton } = this.props;
+    const { title, backButton, searchButton } = this.props;
 
     return (
       <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
-        {
-          leftButton && 
-          <Left>
-            <Button onPress={() => {
-              if (leftButton.onPess) leftButton.onPess();
+        <Left style={Styles.headerSide}>
+          {
+            backButton && 
+            <Button transparent onPress={() => {
+              backButton();
             }}>
-              <Text>
-                { leftButton.text || '' }
-              </Text>
+              <Icon name='ios-arrow-back' style={Styles.headerIcon}/>
             </Button>
-          </Left>
-        }
+          }
+        </Left>
 
-        <Body style={{alignItems: leftButton ? 'flex-start' : 'center'}}>
+        <Body style={Styles.headerBody}>
           <Title>
             <Text style={Styles.headerTitle}>{ title }</Text>
           </Title>
         </Body>
+
+        <Right style={Styles.headerSide}>
+          {
+            searchButton &&
+            <Icon name='ios-search' style={Styles.headerIcon}/>
+          }
+        </Right>
       </Header>
     );
   }

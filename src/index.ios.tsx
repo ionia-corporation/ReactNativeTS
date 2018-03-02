@@ -15,10 +15,6 @@ import {
 } from 'react-navigation';
 
 import {
-  HomeScreen,
-  GroupList,
-  SubGroupsScreen,
-  GroupDevices,
   DeviceList,
   DeviceScreen,
   LoginScreen,
