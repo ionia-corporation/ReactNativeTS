@@ -112,7 +112,7 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.formItem} stackedLabel>
-                <Label>{ firstName ? 'Email' : '' }</Label>
+                <Label>{ firstName ? 'First Name' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
