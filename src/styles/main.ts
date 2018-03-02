@@ -5,9 +5,7 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const paragraph = {
   paddingTop: 10,
-  paddingBottom: 10,
-  paddingLeft: 20,
-  paddingRight: 20,
+  paddingBottom: 10
 } as TextStyle;
 
 const loginSocialButton = {
@@ -46,6 +44,10 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.darkGray
   } as ViewStyle,
 
+  switch: {
+    transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
+  } as ViewStyle,
+
   loginHeader: {
     backgroundColor: Colors.neonRed,
     display: 'flex',
@@ -71,8 +73,22 @@ export const Styles = StyleSheet.create({
   loginHeaderTitle: {
     fontSize: 25,
     fontWeight: 'bold',
-    marginTop: 15
+    marginTop: 15,
+    backgroundColor: 'transparent'
   } as TextStyle,
+
+  loginSignUpText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%'
+  } as ViewStyle,
+
+  loginSignUpLink: {
+    paddingLeft: 5,
+    paddingTop: 0,
+    paddingBottom: Platform.OS === 'ios' ? 5 : 2
+  } as ViewStyle,
 
   loginSocialButton,
 
@@ -217,13 +233,15 @@ export const Styles = StyleSheet.create({
 
   link: {
     color: Colors.neonRed,
+    paddingLeft: 0,
+    paddingRight: 0
   } as TextStyle,
 
   paragraph,
 
   errorMessage: {
-    ...paragraph,
-    color: '#FF4833'
+    color: '#FF4833',
+    textAlign: 'center'
   },
 
   footerTab: {
@@ -260,7 +278,8 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   formItem: {
-    marginLeft: 0
+    marginLeft: 0,
+    height: 58
   } as TextStyle,
 
   formLabel: {
@@ -303,6 +322,7 @@ export const Styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10
   } as ViewStyle,
 

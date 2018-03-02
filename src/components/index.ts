@@ -9,3 +9,4 @@ export * from './settings';
 export * from './account';
 export * from './help';
 export * from './add-bar';
+export * from './oauth-signin-buttons';

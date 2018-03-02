@@ -72,7 +72,8 @@ export const SignedOut = StackNavigator({
   }
 },
 {
-  initialRouteName: 'Login'
+  initialRouteName: 'Login',
+  headerMode: 'none'
 });
 
 const createRootNavigator = (signedIn = false) => {
