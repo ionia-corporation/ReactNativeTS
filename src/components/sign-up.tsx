@@ -38,18 +38,18 @@ interface SignUpState {
 }
 
 export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
+  state = {
+    requestStatus: RequestStatus.REQUEST_NOT_SENT,
+    error: null,
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    passwordConfirm: '',
+  };
+
   constructor(props: SignUpProps) {
     super(props);
-
-    this.state = {
-      requestStatus: RequestStatus.REQUEST_NOT_SENT,
-      error: '',
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      passwordConfirm: '',
-    };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,8 +57,10 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
     const { requestStatus } = this.state;
 
     if (requestStatus === RequestStatus.REQUEST_SENT && !loading && !error) {
-      this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
+      return this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
     }
+
+    this.setState({error});
   }
 
   submit() {
@@ -96,9 +98,9 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
   }
 
   render() {
-    const { error, loading } = this.props;
+    const { loading } = this.props;
     const { navigate } = this.props.navigation;
-    const { firstName, lastName, email, password, passwordConfirm, requestStatus } = this.state;
+    const { firstName, lastName, email, password, passwordConfirm, requestStatus, error } = this.state;
 
     if (requestStatus === RequestStatus.REQUEST_SUCCESS) {
       return this.userCreatedAlert();
@@ -175,9 +177,12 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
               </Item>
             </Form>
 
-            <Text style={Styles.errorMessage}>
-              { error }
-            </Text>
+            {
+              error &&
+              <Text style={Styles.errorMessage}>
+                { error }
+              </Text>
+            }
 
             <Button 
               style={Styles.formButton}

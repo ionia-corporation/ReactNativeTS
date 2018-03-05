@@ -156,17 +156,13 @@ export const signup = (userOptions) => {
     } catch (err) {
       let errorMsg = err.message || 'An error has occurred. Please try it again.';
 
-      // check for Xively error first, then localAPI error
-      if (err.response && err.response.body && err.response.body.message) {
-        // error on HTTP REQUEST
-        if (err.response.body.message === 'The user already exists.') {
-          // TODO: Link to login screen?
-          errorMsg = 'This email is already registered, did you mean to login?';
-        } else if (err.response.body.message.strengthValue >= 0) {
-          errorMsg = `Invalid password. Your password must be between 8 and 128
-            characters in length. It must not repeat 3 characters in a row. It must not
-            contain any of the top 20 passwords. It must not contain your email username.`;
-        }
+      if (errorMsg === 'The user already exists.') {
+        // TODO: Link to login screen?
+        errorMsg = 'This email is already registered, did you mean to login?';
+      } else if (errorMsg === 'emailAddress is required; password is required') {
+        errorMsg = 'Email Address is required\nPassword is required';
+      } else if (errorMsg.indexOf('"strengthValue":0') > -1) {
+        errorMsg = 'Invalid password.\nYour password must be between 8 and 128 characters in length. It must not repeat 3 characters in a row. It must not contain any of the top 20 passwords. It must not contain your email username.';
       }
 
       dispatch(signupFailure(errorMsg));

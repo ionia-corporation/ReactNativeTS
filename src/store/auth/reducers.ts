@@ -24,7 +24,7 @@ export const reducer: Reducer = (state = InitialState , action) => {
     case actions.AUTH_LOGIN_SUCCESS:
       return { ...state, isAuthenticated: true, loading: false };
     case actions.AUTH_LOGIN_FAILURE:
-      return { ...state, error: action.payload }
+      return { ...state, error: action.payload, loading: false }
     case actions.AUTH_LOGOUT_REQUEST:
       return { ...state, loading: true, error: undefined }
     case actions.AUTH_LOGOUT_SUCCESS:

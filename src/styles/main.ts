@@ -251,7 +251,9 @@ export const Styles = StyleSheet.create({
 
   errorMessage: {
     color: '#FF4833',
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '80%',
+    paddingTop: 10
   },
 
   footerTab: {

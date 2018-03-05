@@ -28,16 +28,23 @@ interface LoginState {
   username?: string;
   password?: string;
   rememberMe?: boolean;
+  error?: string;
 }
 
 export class LoginScreenComponent extends React.Component<LoginProps, LoginState> {
+  state = {
+    username: '',
+    password: '',
+    rememberMe: false,
+    error: null
+  };
+
   constructor(props: LoginProps) {
     super(props);
-    this.state = {
-      username: '',
-      password: '',
-      rememberMe: false,
-    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({error: nextProps.error});
   }
 
   async submit() {
@@ -51,7 +58,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 
   render() {
     const { navigate } = this.props.navigation;
-    const { username, password } = this.state;
+    const { username, password, error } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
@@ -107,9 +114,12 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               </View>
             </Form>
 
-            <Text style={Styles.errorMessage}>
-              { this.props.error }
-            </Text>
+            {
+              error &&
+              <Text style={Styles.errorMessage}>
+                { error }
+              </Text>
+            }
 
             <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
               <Text>SIGN IN</Text>
