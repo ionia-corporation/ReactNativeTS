@@ -1,6 +1,20 @@
 import * as React from 'react';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
+import {
+  Container,
+  Header,
+  Content,
+  Form,
+  Item,
+  Input,
+  Text,
+  Button,
+  View,
+  Label,
+  Card,
+  CardItem,
+  Body
+} from 'native-base';
 import { Image, Switch, ImageBackground } from "react-native";
 import { connect, Dispatch } from 'react-redux';
 
@@ -63,6 +77,19 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
     return (
       <Container style={Styles.viewContainer}>
         <Content>
+          {
+            error &&
+            <Card style={{borderRadius: 0, marginBottom: 0, marginLeft: 0, marginTop: 0, marginRight: 0, padding: 5, paddingTop: 15}}>
+              <CardItem>
+                <Body>
+                  <Text style={{fontSize: 13, fontWeight: 'bold'}}>
+                    { error }
+                  </Text>
+                </Body>
+              </CardItem>
+            </Card>
+          }
+
           <ImageBackground style={Styles.loginHeader} source={require('../../images/loginHeader.png')}>
             <Image source={require('../../images/g-logo.png')} style={Styles.loginHeaderImage} />
 
@@ -113,13 +140,6 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
                 </Text>
               </View>
             </Form>
-
-            {
-              error &&
-              <Text style={Styles.errorMessage}>
-                { error }
-              </Text>
-            }
 
             <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
               <Text>SIGN IN</Text>
