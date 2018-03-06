@@ -5,10 +5,15 @@ const DEVICE_HEIGHT = Dimensions.get('window').height;
 
 const paragraph = {
   paddingTop: 10,
-  paddingBottom: 10,
-  paddingLeft: 20,
-  paddingRight: 20,
+  paddingBottom: 10
 } as TextStyle;
+
+const loginSocialButton = {
+  alignSelf: 'center',
+  paddingLeft: 25,
+  paddingRight: 25,
+  marginTop: 15
+} as ViewStyle
 
 export const Colors = {
   white: '#ffffff',
@@ -19,7 +24,9 @@ export const Colors = {
   claret: '#6c001b',
   black: '#101010',
   warmGrey: '#7c7c7c',
-  offGray: '#434343'
+  offGray: '#434343',
+  facebook: '#293e6a',
+  google: '#2e5cab'
 };
 
 export const Styles = StyleSheet.create({
@@ -36,6 +43,73 @@ export const Styles = StyleSheet.create({
   viewContainer: {
     backgroundColor: Colors.darkGray
   } as ViewStyle,
+
+  switch: {
+    transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
+  } as ViewStyle,
+
+  loginHeader: {
+    backgroundColor: Colors.neonRed,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: 50,
+    paddingBottom: 50
+  } as ImageStyle,
+
+  loginBody: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  } as ViewStyle,
+
+  loginHeaderImage: {
+    flex: 1,
+    width: 100,
+    height: 100,
+    resizeMode: 'contain'
+  } as ImageStyle,
+
+  loginHeaderTitle: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginTop: 15,
+    backgroundColor: 'transparent'
+  } as TextStyle,
+
+  loginSignUpText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: '100%'
+  } as ViewStyle,
+
+  loginSignUpLink: {
+    paddingLeft: 5,
+    paddingTop: 0,
+    paddingBottom: Platform.OS === 'ios' ? 5 : 2
+  } as ViewStyle,
+
+  loginSocialButton,
+
+  loginFacebookButton: {
+    ...loginSocialButton,
+    backgroundColor: Colors.facebook
+  } as ViewStyle,
+
+  loginGoogleButton: {
+    ...loginSocialButton,
+    backgroundColor: Colors.google,
+    paddingRight: 35
+  } as ViewStyle,
+
+  loginSocialIcon: {
+    fontSize: 20,
+    color: Colors.white
+  } as TextStyle,
+
+  loginSocialText: {
+  } as TextStyle,
 
   header: {
     backgroundColor: Colors.neonRed
@@ -158,27 +232,17 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   link: {
-    color: '#11A0F8',
+    color: Colors.neonRed,
+    paddingLeft: 0,
+    paddingRight: 0
   } as TextStyle,
 
   paragraph,
 
   errorMessage: {
-    ...paragraph,
-    color: '#FF4833'
+    color: '#FF4833',
+    textAlign: 'center'
   },
-
-  switchContainer: {
-    width: DEVICE_WIDTH,
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    alignContent: 'center',
-    paddingLeft: 25,
-    marginTop: -5,
-    paddingTop: 0,
-  } as ViewStyle,
 
   footerTab: {
     backgroundColor: '#131313'
@@ -205,6 +269,65 @@ export const Styles = StyleSheet.create({
     color: Colors.neonRed,
     marginLeft: -7,
     fontSize: 15
+  } as TextStyle,
+
+  form: {
+    width: '80%',
+    display: 'flex',
+    flexDirection: 'column'
+  } as ViewStyle,
+
+  formItem: {
+    marginLeft: 0,
+    height: 58
+  } as TextStyle,
+
+  formLabel: {
+    fontSize: 20
+  } as TextStyle,
+
+  formInput: {
+    color: Colors.white,
+    fontSize: 20,
+    paddingBottom: 0,
+    paddingTop: 0
+  } as TextStyle,
+
+  formInputPass: {
+    width: '80%'
+  } as TextStyle,
+
+  formButton: {
+    alignSelf: 'center',
+    paddingLeft: 70,
+    paddingRight: 70,
+    marginTop: 10
+  } as ViewStyle,
+
+  formParagraph: {
+    ...paragraph,
+    color: Colors.lightGray
+  } as TextStyle,
+
+  formInputLink: {
+    position: 'absolute',
+    right: 0,
+    bottom: 12,
+    color: Colors.warmGrey,
+    fontWeight: 'bold',
+    fontSize: 14
+  } as TextStyle,
+
+  switchContainer: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10
+  } as ViewStyle,
+
+  switchText: {
+    color: Colors.lightGray
   } as TextStyle
 });
 

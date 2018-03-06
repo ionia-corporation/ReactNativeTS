@@ -1,9 +1,12 @@
 import * as React from 'react';
-import xively from '../lib/xively';
 import { NavigationScreenConfigProps, NavigationActions } from 'react-navigation';
-import { KeyboardAvoidingView, View, Text, TextInput, Button, Image, Switch } from "react-native";
+import { Container, Header, Content, Form, Item, Input, Text, Button, View, Label } from 'native-base';
+import { Image, Switch, ImageBackground } from "react-native";
 import { connect, Dispatch } from 'react-redux';
+
+import xively from '../lib/xively';
 import Styles from '../styles/main';
+import { OauthSigninButtons } from './index'
 import { AppState } from '../types/index';
 import { login } from '../store/auth/actions';
 
@@ -15,7 +18,6 @@ interface ReduxStateProps {
   error: string;
 }
 
-
 interface LoginProps extends
   ReduxDispatchProps,
   ReduxStateProps,
@@ -23,13 +25,10 @@ interface LoginProps extends
   NavigationScreenConfigProps { }
 
 interface LoginState {
-  errors?: string;
   username?: string;
   password?: string;
   rememberMe?: boolean;
 }
-
-const tabsNames = ['Devices', 'Settings', 'Account', 'Help'];
 
 export class LoginScreenComponent extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
@@ -52,56 +51,82 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 
   render() {
     const { navigate } = this.props.navigation;
+    const { username, password } = this.state;
 
     return (
-      <KeyboardAvoidingView behavior='padding' style={Styles.container}>
-        <Image style={Styles.logo} source={require('../../images/logo.png')} />
+      <Container style={Styles.viewContainer}>
+        <Content>
+          <ImageBackground style={Styles.loginHeader} source={require('../../images/loginHeader.png')}>
+            <Image source={require('../../images/g-logo.png')} style={Styles.loginHeaderImage} />
 
-        <Text style={Styles.title}>
-          Sign In
-        </Text>
+            <Text style={Styles.loginHeaderTitle}>
+              GENERIC SYSTEMS
+            </Text>
+          </ImageBackground>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            keyboardType='email-address'
-            autoCapitalize='none'
-            autoCorrect={false}
-            placeholder='Email Address'
-            onChangeText={(text) => this.setState({ username: text })}
-            style={Styles.input}
-          />
-        </View>
+          <View style={Styles.loginBody}>
+            <Form style={Styles.form}>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ username ? 'Email' : '' }</Label>
 
-        <View style={Styles.inputWrapper}>
-          <TextInput
-            placeholder='Password'
-            secureTextEntry={true}
-            onChangeText={(text) => this.setState({ password: text })}
-            style={Styles.input}
-          />
-        </View>
+                <Input
+                  style={Styles.formInput}
+                  placeholder='Email'
+                  keyboardType='email-address'
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  onChangeText={(text) => this.setState({ username: text })}
+                />
+              </Item>
 
-        <View style={Styles.switchContainer}>
-          <Switch
-            value={this.state.rememberMe}
-            onValueChange={(value) => this.setState({rememberMe: value})}
-          />
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ password ? 'Password' : '' }</Label>
 
-          <Text>
-            Stay signed in
-          </Text>
-        </View>
+                <Input
+                  style={[Styles.formInput, Styles.formInputPass]}
+                  placeholder='Password'
+                  secureTextEntry={true}
+                  onChangeText={(text) => this.setState({ password: text })}
+                />
 
-        <Text>
-          { this.props.error }
-        </Text>
+                <Text style={Styles.formInputLink}>
+                  FORGOT?
+                </Text>
+              </Item>
 
-        <Button title='Login' onPress={this.submit.bind(this)} />
+              <View style={Styles.switchContainer}>
+                <Switch
+                  style={Styles.switch}
+                  value={this.state.rememberMe}
+                  onValueChange={(value) => this.setState({rememberMe: value})}
+                />
 
-        <Text style={Styles.paragraph} onPress={() => navigate('SignUp')}>
-          Don't have an account? <Text style={Styles.link} >Sign up</Text>
-        </Text>
-      </KeyboardAvoidingView>
+                <Text style={Styles.switchText}>
+                  Stay signed in
+                </Text>
+              </View>
+            </Form>
+
+            <Text style={Styles.errorMessage}>
+              { this.props.error }
+            </Text>
+
+            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+              <Text>SIGN IN</Text>
+            </Button>
+
+            <View style={Styles.loginSignUpText}>
+              <Text style={Styles.formParagraph}>Don't have an account?</Text>
+
+              <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('SignUp')}>
+                <Text uppercase={false} style={Styles.link}>Sign up</Text>
+              </Button>
+            </View>
+
+            <OauthSigninButtons facebook google/>
+          </View>
+        </Content>
+      </Container>
     );
   }
 }
