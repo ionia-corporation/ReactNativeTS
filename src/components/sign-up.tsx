@@ -7,7 +7,7 @@ import Styles from '../styles/main';
 import { RequestStatus } from '../types/index';
 import { AppState } from '../types/index';
 import { signup, signupAccess, signupFailure } from '../store/auth/actions';
-import { HeaderComponent, AddBar } from './index';
+import { HeaderComponent, AddBar, ErrorMessage } from './index';
 
 interface ReduxDispatchProps {
   signup: Function;
@@ -108,9 +108,11 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
 
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='Sign Up'/>
-
         <Content style={Styles.signupContent}>
+          <ErrorMessage error={error}/>
+
+          <HeaderComponent title='Sign Up'/>
+
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.formItem} stackedLabel>
@@ -176,13 +178,6 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
                 />
               </Item>
             </Form>
-
-            {
-              error &&
-              <Text style={Styles.errorMessage}>
-                { error }
-              </Text>
-            }
 
             <Button 
               style={Styles.formButton}
