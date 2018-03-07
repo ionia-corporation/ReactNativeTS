@@ -27,10 +27,14 @@ export function getJson(options: CommOptions): Promise <any> {
       // TODO: better error messaging here
       if (!res.ok) {
         if (body && body.message) {
-          let message = body.message;
+          let message;
 
-          if (Object.prototype.toString.call(message).indexOf('Object') > -1 ) {
-            message = JSON.stringify(message);
+          if (body.data && body.data.errorDescription && typeof body.data.errorDescription === 'string') {
+            message = body.data.errorDescription;
+          } else if (body.message && typeof body.message === 'string') {
+            message = body.message;
+          } else {
+            message = 'Something went wrong, please try again.';
           }
 
           reject(new Error(message));

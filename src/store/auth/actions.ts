@@ -161,7 +161,7 @@ export const signup = (userOptions) => {
         errorMsg = 'This email is already registered, did you mean to login?';
       } else if (errorMsg === 'emailAddress is required; password is required') {
         errorMsg = 'Email Address is required\nPassword is required';
-      } else if (errorMsg.indexOf('"strengthValue":0') > -1) {
+      } else if (errorMsg === 'The password is not valid.') {
         errorMsg = 'Invalid password.\nYour password must be between 8 and 128 characters in length. It must not repeat 3 characters in a row. It must not contain any of the top 20 passwords. It must not contain your email username.';
       }
 
