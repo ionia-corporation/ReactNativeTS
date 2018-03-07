@@ -44,6 +44,14 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.darkGray
   } as ViewStyle,
 
+  button: {
+    alignSelf: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    borderRadius: 30,
+    backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
   switch: {
     transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
   } as ViewStyle,
@@ -56,12 +64,6 @@ export const Styles = StyleSheet.create({
     paddingTop: 50,
     paddingBottom: 50
   } as ImageStyle,
-
-  loginBody: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center'
-  } as ViewStyle,
 
   loginHeaderImage: {
     flex: 1,
@@ -111,6 +113,14 @@ export const Styles = StyleSheet.create({
   loginSocialText: {
   } as TextStyle,
 
+  signupContent: {
+    marginTop: 20
+  } as ViewStyle,
+
+  signupSuccessful: {
+    marginTop: 50
+  } as ViewStyle,
+
   header: {
     backgroundColor: Colors.neonRed
   } as ViewStyle,
@@ -124,7 +134,7 @@ export const Styles = StyleSheet.create({
   headerSide: {
     display: 'flex',
     flex: 0,
-    minWidth: '15%'
+    minWidth: '10%'
   } as ViewStyle,
 
   headerTitle: {
@@ -241,7 +251,9 @@ export const Styles = StyleSheet.create({
 
   errorMessage: {
     color: '#FF4833',
-    textAlign: 'center'
+    textAlign: 'center',
+    width: '80%',
+    paddingTop: 10
   },
 
   footerTab: {
@@ -275,6 +287,12 @@ export const Styles = StyleSheet.create({
     width: '80%',
     display: 'flex',
     flexDirection: 'column'
+  } as ViewStyle,
+
+  formContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   } as ViewStyle,
 
   formItem: {

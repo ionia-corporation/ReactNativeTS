@@ -26,9 +26,23 @@ export function getJson(options: CommOptions): Promise <any> {
       body = await res.json();
       // TODO: better error messaging here
       if (!res.ok) {
-        reject(new Error(body && body.message ? body.message
-          : 'Server sent error code ' + res.status + '\n\n' + JSON.stringify(body)));
+        if (body && body.message) {
+          let message;
+
+          if (body.data && body.data.errorDescription && typeof body.data.errorDescription === 'string') {
+            message = body.data.errorDescription;
+          } else if (body.message && typeof body.message === 'string') {
+            message = body.message;
+          } else {
+            message = 'Something went wrong, please try again.';
+          }
+
+          reject(new Error(message));
+        } else {
+          reject(new Error('Server sent error code ' + res.status + '\n\n' + JSON.stringify(body)));
+        }
       }
+
       if (body === null && res.status !== 204) {
         reject(new Error('Cannot get body object'));
       }
