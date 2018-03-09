@@ -16,6 +16,7 @@ interface ReduxDispatchProps {
 
 interface ReduxStateProps {
   error: string;
+  loading: boolean;
 }
 
 interface LoginProps extends
@@ -44,7 +45,9 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({error: nextProps.error});
+    if (this.state.error !== nextProps.error) {
+      this.setState({error: nextProps.error});
+    }
   }
 
   async submit() {
@@ -58,8 +61,8 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
   }
 
   render() {
-    const { navigate } = this.props.navigation;
-    const { username, password, error } = this.state;
+    const { navigation, loading } = this.props;
+    const { username, password, error, rememberMe } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
@@ -107,7 +110,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               <View style={Styles.switchContainer}>
                 <Switch
                   style={Styles.switch}
-                  value={this.state.rememberMe}
+                  value={rememberMe}
                   onValueChange={(value) => this.setState({rememberMe: value})}
                 />
 
@@ -117,14 +120,22 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               </View>
             </Form>
 
-            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+            <Button
+              style={Styles.formButton}
+              rounded
+              dark
+              disabled={loading}
+              onPress={() => this.submit()}>
               <Text>SIGN IN</Text>
             </Button>
 
             <View style={Styles.loginSignUpText}>
               <Text style={Styles.formParagraph}>Don't have an account?</Text>
 
-              <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('SignUp')}>
+              <Button
+                transparent
+                style={Styles.loginSignUpLink}
+                onPress={() => navigation.navigate('SignUp')}>
                 <Text uppercase={false} style={Styles.link}>Sign up</Text>
               </Button>
             </View>
@@ -140,6 +151,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 function mapStateToProps(state: AppState, ownProps: LoginProps) {
   return {
     error: state.auth.error,
+    loading: state.auth.loading
   };
 }
 
