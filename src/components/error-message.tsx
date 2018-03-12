@@ -31,12 +31,15 @@ export class ErrorMessage extends React.Component <Props, State> {
     const { error } = this.props
     const { error: nextError } = nextProps;
 
-    return (error || nextError) && error !== nextError;
+    return (error || nextError) && error !== nextError ? true : false;
   }
 
   componentDidUpdate() {
     const { error } = this.props;
     const { errOpacity, errPosition } = this.state;
+
+    errOpacity.stopAnimation();
+    errPosition.stopAnimation();
 
     if (error) {
       Animated.timing(errOpacity, {
