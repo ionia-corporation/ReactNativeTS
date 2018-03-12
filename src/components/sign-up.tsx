@@ -54,13 +54,15 @@ export class SignUpComponent extends React.Component<SignUpProps, SignUpState> {
 
   componentWillReceiveProps(nextProps) {
     const { error, loading } = nextProps;
-    const { requestStatus } = this.state;
+    const { requestStatus, error: stateErr } = this.state;
 
     if (requestStatus === RequestStatus.REQUEST_SENT && !loading && !error) {
       return this.setState({ requestStatus : RequestStatus.REQUEST_SUCCESS });
     }
 
-    this.setState({error});
+    if (stateErr !== error) {
+      this.setState({error});
+    }
   }
 
   submit() {
