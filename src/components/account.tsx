@@ -11,32 +11,23 @@ import { AppState } from '../types/index';
 import { logout } from '../store/auth/actions';
 
 interface ReduxStateProps {
-
 }
 
 interface ReduxDispatchProps {
-  logout: Function;
 }
 
 interface Props extends 
   ReduxStateProps,
-  ReduxDispatchProps,
-  NavigationScreenConfigProps {}
+  ReduxDispatchProps {}
 
 export class AccountComponent extends React.Component<Props> {
-  async handleSignOut() {
-    await this.props.logout();
-  }
 
   render() {
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='Account'/>
+        <HeaderComponent title='Account' logoutButton/>
 
         <Content>
-          <Button onPress={this.handleSignOut.bind(this)}>
-            <Text>Logout</Text>
-          </Button>
         </Content>
       </Container>
     );
@@ -50,7 +41,6 @@ function mapStateToProps(state: AppState, ownProps: Props): ReduxStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: Props): ReduxDispatchProps {
   return {
-    logout: (userOptions) => dispatch(logout(userOptions))
   }
 }
 
