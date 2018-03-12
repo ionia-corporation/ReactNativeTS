@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Text } from 'react-native';
+import { Image } from 'react-native';
 import { connect, Dispatch } from 'react-redux';
-import { Container, Content, Title } from 'native-base';
+import { Container, Content, Title, View } from 'native-base';
 import { values } from 'lodash';
 import { NavigationScreenConfigProps, NavigationParams, NavigationInitAction } from 'react-navigation';
 
@@ -16,7 +16,7 @@ import { isEqual } from 'lodash';
 
 
 interface ReduxStateProps {
-  loading: boolean;
+  loadingData: boolean;
   devices: Array<Device>;
   loadedOnce: boolean;
   isAuthenticated: boolean;
@@ -40,11 +40,14 @@ interface Props extends
   ReduxDispatchProps { }
 
 function mapStateToProps(state: AppState) {
+  const { blueprint, profile, auth } = state
+  const { devices, organizations } = blueprint;
+
   return {
-    loading: state.blueprint.devices.loading || state.blueprint.organizations.loading || state.profile.loading,
-    devices: values(state.blueprint.devices.data),
-    loadedOnce: state.blueprint.devices.loadedOnce,
-    isAuthenticated: state.auth.isAuthenticated,
+    loadingData: devices.loading || organizations.loading || profile.loading,
+    devices: values(devices.data),
+    loadedOnce: devices.loadedOnce,
+    isAuthenticated: auth.isAuthenticated
   };
 }
 
@@ -60,26 +63,33 @@ function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps) {
 
 interface State {
   subscribed: boolean;
+  authChecked: boolean;
 }
+
 class AppComponent extends React.Component<Props, State> {
-  
   state = {
-    subscribed: false
+    subscribed: false,
+    authChecked: false
   }
 
   async componentDidMount() {
     await this.props.checkAuthentication();
+    this.setState({authChecked: true});
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    const { devices, isAuthenticated, loadingData, loadedOnce } = this.props;
+
     if (
-      !isEqual(this.props.devices, nextProps.devices) ||
-      this.props.isAuthenticated !== nextProps.isAuthenticated ||
-      this.props.loading !== nextProps.loading ||
-      this.props.loadedOnce !== nextProps.loadedOnce
+      !isEqual(devices, nextProps.devices) ||
+      isAuthenticated !== nextProps.isAuthenticated ||
+      loadingData !== nextProps.loadingData ||
+      loadedOnce !== nextProps.loadedOnce ||
+      this.state.authChecked !== nextState.authChecked
      ) {
        return true;
      }
+     
      return false;
   }
 
@@ -87,13 +97,15 @@ class AppComponent extends React.Component<Props, State> {
   // This happens while navigating to different pages on the app
   // TODO: Is this the source of our rerendering problems!?
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.isAuthenticated && !this.state.subscribed && this.props.devices.length > 0) {
+    const { isAuthenticated, devices, subscribeDevices, loadedOnce } = this.props;
+
+    if (isAuthenticated && !this.state.subscribed && devices.length > 0) {
       // make sure this runs only once
-      this.props.subscribeDevices(this.props.devices);
+      subscribeDevices(devices);
       this.setState({ subscribed: true })
     }
 
-    if (!this.props.isAuthenticated || this.props.loadedOnce) {
+    if (!isAuthenticated || loadedOnce) {
       return;
     }
 
@@ -107,21 +119,20 @@ class AppComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { isAuthenticated, createRootNavigator } = this.props;
-    console.log(this.props)
-    // if (!isAuthenticated) {
-    //   return (
-    //     <Container>
-    //       <Content>
-    //         <Title style={Styles.sectionStatus}>
-    //           Loading
-    //         </Title>
-    //       </Content>
-    //     </Container>
-    //   );
-    // }
+    const { isAuthenticated, createRootNavigator, loadingData } = this.props;
 
-    const Layout = createRootNavigator(isAuthenticated)
+    if (!this.state.authChecked || loadingData) {
+      return (
+        <Container style={Styles.viewContainer}>
+          <Content contentContainerStyle={Styles.loadingContent}>
+            <Image source={require('../../images/g-logo.png')} style={Styles.loadingImage}/>
+          </Content>
+        </Container>
+      );
+    }
+
+    const Layout = createRootNavigator(isAuthenticated);
+
     return <Layout />;
   }
 }

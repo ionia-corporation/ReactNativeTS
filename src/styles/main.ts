@@ -56,6 +56,19 @@ export const Styles = StyleSheet.create({
     transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
   } as ViewStyle,
 
+  loadingContent: {
+    justifyContent: 'center',
+    flex: 1
+  } as ViewStyle,
+
+  loadingImage: {
+    alignSelf: 'center',
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    opacity: .4
+  } as ImageStyle,
+
   loginHeader: {
     backgroundColor: Colors.neonRed,
     display: 'flex',
