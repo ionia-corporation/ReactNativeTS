@@ -6,7 +6,7 @@ import { connect, Dispatch } from 'react-redux';
 
 import xively from '../lib/xively';
 import Styles from '../styles/main';
-import { OauthSigninButtons } from './index'
+import { OauthSigninButtons, ErrorMessage } from './index'
 import { AppState } from '../types/index';
 import { login } from '../store/auth/actions';
 
@@ -16,6 +16,7 @@ interface ReduxDispatchProps {
 
 interface ReduxStateProps {
   error: string;
+  loading: boolean;
 }
 
 interface LoginProps extends
@@ -36,7 +37,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
     username: '',
     password: '',
     rememberMe: false,
-    error: null
+    error: null,
   };
 
   constructor(props: LoginProps) {
@@ -44,7 +45,9 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({error: nextProps.error});
+    if (this.state.error !== nextProps.error) {
+      this.setState({error: nextProps.error});
+    }
   }
 
   async submit() {
@@ -53,16 +56,19 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
       password: this.state.password,
       renewalType: this.state.rememberMe ? 'remembered' : 'short',
     };
+
     await this.props.login(userOptions);
   }
 
   render() {
-    const { navigate } = this.props.navigation;
-    const { username, password, error } = this.state;
+    const { navigation, loading } = this.props;
+    const { username, password, error, rememberMe } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
         <Content>
+          <ErrorMessage error={error}/>
+
           <ImageBackground style={Styles.loginHeader} source={require('../../images/loginHeader.png')}>
             <Image source={require('../../images/g-logo.png')} style={Styles.loginHeaderImage} />
 
@@ -104,7 +110,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               <View style={Styles.switchContainer}>
                 <Switch
                   style={Styles.switch}
-                  value={this.state.rememberMe}
+                  value={rememberMe}
                   onValueChange={(value) => this.setState({rememberMe: value})}
                 />
 
@@ -114,21 +120,22 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
               </View>
             </Form>
 
-            {
-              error &&
-              <Text style={Styles.errorMessage}>
-                { error }
-              </Text>
-            }
-
-            <Button style={Styles.formButton} rounded dark onPress={() => this.submit()}>
+            <Button
+              style={Styles.formButton}
+              rounded
+              dark
+              disabled={loading}
+              onPress={() => this.submit()}>
               <Text>SIGN IN</Text>
             </Button>
 
             <View style={Styles.loginSignUpText}>
               <Text style={Styles.formParagraph}>Don't have an account?</Text>
 
-              <Button transparent style={Styles.loginSignUpLink} onPress={() => navigate('SignUp')}>
+              <Button
+                transparent
+                style={Styles.loginSignUpLink}
+                onPress={() => navigation.navigate('SignUp')}>
                 <Text uppercase={false} style={Styles.link}>Sign up</Text>
               </Button>
             </View>
@@ -144,6 +151,7 @@ export class LoginScreenComponent extends React.Component<LoginProps, LoginState
 function mapStateToProps(state: AppState, ownProps: LoginProps) {
   return {
     error: state.auth.error,
+    loading: state.auth.loading
   };
 }
 

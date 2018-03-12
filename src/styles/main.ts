@@ -114,7 +114,7 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   signupContent: {
-    marginTop: 20
+    // marginTop: 20
   } as ViewStyle,
 
   signupSuccessful: {
@@ -250,11 +250,19 @@ export const Styles = StyleSheet.create({
   paragraph,
 
   errorMessage: {
-    color: '#FF4833',
-    textAlign: 'center',
-    width: '80%',
-    paddingTop: 10
-  },
+    fontSize: 13,
+    fontWeight: 'bold'
+  } as TextStyle,
+
+  errorContainer: {
+    borderRadius: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    marginTop: 0,
+    marginRight: 0,
+    padding: 5,
+    paddingTop: 18
+  } as ViewStyle,
 
   footerTab: {
     backgroundColor: '#131313'
