@@ -31,14 +31,14 @@ export class ErrorMessage extends React.Component <Props, State> {
     const { error } = this.props
     const { error: nextError } = nextProps;
 
-    return !(!error && !nextError) && (error !== nextError);
+    return (error || nextError) && error !== nextError;
   }
 
-  componentDidUpdate(prevProps) {
-    const { prevError } = prevProps;
+  componentDidUpdate() {
     const { error } = this.props;
     const { errOpacity, errPosition } = this.state;
-    if (!prevError && error) {
+
+    if (error) {
       Animated.timing(errOpacity, {
         toValue: errEndOpacity,
         duration: errOpacityDuration
@@ -49,14 +49,18 @@ export class ErrorMessage extends React.Component <Props, State> {
           easing: Easing.in(Easing.ease)
         }).start()
       );
+    } else {
+      Animated.timing(errPosition, {
+        toValue: errInicialPosition,
+        duration: errPositionDuration,
+        easing: Easing.out(Easing.ease)
+      }).start(() =>
+        Animated.timing(errOpacity, {
+          toValue: errInitialOpacity,
+          duration: errOpacityDuration
+        }).start()
+      );
     }
-  }
-
-  componentWillUnmount() {
-    this.setState({
-      errOpacity: new Animated.Value(errInitialOpacity),
-      errPosition: new Animated.Value(errInicialPosition)
-    })
   }
 
   render() {
