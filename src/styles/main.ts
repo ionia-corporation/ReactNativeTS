@@ -20,7 +20,8 @@ export const Colors = {
   gray: '#555555',
   neonRed: '#fb0240',
   lightGray: '#9c9c9c',
-  darkGray: '#323232',
+  middleGray: '#323232',
+  darkGray: '#2e2e2e',
   claret: '#6c001b',
   black: '#101010',
   warmGrey: '#7c7c7c',
@@ -41,7 +42,7 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   viewContainer: {
-    backgroundColor: Colors.darkGray
+    backgroundColor: Colors.middleGray
   } as ViewStyle,
 
   button: {
@@ -367,6 +368,35 @@ export const Styles = StyleSheet.create({
 
   switchText: {
     color: Colors.lightGray
+  } as TextStyle,
+
+  accountHeader: {
+    backgroundColor: Colors.neonRed,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginBottom: 30
+  } as ViewStyle,
+
+  accountIconContainer: {
+    borderWidth: 3,
+    borderColor: Colors.white,
+    borderRadius: 80,
+    width: 160,
+    height: 160,
+    backgroundColor: Colors.offGray,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    overflow: 'hidden',
+    marginBottom: -30
+  } as ViewStyle,
+
+  accountUserIcon: {
+    fontSize: 200,
+    backgroundColor: 'transparent',
+    color: Colors.darkGray,
+    marginTop: -10
   } as TextStyle
 });
 
