@@ -53,6 +53,31 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.neonRed
   } as ViewStyle,
 
+  modal: {
+    backgroundColor: Colors.neonRed,
+    height: '100%'
+  } as ViewStyle,
+
+  modalCloseButton: {
+    padding: 20,
+    paddingTop: 20,
+    paddingBottom: 20,
+    alignSelf: 'flex-end'
+  } as ViewStyle,
+
+  modalCloseIcon: {
+    fontSize: 25,
+    color: Colors.claret
+  } as TextStyle,
+
+  modalButton: {
+    alignSelf: 'center',
+    backgroundColor: Colors.claret,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 20,
+  } as ViewStyle,
+
   switch: {
     transform: Platform.OS === 'ios' ? [{scaleX: .8}, {scaleY: .8}] : []
   } as ViewStyle,
@@ -136,7 +161,8 @@ export const Styles = StyleSheet.create({
   } as ViewStyle,
 
   header: {
-    backgroundColor: Colors.neonRed
+    backgroundColor: Colors.neonRed,
+    borderBottomWidth: 0
   } as ViewStyle,
 
   headerBody: {

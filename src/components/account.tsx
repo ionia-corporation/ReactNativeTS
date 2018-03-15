@@ -10,30 +10,36 @@ import Styles from '../styles/main';
 import { AppState } from '../types/index';
 import { getProfile, UserProfile } from '../store/profile/reducers';
 import { updateProfile, updateFailure } from '../store/profile/actions';
+import RequestModal from './request-modal';
+import { login } from '../store/auth/actions';
 
 interface OwnProps {}
 
 interface ReduxStateProps {
   profile: UserProfile;
+  currentPassError: string;
 }
 
 interface ReduxDispatchProps {
   updateProfile;
   updateFailure;
+  login;
 }
 
 function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
   const profile: UserProfile = getProfile(state);
 
   return {
-    profile
+    profile,
+    currentPassError: state.auth.error
   };
 }
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
   return {
     updateProfile: (profile: UserProfile, newEmail?: string, updatePass?: { oldPass: string; newPass: string }) => dispatch(updateProfile(profile, newEmail, updatePass)),
-    updateFailure: (error: string) => dispatch(updateFailure(error))
+    updateFailure: (error: string) => dispatch(updateFailure(error)),
+    login: (userOptions) => dispatch(login(userOptions))
   };
 }
 
@@ -42,15 +48,20 @@ interface Props extends
   ReduxDispatchProps {}
 
 interface State {
-  userFirstName: string;
-  userLastName: string;
-  userEmail: string;
-  userPass: string;
-  userNewPass: string;
-  userPassConfirm: string;
+  userFirstName?: string;
+  userLastName?: string;
+  userEmail?: string;
+  userPass?: string;
+  userNewPass?: string;
+  userPassConfirm?: string;
+  showModal?: boolean;
 }
 
 export class AccountComponent extends React.Component<Props, State> {
+  state: Partial<State> = {
+    showModal: false
+  }
+
   componentWillMount() {
     const { firstName, lastName, emailAddress } = this.props.profile;
 
@@ -78,8 +89,9 @@ export class AccountComponent extends React.Component<Props, State> {
     }
   }
 
-  async save() {
-    const { userId, emailAddress } = this.props.profile;
+  async updateProfile() {
+    const { profile: propProfile, updateFailure, updateProfile } = this.props;
+    const { userId, emailAddress } = propProfile;
     const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
 
     const profile: UserProfile = {
@@ -93,34 +105,79 @@ export class AccountComponent extends React.Component<Props, State> {
 
     let updatePassword;
 
-    if (userPass) {
-      if ((userNewPass || userPassConfirm) && userNewPass !== userPassConfirm) {
-        return this.props.updateFailure('Password does not match the confirm password.');
-      }
+    if ((userNewPass || userPassConfirm) && userNewPass !== userPassConfirm) {
+      return updateFailure('Password does not match the confirm password.');
+    }
 
+    if ((userNewPass || userPassConfirm) && userNewPass === userPassConfirm) {
       updatePassword = {
         oldPass: userPass,
         newPass: userNewPass
       };
     }
 
-    this.props.updateProfile(profile, updateEmail, updatePassword);
+    if (updateEmail || updatePassword) {
+      return this.setState({showModal: true});
+    }
+
+    return updateProfile(profile);
+
+    // this.props.updateProfile(profile, updateEmail, updatePassword);
+  }
+
+  async checkCurrentPass() {
+    const userOptions = {
+      emailAddress: this.props.profile.emailAddress,
+      password: this.state.userPass
+    };
+
+    await this.props.login(userOptions);
+
+    if (this.props.currentPassError) {
+      console.log('CURRENT PASSWORD FAILED');
+    } else {
+      console.log('CURRENT PASSWORD WORKED');
+    }
   }
 
   render() {
-    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
+    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm, showModal } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
-        <HeaderComponent title='Account' logoutButton/>
+        <RequestModal
+          title='Enter Current Password'
+          submitText='Send'
+          showModal={showModal}
+          onModalClose={(newValue) => this.setState({showModal: newValue})}
+          onModalSubmit={() => this.checkCurrentPass()}
+          submitDisabled={userPass && userPass.length ? false : true}>
+          <View style={Styles.formContainer}>
+            <Form style={Styles.form}>
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ userPass ? 'Current Password' : '' }</Label>
 
-        <Content>
+                <Input
+                  style={Styles.formInput}
+                  placeholder={'Password'}
+                  secureTextEntry={true}
+                  value={userPass}
+                  onChangeText={(text) => this.setState({ userPass: text })}
+                />
+              </Item>
+            </Form>
+          </View>
+        </RequestModal>
+
+        <HeaderComponent title='Account' logoutButton>
           <View style={Styles.accountHeader}>
             <View style={Styles.accountIconContainer}>
               <Icon name='ios-person' style={Styles.accountUserIcon}/>
             </View>
           </View>
+        </HeaderComponent>
 
+        <Content>
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.formItem} stackedLabel>
@@ -163,18 +220,6 @@ export class AccountComponent extends React.Component<Props, State> {
               </Item>
 
               <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userPass ? 'Current Password' : '' }</Label>
-
-                <Input
-                  style={Styles.formInput}
-                  placeholder={'Password'}
-                  secureTextEntry={true}
-                  value={userPass}
-                  onChangeText={(text) => this.setState({ userPass: text })}
-                />
-              </Item>
-
-              <Item style={Styles.formItem} stackedLabel>
                 <Label>{ userNewPass ? 'Password' : '' }</Label>
 
                 <Input
@@ -203,7 +248,7 @@ export class AccountComponent extends React.Component<Props, State> {
               style={Styles.formButton}
               rounded
               dark
-              onPress={() => this.save()}>
+              onPress={() => this.updateProfile()}>
               <Text>DONE</Text>
             </Button>
           </View>

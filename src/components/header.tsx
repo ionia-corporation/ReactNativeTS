@@ -1,6 +1,5 @@
 import React from 'react';
-import { ViewStyle } from 'react-native';
-import { Header, Body, Title, Button, Left, Right, Text } from 'native-base';
+import { Header, Body, Title, Button, Left, Right, Text, View } from 'native-base';
 import  Icon  from 'react-native-vector-icons/Ionicons';
 import  IconMCI  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect, Dispatch } from 'react-redux';
@@ -28,38 +27,42 @@ export class HeaderApp extends React.Component<Props> {
   }
 
   render () {
-    const { title, backButton, searchButton, logoutButton } = this.props;
+    const { title, backButton, searchButton, logoutButton, children } = this.props;
 
     return (
-      <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
-        <Left style={Styles.headerSide}>
-          {
-            backButton && 
-            <Button transparent onPress={() => backButton()}>
-              <Icon name='ios-arrow-back' style={Styles.headerIcon}/>
-            </Button>
-          }
-        </Left>
+      <View>
+        <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
+          <Left style={Styles.headerSide}>
+            {
+              backButton && 
+              <Button transparent onPress={() => backButton()}>
+                <Icon name='ios-arrow-back' style={Styles.headerIcon}/>
+              </Button>
+            }
+          </Left>
 
-        <Body style={Styles.headerBody}>
-          <Title>
-            <Text style={Styles.headerTitle}>{ title }</Text>
-          </Title>
-        </Body>
+          <Body style={Styles.headerBody}>
+            <Title>
+              <Text style={Styles.headerTitle}>{ title }</Text>
+            </Title>
+          </Body>
 
-        <Right style={Styles.headerSide}>
-          {
-            searchButton &&
-            <Icon name='ios-search' style={Styles.headerIcon}/>
-          }
-          {
-            logoutButton &&
-            <Button transparent onPress={() => this.handleSignOut()}>
-              <IconMCI name='logout' style={Styles.headerIcon}/>
-            </Button>
-          }
-        </Right>
-      </Header>
+          <Right style={Styles.headerSide}>
+            {
+              searchButton &&
+              <Icon name='ios-search' style={Styles.headerIcon}/>
+            }
+            {
+              logoutButton &&
+              <Button transparent onPress={() => this.handleSignOut()}>
+                <IconMCI name='logout' style={Styles.headerIcon}/>
+              </Button>
+            }
+          </Right>
+        </Header>
+
+        { children }
+      </View>
     );
   }
 }
