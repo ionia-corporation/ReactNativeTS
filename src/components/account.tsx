@@ -9,7 +9,7 @@ import { HeaderComponent } from './index';
 import Styles from '../styles/main';
 import { AppState } from '../types/index';
 import { getProfile, UserProfile } from '../store/profile/reducers';
-import { updateProfile } from '../store/profile/actions';
+import { updateProfile, updateFailure } from '../store/profile/actions';
 
 interface OwnProps {}
 
@@ -18,7 +18,8 @@ interface ReduxStateProps {
 }
 
 interface ReduxDispatchProps {
-  updateProfile: (profile) => void;
+  updateProfile;
+  updateFailure;
 }
 
 function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
@@ -31,7 +32,8 @@ function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
 
 function mapDispatchToProps(dispatch: Dispatch<AppState>, ownProps: OwnProps): ReduxDispatchProps {
   return {
-    updateProfile: (profile: UserProfile) => dispatch(updateProfile(profile)),
+    updateProfile: (profile: UserProfile, newEmail?: string, updatePass?: { oldPass: string; newPass: string }) => dispatch(updateProfile(profile, newEmail, updatePass)),
+    updateFailure: (error: string) => dispatch(updateFailure(error))
   };
 }
 
@@ -44,6 +46,7 @@ interface State {
   userLastName: string;
   userEmail: string;
   userPass: string;
+  userNewPass: string;
   userPassConfirm: string;
 }
 
@@ -75,33 +78,37 @@ export class AccountComponent extends React.Component<Props, State> {
     }
   }
 
-  async save(profile: UserProfile) {
-    try {
-      const { userId, emailAddress } = profile;
-      const emailAddressHasChanged = this.props.profile.emailAddress !== emailAddress;
+  async save() {
+    const { userId, emailAddress } = this.props.profile;
+    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
 
-      // this.setState({ requestStatus: RequestStatus.REQUEST_SENT, error: undefined });
+    const profile: UserProfile = {
+      userId,
+      name: `${userFirstName} ${userLastName}`,
+      firstName: userFirstName,
+      lastName: userLastName
+    };
 
-      // Update profile and email address
-      await Promise.all([
-        xively.idm.user.updateProfile(profile),
-        emailAddressHasChanged && xively.idm.user.updateEmail(userId, emailAddress),
-      ]);
+    const updateEmail = (userEmail !== emailAddress) && userEmail;
 
-      // Get new profile data
-      const updatedProfile = await xively.idm.user.getProfile(userId);
-      this.props.updateProfile(updatedProfile);
+    let updatePassword;
 
-      // this.setState({ requestStatus: RequestStatus.REQUEST_SUCCESS, error: undefined });
-    } catch ({ response }) {
-      const error = JSON.parse(response.text);
+    if (userPass) {
+      if ((userNewPass || userPassConfirm) && userNewPass !== userPassConfirm) {
+        return this.props.updateFailure('Password does not match the confirm password.');
+      }
 
-      // this.setState({ requestStatus: RequestStatus.REQUEST_ERROR, error });
+      updatePassword = {
+        oldPass: userPass,
+        newPass: userNewPass
+      };
     }
+
+    this.props.updateProfile(profile, updateEmail, updatePassword);
   }
 
   render() {
-    const { userFirstName, userLastName, userEmail } = this.state;
+    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
@@ -124,7 +131,6 @@ export class AccountComponent extends React.Component<Props, State> {
                   placeholder={'User\'s First Name'}
                   autoCapitalize='none'
                   autoCorrect={false}
-                  editable={false}
                   value={userFirstName}
                   onChangeText={(text) => this.setState({ userFirstName: text })}
                 />
@@ -138,7 +144,6 @@ export class AccountComponent extends React.Component<Props, State> {
                   placeholder={'User\'s Last Name'}
                   autoCapitalize='none'
                   autoCorrect={false}
-                  editable={false}
                   value={userLastName}
                   onChangeText={(text) => this.setState({ userLastName: text })}
                 />
@@ -152,12 +157,55 @@ export class AccountComponent extends React.Component<Props, State> {
                   placeholder={'Email Address'}
                   autoCapitalize='none'
                   autoCorrect={false}
-                  editable={false}
                   value={userEmail}
                   onChangeText={(text) => this.setState({ userEmail: text })}
                 />
               </Item>
+
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ userPass ? 'Current Password' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder={'Password'}
+                  secureTextEntry={true}
+                  value={userPass}
+                  onChangeText={(text) => this.setState({ userPass: text })}
+                />
+              </Item>
+
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ userNewPass ? 'Password' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder={'Password'}
+                  secureTextEntry={true}
+                  value={userNewPass}
+                  onChangeText={(text) => this.setState({ userNewPass: text })}
+                />
+              </Item>
+
+              <Item style={Styles.formItem} stackedLabel>
+                <Label>{ userPassConfirm ? 'Confirm Password' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder={'Confirm Password'}
+                  secureTextEntry={true}
+                  value={userPassConfirm}
+                  onChangeText={(text) => this.setState({ userPassConfirm: text })}
+                />
+              </Item>
             </Form>
+
+            <Button
+              style={Styles.formButton}
+              rounded
+              dark
+              onPress={() => this.save()}>
+              <Text>DONE</Text>
+            </Button>
           </View>
         </Content>
       </Container>

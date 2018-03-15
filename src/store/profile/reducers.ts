@@ -26,8 +26,14 @@ export const reducer: Reducer = (state = initialState, action) => {
     case actions.PROFILE_FETCH_FAILURE:
       return { ...state, loading: false, error: action.payload };
 
-    case actions.PROFILE_UPDATE:
+    case actions.PROFILE_UPDATE_REQUEST:
+      return { ...state, error: undefined };
+
+    case actions.PROFILE_UPDATE_SUCCESS:
       return { ...state, data: action.payload };
+
+    case actions.PROFILE_UPDATE_FAILURE:
+      return { ...state, error: action.payload };
 
     default:
       return state;

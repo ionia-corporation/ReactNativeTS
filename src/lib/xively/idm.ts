@@ -242,7 +242,7 @@ class UserIDM {
       url: this.urlIDM
         + 'profile/update',
       method: 'POST',
-      body: opts,
+      body: JSON.stringify(opts),
     };
 
     return this.comm.getXivelyJson(options, true)
