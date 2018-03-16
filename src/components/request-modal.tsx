@@ -5,6 +5,7 @@ import { isFunction } from 'lodash';
 import  Icon  from 'react-native-vector-icons/Ionicons';
 
 import Styles from '../styles/main';
+import { ErrorMessage } from './index';
 
 interface Props {
   // Visibility
@@ -21,6 +22,9 @@ interface Props {
   // Callbacks
   onModalClose?: () => void;
   onModalSubmit?: () => void;
+
+  // Error
+  error: string;
 }
 
 interface State {
@@ -59,7 +63,7 @@ export class RequestModal extends React.Component<Props, State> {
   }
  
   render() {
-    const { title, subtitle, submitText, children, submitDisabled } = this.props;
+    const { title, subtitle, submitText, children, submitDisabled, error } = this.props;
     const { showModal } = this.state;
 
     return (
@@ -74,20 +78,26 @@ export class RequestModal extends React.Component<Props, State> {
             onPress={() => this.handleClose()}>
             <Icon style={Styles.modalCloseIcon} name='md-close'/>
           </Button>
-          <Text>{ title }</Text>
 
-          <Text>{ subtitle }</Text>
+          <View style={Styles.modalContent}>
+            <View>
+              <Text style={Styles.modalTitle}>{ title }</Text>
 
-          <View>
-            { children }
+              <Text style={Styles.modalSubtitle}>{ subtitle }</Text>
+
+              <View>
+                { children }
+              </View>
+
+              <Button
+                style={Styles.modalButton}
+                rounded
+                disabled={submitDisabled}
+                onPress={() => this.handleSubmit()}>
+                <Text>{ submitText }</Text>
+              </Button>
+            </View>
           </View>
-
-          <Button
-            style={Styles.modalButton}
-            disabled={submitDisabled}
-            onPress={() => this.handleSubmit()}>
-            <Text>{ submitText }</Text>
-          </Button>
         </View>
       </Modal>
     );

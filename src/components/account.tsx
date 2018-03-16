@@ -5,8 +5,8 @@ import { connect, Dispatch } from 'react-redux';
 import  Icon  from 'react-native-vector-icons/Ionicons';
 
 import xively from '../lib/xively';
-import { HeaderComponent } from './index';
-import Styles from '../styles/main';
+import { HeaderComponent, ErrorMessage } from './index';
+import { Styles, Colors } from '../styles/main';
 import { AppState } from '../types/index';
 import { getProfile, UserProfile } from '../store/profile/reducers';
 import { updateProfile, updateFailure } from '../store/profile/actions';
@@ -18,6 +18,7 @@ interface OwnProps {}
 interface ReduxStateProps {
   profile: UserProfile;
   currentPassError: string;
+  error: string;
 }
 
 interface ReduxDispatchProps {
@@ -31,7 +32,8 @@ function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
 
   return {
     profile,
-    currentPassError: state.auth.error
+    currentPassError: state.auth.error,
+    error: state.profile.error
   };
 }
 
@@ -50,6 +52,7 @@ interface Props extends
 interface State {
   userFirstName?: string;
   userLastName?: string;
+  userRol?: string;
   userEmail?: string;
   userPass?: string;
   userNewPass?: string;
@@ -66,36 +69,20 @@ export class AccountComponent extends React.Component<Props, State> {
   }
 
   componentWillMount() {
-    const { firstName, lastName, emailAddress } = this.props.profile;
+    const { firstName, lastName, emailAddress, department } = this.props.profile;
 
     this.setState({
       userFirstName: firstName || '',
       userLastName: lastName || '',
+      userRol: department || '',
       userEmail: emailAddress || ''
     });
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    const { userFirstName, userLastName, userEmail } = this.state;
-    const { firstName, lastName, emailAddress } = nextProps.profile;
-
-    if (
-      userFirstName !== firstName ||
-      userLastName !== lastName ||
-      userEmail !== emailAddress
-    ) {
-      this.setState({
-        userFirstName: firstName,
-        userLastName: lastName,
-        userEmail: emailAddress
-      })
-    }
   }
 
   updateProfile() {
     const { profile: propProfile, updateFailure, updateProfile } = this.props;
     const { userId, emailAddress } = propProfile;
-    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
+    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm, userRol } = this.state;
 
     if (userNewPass !== userPassConfirm) {
       return updateFailure('Password does not match the confirm password.');
@@ -105,7 +92,8 @@ export class AccountComponent extends React.Component<Props, State> {
       userId,
       name: `${userFirstName} ${userLastName}`,
       firstName: userFirstName,
-      lastName: userLastName
+      lastName: userLastName,
+      department: userRol
     };
 
     const updateEmail = userEmail !== emailAddress;
@@ -146,12 +134,13 @@ export class AccountComponent extends React.Component<Props, State> {
 
   isProfileEdited() {
     const { firstName, lastName, emailAddress, department } = this.props.profile;
-    const { userFirstName, userLastName, userEmail, userNewPass, userPassConfirm } = this.state;
+    const { userFirstName, userLastName, userRol, userEmail, userNewPass, userPassConfirm } = this.state;
 
     if (
       firstName !== userFirstName ||
       lastName !== userLastName || 
       emailAddress !== userEmail ||
+      department !== userRol ||
       userNewPass && userPassConfirm
     ) {
       return true;
@@ -161,9 +150,11 @@ export class AccountComponent extends React.Component<Props, State> {
   }
 
   render() {
+    const { error, currentPassError } = this.props
     const {
       userFirstName,
       userLastName,
+      userRol,
       userEmail,
       userPass,
       userNewPass,
@@ -175,7 +166,8 @@ export class AccountComponent extends React.Component<Props, State> {
       <Container style={Styles.viewContainer}>
         <RequestModal
           title='Enter Current Password'
-          submitText='Send'
+          subtitle='This changes require password confirmation'
+          submitText='SEND'
           showModal={showModal}
           onModalClose={() => this.setState({
             showModal: false,
@@ -184,7 +176,8 @@ export class AccountComponent extends React.Component<Props, State> {
             newUserProfile: null
           })}
           onModalSubmit={() => this.checkCurrentPass()}
-          submitDisabled={userPass && userPass.length ? false : true}>
+          submitDisabled={userPass && userPass.length ? false : true}
+          error={currentPassError}>
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.formItem} stackedLabel>
@@ -192,7 +185,7 @@ export class AccountComponent extends React.Component<Props, State> {
 
                 <Input
                   style={Styles.formInput}
-                  placeholder={'Password'}
+                  placeholder={'Current Password'}
                   secureTextEntry={true}
                   value={userPass}
                   onChangeText={(text) => this.setState({ userPass: text })}
@@ -202,19 +195,21 @@ export class AccountComponent extends React.Component<Props, State> {
           </View>
         </RequestModal>
 
-        <HeaderComponent title='Account' logoutButton>
-          <View style={Styles.accountHeader}>
-            <View style={Styles.accountIconContainer}>
-              <Icon name='ios-person' style={Styles.accountUserIcon}/>
-            </View>
-          </View>
-        </HeaderComponent>
-
         <Content>
+          <ErrorMessage error={error}/>
+
+          <HeaderComponent title='Account' logoutButton>
+            <View style={Styles.accountHeader}>
+              <View style={Styles.accountIconContainer}>
+                <Icon name='ios-person' style={Styles.accountUserIcon}/>
+              </View>
+            </View>
+          </HeaderComponent>
+
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
-              <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userFirstName ? 'User\'s First Name' : '' }</Label>
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userFirstName ? 'User\'s First Name' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
@@ -226,8 +221,8 @@ export class AccountComponent extends React.Component<Props, State> {
                 />
               </Item>
 
-              <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userLastName ? 'User\'s Last Name' : '' }</Label>
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userLastName ? 'User\'s Last Name' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
@@ -239,8 +234,21 @@ export class AccountComponent extends React.Component<Props, State> {
                 />
               </Item>
 
-              <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userEmail ? 'Email Address' : '' }</Label>
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userRol ? 'Role (optional)' : '' }</Label>
+
+                <Input
+                  style={Styles.formInput}
+                  placeholder={'Role (optional)'}
+                  autoCapitalize='none'
+                  autoCorrect={false}
+                  value={userRol}
+                  onChangeText={(text) => this.setState({ userRol: text })}
+                />
+              </Item>
+
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userEmail ? 'Email Address' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
@@ -252,8 +260,8 @@ export class AccountComponent extends React.Component<Props, State> {
                 />
               </Item>
 
-              <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userNewPass ? 'Password' : '' }</Label>
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userNewPass ? 'Password' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
@@ -264,8 +272,8 @@ export class AccountComponent extends React.Component<Props, State> {
                 />
               </Item>
 
-              <Item style={Styles.formItem} stackedLabel>
-                <Label>{ userPassConfirm ? 'Confirm Password' : '' }</Label>
+              <Item style={Styles.accountFormItem} stackedLabel>
+                <Label style={Styles.formItemLabel}>{ userPassConfirm ? 'Confirm Password' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
@@ -278,9 +286,8 @@ export class AccountComponent extends React.Component<Props, State> {
             </Form>
 
             <Button
-              style={Styles.formButton}
+              style={Styles.accountFormButton}
               rounded
-              dark
               disabled={!this.isProfileEdited()}
               onPress={() => this.updateProfile()}>
               <Text>DONE</Text>

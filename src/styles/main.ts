@@ -55,15 +55,40 @@ export const Styles = StyleSheet.create({
 
   modal: {
     backgroundColor: Colors.neonRed,
-    height: '100%'
+    height: '100%',
+    paddingTop: 15
+  } as ViewStyle,
+
+  modalContent: {
+    marginTop: -30,
+    justifyContent: 'center',
+    flex: 1
   } as ViewStyle,
 
   modalCloseButton: {
     padding: 20,
     paddingTop: 20,
     paddingBottom: 20,
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
+    zIndex: 90
   } as ViewStyle,
+
+  modalTitle: {
+    alignSelf: 'center',
+    color: Colors.white,
+    fontSize: 30,
+    fontWeight: 'bold',
+    width: '80%',
+    textAlign: 'center'
+  } as TextStyle,
+
+  modalSubtitle: {
+    marginTop: 10,
+    alignSelf: 'center',
+    color: Colors.white,
+    width: '80%',
+    textAlign: 'center'
+  } as TextStyle,
 
   modalCloseIcon: {
     fontSize: 25,
@@ -75,7 +100,7 @@ export const Styles = StyleSheet.create({
     backgroundColor: Colors.claret,
     paddingLeft: 10,
     paddingRight: 10,
-    borderRadius: 20,
+    marginTop: 40
   } as ViewStyle,
 
   switch: {
@@ -348,6 +373,10 @@ export const Styles = StyleSheet.create({
     height: 58
   } as TextStyle,
 
+  formItemLabel: {
+    fontSize: 12
+  } as TextStyle,
+
   formLabel: {
     fontSize: 20
   } as TextStyle,
@@ -401,7 +430,7 @@ export const Styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 30
+    marginBottom: 20
   } as ViewStyle,
 
   accountIconContainer: {
@@ -423,7 +452,20 @@ export const Styles = StyleSheet.create({
     backgroundColor: 'transparent',
     color: Colors.darkGray,
     marginTop: -10
-  } as TextStyle
+  } as TextStyle,
+
+  accountFormItem: {
+    marginLeft: 0,
+    height: 52
+  } as TextStyle,
+
+  accountFormButton: {
+    alignSelf: 'center',
+    paddingLeft: 30,
+    paddingRight: 30,
+    marginTop: 20,
+    backgroundColor: Colors.neonRed
+  } as ViewStyle
 });
 
 export default Styles;
