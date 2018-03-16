@@ -55,6 +55,9 @@ interface State {
   userNewPass?: string;
   userPassConfirm?: string;
   showModal?: boolean;
+  updateEmail?: boolean;
+  updatePassword?: boolean;
+  newUserProfile?: UserProfile;
 }
 
 export class AccountComponent extends React.Component<Props, State> {
@@ -89,59 +92,84 @@ export class AccountComponent extends React.Component<Props, State> {
     }
   }
 
-  async updateProfile() {
+  updateProfile() {
     const { profile: propProfile, updateFailure, updateProfile } = this.props;
     const { userId, emailAddress } = propProfile;
     const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm } = this.state;
 
-    const profile: UserProfile = {
+    if (userNewPass !== userPassConfirm) {
+      return updateFailure('Password does not match the confirm password.');
+    }
+
+    const newUserProfile: UserProfile = {
       userId,
       name: `${userFirstName} ${userLastName}`,
       firstName: userFirstName,
       lastName: userLastName
     };
 
-    const updateEmail = (userEmail !== emailAddress) && userEmail;
+    const updateEmail = userEmail !== emailAddress;
 
-    let updatePassword;
-
-    if ((userNewPass || userPassConfirm) && userNewPass !== userPassConfirm) {
-      return updateFailure('Password does not match the confirm password.');
-    }
-
-    if ((userNewPass || userPassConfirm) && userNewPass === userPassConfirm) {
-      updatePassword = {
-        oldPass: userPass,
-        newPass: userNewPass
-      };
-    }
+    const updatePassword = Boolean(userNewPass && userPassConfirm);
 
     if (updateEmail || updatePassword) {
-      return this.setState({showModal: true});
+      return this.setState({
+        showModal: true,
+        updateEmail,
+        updatePassword,
+        newUserProfile
+      });
     }
 
-    return updateProfile(profile);
-
-    // this.props.updateProfile(profile, updateEmail, updatePassword);
+    return updateProfile(newUserProfile);
   }
 
   async checkCurrentPass() {
+    const { userEmail, userPass, userNewPass, newUserProfile, updateEmail, updatePassword } = this.state;
+    const { profile, login, updateProfile } = this.props;
+
     const userOptions = {
-      emailAddress: this.props.profile.emailAddress,
-      password: this.state.userPass
+      emailAddress: profile.emailAddress,
+      password: userPass
     };
 
-    await this.props.login(userOptions);
+    await login(userOptions);
 
-    if (this.props.currentPassError) {
-      console.log('CURRENT PASSWORD FAILED');
-    } else {
-      console.log('CURRENT PASSWORD WORKED');
+    if (!this.props.currentPassError) {
+      updateProfile(
+        newUserProfile,
+        updateEmail && userEmail,
+        updatePassword && { oldPass: userPass, newPass: userNewPass }
+      );
     }
   }
 
+  isProfileEdited() {
+    const { firstName, lastName, emailAddress, department } = this.props.profile;
+    const { userFirstName, userLastName, userEmail, userNewPass, userPassConfirm } = this.state;
+
+    if (
+      firstName !== userFirstName ||
+      lastName !== userLastName || 
+      emailAddress !== userEmail ||
+      userNewPass && userPassConfirm
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
   render() {
-    const { userFirstName, userLastName, userEmail, userPass, userNewPass, userPassConfirm, showModal } = this.state;
+    const {
+      userFirstName,
+      userLastName,
+      userEmail,
+      userPass,
+      userNewPass,
+      userPassConfirm,
+      showModal
+    } = this.state;
 
     return (
       <Container style={Styles.viewContainer}>
@@ -149,7 +177,12 @@ export class AccountComponent extends React.Component<Props, State> {
           title='Enter Current Password'
           submitText='Send'
           showModal={showModal}
-          onModalClose={(newValue) => this.setState({showModal: newValue})}
+          onModalClose={() => this.setState({
+            showModal: false,
+            updateEmail: false,
+            updatePassword: false,
+            newUserProfile: null
+          })}
           onModalSubmit={() => this.checkCurrentPass()}
           submitDisabled={userPass && userPass.length ? false : true}>
           <View style={Styles.formContainer}>
@@ -248,6 +281,7 @@ export class AccountComponent extends React.Component<Props, State> {
               style={Styles.formButton}
               rounded
               dark
+              disabled={!this.isProfileEdited()}
               onPress={() => this.updateProfile()}>
               <Text>DONE</Text>
             </Button>
