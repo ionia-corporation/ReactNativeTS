@@ -1,6 +1,6 @@
 /* tslint:disable:object-literal-key-quotes */
 import { Authorization, XivelyConfig, User } from './models/index';
-import * as jwt from 'jwt-decode';
+import jwt from 'jwt-decode';
 
 import XivelyComm from './xively-comm';
 
@@ -242,7 +242,7 @@ class UserIDM {
       url: this.urlIDM
         + 'profile/update',
       method: 'POST',
-      body: opts,
+      body: JSON.stringify(opts),
     };
 
     return this.comm.getXivelyJson(options, true)
