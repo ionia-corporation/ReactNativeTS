@@ -80,6 +80,7 @@ export class RequestModal extends React.Component<Props, State> {
           </Button>
 
           <View style={Styles.modalContent}>
+  
             <View>
               <Text style={Styles.modalTitle}>{ title }</Text>
 
@@ -96,6 +97,9 @@ export class RequestModal extends React.Component<Props, State> {
                 onPress={() => this.handleSubmit()}>
                 <Text>{ submitText }</Text>
               </Button>
+            </View>
+            <View>
+              <Text style={Styles.modalSubtitle}>{error} </Text>
             </View>
           </View>
         </View>

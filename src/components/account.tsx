@@ -17,7 +17,6 @@ interface OwnProps {}
 
 interface ReduxStateProps {
   profile: UserProfile;
-  currentPassError: string;
   error: string;
 }
 
@@ -32,7 +31,6 @@ function mapStateToProps(state: AppState, ownProps: OwnProps): ReduxStateProps {
 
   return {
     profile,
-    currentPassError: state.auth.error,
     error: state.profile.error
   };
 }
@@ -61,11 +59,19 @@ interface State {
   updateEmail?: boolean;
   updatePassword?: boolean;
   newUserProfile?: UserProfile;
+  currentPassError: string;
 }
 
 export class AccountComponent extends React.Component<Props, State> {
-  state: Partial<State> = {
-    showModal: false
+  state: State = {
+    showModal: false,
+    currentPassError: '',
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.error !== this.props.error && prevState.userPass) {
+      this.setState({ userPass: ''})
+    }
   }
 
   componentWillMount() {
@@ -121,14 +127,24 @@ export class AccountComponent extends React.Component<Props, State> {
       password: userPass
     };
 
-    await login(userOptions);
-
-    if (!this.props.currentPassError) {
-      updateProfile(
+    try {
+      const res = await xively.idm.authentication.login(userOptions);
+      await updateProfile(
         newUserProfile,
         updateEmail && userEmail,
         updatePassword && { oldPass: userPass, newPass: userNewPass }
       );
+      this.setState({
+        showModal: false,
+        userPass: null,
+        userNewPass: null,
+        userPassConfirm: null,
+      })
+    } catch(err) {
+      this.setState({
+        currentPassError: err.message,
+        userPass: null,
+      })
     }
   }
 
@@ -150,7 +166,8 @@ export class AccountComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { error, currentPassError } = this.props
+    const { error } = this.props
+    const { currentPassError } = this.state;
     const {
       userFirstName,
       userLastName,
@@ -166,14 +183,16 @@ export class AccountComponent extends React.Component<Props, State> {
       <Container style={Styles.viewContainer}>
         <RequestModal
           title='Enter Current Password'
-          subtitle='This changes require password confirmation'
+          subtitle='This change requires password confirmation'
           submitText='SEND'
           showModal={showModal}
           onModalClose={() => this.setState({
             showModal: false,
             updateEmail: false,
             updatePassword: false,
-            newUserProfile: null
+            newUserProfile: null,
+            userPass: null,
+            currentPassError: null,
           })}
           onModalSubmit={() => this.checkCurrentPass()}
           submitDisabled={userPass && userPass.length ? false : true}
@@ -261,11 +280,11 @@ export class AccountComponent extends React.Component<Props, State> {
               </Item>
 
               <Item style={Styles.accountFormItem} stackedLabel>
-                <Label style={Styles.formItemLabel}>{ userNewPass ? 'Password' : '' }</Label>
+                <Label style={Styles.formItemLabel}>{ userNewPass ? 'New Password' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
-                  placeholder={'Password'}
+                  placeholder={'New Password'}
                   secureTextEntry={true}
                   value={userNewPass}
                   onChangeText={(text) => this.setState({ userNewPass: text })}
@@ -273,11 +292,11 @@ export class AccountComponent extends React.Component<Props, State> {
               </Item>
 
               <Item style={Styles.accountFormItem} stackedLabel>
-                <Label style={Styles.formItemLabel}>{ userPassConfirm ? 'Confirm Password' : '' }</Label>
+                <Label style={Styles.formItemLabel}>{ userPassConfirm ? 'Confirm New Password' : '' }</Label>
 
                 <Input
                   style={Styles.formInput}
-                  placeholder={'Confirm Password'}
+                  placeholder={'Confirm New Password'}
                   secureTextEntry={true}
                   value={userPassConfirm}
                   onChangeText={(text) => this.setState({ userPassConfirm: text })}
