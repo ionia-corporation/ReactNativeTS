@@ -1,4 +1,4 @@
-import { StyleSheet, ViewStyle, TextStyle, Dimensions, ImageStyle, Platform } from 'react-native';
+import { StyleSheet, ViewStyle, TextStyle, Dimensions, ImageStyle, Platform, ScrollViewStyle } from 'react-native';
 
 const DEVICE_WIDTH = Dimensions.get('window').width;
 const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -177,13 +177,17 @@ export const Styles = StyleSheet.create({
   loginSocialText: {
   } as TextStyle,
 
-  signupContent: {
-    // marginTop: 20
-  } as ViewStyle,
-
   signupSuccessful: {
     marginTop: 50
   } as ViewStyle,
+
+  contentWithHeader: {
+    flex: 0
+  } as ViewStyle,
+
+  headerContainer: {
+    flexGrow: 0
+  } as ScrollViewStyle,
 
   header: {
     backgroundColor: Colors.neonRed,
@@ -430,7 +434,7 @@ export const Styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginBottom: 20
+    marginBottom: 30
   } as ViewStyle,
 
   accountIconContainer: {
