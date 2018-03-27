@@ -1,5 +1,6 @@
 import React from 'react';
-import { Header, Body, Title, Button, Left, Right, Text, View } from 'native-base';
+import { ScrollView } from 'react-native';
+import { Header, Body, Title, Button, Left, Right, Text } from 'native-base';
 import  Icon  from 'react-native-vector-icons/Ionicons';
 import  IconMCI  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect, Dispatch } from 'react-redux';
@@ -7,12 +8,14 @@ import { connect, Dispatch } from 'react-redux';
 import { Styles , Colors} from '../styles/main';
 import { AppState } from '../types/index';
 import { logout } from '../store/auth/actions';
+import { ErrorMessage } from './index';
 
 interface OwnProps {
   title: string;
   backButton?: Function;
   searchButton?: boolean;
   logoutButton?: boolean;
+  error?: string;
 }
 
 interface ReduxDispatchProps {
@@ -27,10 +30,12 @@ export class HeaderApp extends React.Component<Props> {
   }
 
   render () {
-    const { title, backButton, searchButton, logoutButton, children } = this.props;
+    const { title, backButton, searchButton, logoutButton, children, error } = this.props;
 
     return (
-      <View>
+      <ScrollView scrollEnabled={false} style={Styles.headerContainer}>
+        <ErrorMessage error={error}/>
+
         <Header style={Styles.header} androidStatusBarColor={Colors.neonRed}>
           <Left style={Styles.headerSide}>
             {
@@ -62,7 +67,7 @@ export class HeaderApp extends React.Component<Props> {
         </Header>
 
         { children }
-      </View>
+      </ScrollView>
     );
   }
 }

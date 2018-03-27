@@ -5,7 +5,7 @@ import { connect, Dispatch } from 'react-redux';
 import  Icon  from 'react-native-vector-icons/Ionicons';
 
 import xively from '../lib/xively';
-import { HeaderComponent, ErrorMessage } from './index';
+import { HeaderComponent } from './index';
 import { Styles, Colors } from '../styles/main';
 import { AppState } from '../types/index';
 import { getProfile, UserProfile } from '../store/profile/reducers';
@@ -214,17 +214,15 @@ export class AccountComponent extends React.Component<Props, State> {
           </View>
         </RequestModal>
 
-        <Content>
-          <ErrorMessage error={error}/>
-
-          <HeaderComponent title='Account' logoutButton>
-            <View style={Styles.accountHeader}>
-              <View style={Styles.accountIconContainer}>
-                <Icon name='ios-person' style={Styles.accountUserIcon}/>
-              </View>
+        <HeaderComponent title='Account' error={error} logoutButton>
+          <View style={Styles.accountHeader}>
+            <View style={Styles.accountIconContainer}>
+              <Icon name='ios-person' style={Styles.accountUserIcon}/>
             </View>
-          </HeaderComponent>
+          </View>
+        </HeaderComponent>
 
+        <Content style={Styles.contentWithHeader}>
           <View style={Styles.formContainer}>
             <Form style={Styles.form}>
               <Item style={Styles.accountFormItem} stackedLabel>
