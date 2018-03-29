@@ -484,7 +484,62 @@ export const Styles = StyleSheet.create({
   settingsListItemTitle: {
     fontSize: 18,
     marginTop: 3
-  } as TextStyle
+  } as TextStyle,
+
+  settingsListItemCheckbox: {
+    display:'flex',
+    flexDirection:'row'
+  } as ViewStyle,
+
+  settingsListItemRadio: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%'
+  } as ViewStyle,
+
+  checkBoxContainer: {
+    display:'flex',
+    flexDirection:'row'
+  } as ViewStyle,
+
+  checkBoxText: {
+    color: '#ffffff',
+    marginLeft: 15
+  } as TextStyle,
+
+  radioButtonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 1
+  } as ViewStyle,
+
+  radioButtonBorder: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: Colors.neonRed,
+    borderRadius: 20,
+    padding: 2
+  } as ViewStyle,
+
+  radioButtonCenter: {
+    width: 12,
+    height: 12,
+    borderRadius: 16,
+    backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
+  radioButtonTitle: {
+    color: Colors.white,
+    marginTop: 10
+  } as TextStyle,
+
+  radioButtonSubtitle: {
+    color: Colors.lightGray,
+    fontSize: 10,
+    textAlign: 'center'
+  } as TextStyle,
 });
 
 export default Styles;
