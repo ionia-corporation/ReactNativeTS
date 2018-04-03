@@ -1,33 +1,20 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { Container, Content, List, ListItem, Text, Right, Body, Switch, CheckBox, View } from 'native-base';
+import { Container, Content, List, ListItem, Text, Right, Body, View } from 'native-base';
 
-import { HeaderComponent } from './index';
+import { HeaderComponent, Switch, CheckBox, RadioButton } from './index';
 import { Styles, Colors} from '../styles/main';
 
-interface State {
-  switchValue: boolean;
-  checkBoxValues: string[];
-  checkBoxCheckedValue: string;
-}
 
-class SettingsComponent extends React.Component<any, State> {
-  state: State = {
-    switchValue: false,
-    checkBoxValues: ['F˚', 'C˚'],
-    checkBoxCheckedValue: 'F˚'
-  }
-
+class SettingsComponent extends React.Component<any, any> {
   render() {
-    const { switchValue, checkBoxValues, checkBoxCheckedValue } = this.state;
-
     return (
       <Container style={Styles.viewContainer}>
         <HeaderComponent title='Settings'/>
 
         <Content>
           <List>
-          <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
               <Body>
                 <Text
                   numberOfLines={1}
@@ -37,21 +24,10 @@ class SettingsComponent extends React.Component<any, State> {
 
               <Right>
                 <View style={Styles.settingsListItemCheckbox}>
-                  {
-                    checkBoxValues.map((value, i) => {
-                      return (
-                        <View style={Styles.checkBoxContainer} key={i}>
-                          <CheckBox
-                            checked={value === checkBoxCheckedValue}
-                            color={Colors.neonRed}
-                            onPress={() => this.setState({checkBoxCheckedValue: value})}
-                          />
-
-                          <Text style={Styles.checkBoxText}>{value}</Text>
-                        </View>
-                      );
-                    })
-                  }
+                  <CheckBox
+                    values={['F˚', 'C˚']}
+                    defaultValue='F˚'
+                  />
                 </View>
               </Right>
             </ListItem>
@@ -65,67 +41,36 @@ class SettingsComponent extends React.Component<any, State> {
               </Body>
 
               <Right>
-                <Switch
-                  onTintColor={Colors.neonRed}
-                  thumbTintColor={Colors.claret}
-                  tintColor={Colors.neonRed}
-                  value={switchValue}
-                  onValueChange={() => this.setState({switchValue: !switchValue})}
-                  style={Styles.switch}/>
+                <Switch defaultValue/>
               </Right>
             </ListItem>
 
             <ListItem style={[Styles.listItem]}>
               <Body>
                 <View style={Styles.settingsListItemRadio}>
-                  <View style={Styles.radioButtonContainer}>
-                    <TouchableOpacity>
-                      <View style={Styles.radioButtonBorder}>
-                        <View style={Styles.radioButtonCenter}>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-
-                    <Text style={Styles.radioButtonTitle}>
-                      High Temp
-                    </Text>
-
-                    <Text style={Styles.radioButtonSubtitle}>
-                      Alert me when indoor temp is above 80˚
-                    </Text>
-                  </View>
-
-                  <View style={Styles.radioButtonContainer}>
-                    <TouchableOpacity>
-                      <View style={Styles.radioButtonBorder}>
-                      </View>
-                    </TouchableOpacity>
-
-                    <Text style={Styles.radioButtonTitle}>
-                      Low Temp
-                    </Text>
-
-                    <Text style={Styles.radioButtonSubtitle}>
-                      Alert me when indoor temp is above 60˚
-                    </Text>
-                  </View>
-
-                  <View style={Styles.radioButtonContainer}>
-                    <TouchableOpacity>
-                      <View style={Styles.radioButtonBorder}>
-                      </View>
-                    </TouchableOpacity>
-
-                    <Text style={Styles.radioButtonTitle}>
-                      Outdoor Temp
-                    </Text>
-
-                    <Text style={Styles.radioButtonSubtitle}>
-                      Alert me when outdoor temp is above 97˚ or below 20˚
-                    </Text>
-                  </View>
+                  <RadioButton
+                    values={[
+                      {name:'highTemp', title:'High Temp', subTitle: 'Alert me when indoor temp is above 80˚'},
+                      {name:'lowTemp', title:'Low Temp', subTitle: 'Alert me when indoor temp is above 60˚'},
+                      {name:'outdoorTemp', title:'Outdoor Temp', subTitle: 'Alert me when outdoor temp is above 97˚ or below 20˚'}
+                    ]}
+                    defaulValue='highTemp'
+                  />
                 </View>
               </Body>
+            </ListItem>
+
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+              <Body>
+                <Text
+                  numberOfLines={1}
+                  style={[Styles.listItemTitle, Styles.settingsListItemTitle, {color: Colors.greyishBrown}]}
+                >EMAIL NOTIFICATIONS</Text>
+              </Body>
+
+              <Right>
+                <Switch disabled/>
+              </Right>
             </ListItem>
           </List>
         </Content>

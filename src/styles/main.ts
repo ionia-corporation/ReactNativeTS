@@ -27,7 +27,8 @@ export const Colors = {
   warmGrey: '#7c7c7c',
   offGray: '#434343',
   facebook: '#293e6a',
-  google: '#2e5cab'
+  google: '#2e5cab',
+  greyishBrown: '#575757'
 };
 
 export const Styles = StyleSheet.create({
