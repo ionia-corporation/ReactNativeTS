@@ -27,7 +27,8 @@ export const Colors = {
   warmGrey: '#7c7c7c',
   offGray: '#434343',
   facebook: '#293e6a',
-  google: '#2e5cab'
+  google: '#2e5cab',
+  greyishBrown: '#575757'
 };
 
 export const Styles = StyleSheet.create({
@@ -250,41 +251,55 @@ export const Styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     marginLeft: 0,
-    padding: 20,
+    paddingRight: 15,
+    paddingLeft: 15,
+    paddingTop: 15,
+    paddingBottom: 15,
     borderBottomColor: Colors.gray,
     borderBottomWidth: 1
   } as ViewStyle,
 
   listItemStatus: {
-    color: Colors.lightGray,
     borderRadius: 50,
     backgroundColor: Colors.offGray,
-    marginTop: 2,
     marginRight: 13,
+    marginLeft: 0,
     padding: 12
+  } as ViewStyle,
+
+  listItemStatusText: {
+    color: Colors.lightGray
   } as TextStyle,
 
   listItemStatusOn: {
-    color: Colors.white,
     backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
+  listItemStatusOnText: {
+    color: Colors.white
   } as TextStyle,
 
   listItemTitle: {
     color: Colors.white,
-    margin: 0,
+    marginLeft: 0,
+    marginRight: 0,
     width: '100%',
     fontSize: 20
   } as TextStyle,
 
   listItemSubtitle: {
     color: Colors.warmGrey,
-    margin: 0,
-    width: '100%'
+    marginLeft: 0,
+    marginRight: 0,
+    marginBottom: 2,
+    width: '100%',
+    fontSize: 12
   } as TextStyle,
 
   listItemGroup: {
-    flexDirection: 'column',
-    backgroundColor: Colors.black
+    backgroundColor: Colors.black,
+    paddingTop: 17,
+    paddingBottom: 22
   } as ViewStyle,
 
   sectionTitle: {
@@ -313,6 +328,10 @@ export const Styles = StyleSheet.create({
   } as TextStyle,
 
   paragraph,
+
+  textDisabled: {
+    color: Colors.greyishBrown
+  } as TextStyle,
 
   errorMessage: {
     fontSize: 13,
@@ -465,7 +484,75 @@ export const Styles = StyleSheet.create({
     paddingRight: 30,
     marginTop: 20,
     backgroundColor: Colors.neonRed
-  } as ViewStyle
+  } as ViewStyle,
+
+  settingsListItemTitle: {
+    fontSize: 18,
+    marginTop: 3
+  } as TextStyle,
+
+  settingsListItemCheckbox: {
+    display:'flex',
+    flexDirection:'row'
+  } as ViewStyle,
+
+  settingsListItemRadio: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%'
+  } as ViewStyle,
+
+  checkBoxContainer: {
+    display:'flex',
+    flexDirection:'row'
+  } as ViewStyle,
+
+  checkBoxText: {
+    color: '#ffffff',
+    marginLeft: 15
+  } as TextStyle,
+
+  radioButtonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 1
+  } as ViewStyle,
+
+  radioButtonBorder: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: Colors.neonRed,
+    borderRadius: 20,
+    padding: 2
+  } as ViewStyle,
+
+  radioButtonBorderDisabled: {
+    borderColor: Colors.greyishBrown
+  } as ViewStyle,
+
+  radioButtonCenter: {
+    width: 12,
+    height: 12,
+    borderRadius: 16,
+    backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
+  radioButtonCenterDisabled: {
+    backgroundColor: Colors.greyishBrown
+  } as ViewStyle,
+
+  radioButtonTitle: {
+    color: Colors.white,
+    marginTop: 10
+  } as TextStyle,
+
+  radioButtonSubtitle: {
+    color: Colors.lightGray,
+    fontSize: 10,
+    textAlign: 'center'
+  } as TextStyle,
 });
 
 export default Styles;

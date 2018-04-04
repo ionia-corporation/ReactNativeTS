@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Content, List, ListItem, Text } from 'native-base';
+import { Content, List, ListItem, Text, Body } from 'native-base';
 
 import Styles from '../../styles/main';
 import { Organizations } from '../../lib/xively/models/index';
@@ -25,13 +25,15 @@ export class GroupList extends React.Component<GroupListProps, GroupListState> {
               onPress={() => {
                 this.props.onPress(group);
               }}>
-              <Text style={Styles.listItemSubtitle}>Group</Text>
+              <Body style={{marginLeft: 0, paddingLeft: 0}}>
+                <Text style={Styles.listItemSubtitle}>Group</Text>
 
-              <Text
-                numberOfLines={1}
-                style={Styles.listItemTitle}>
-                {group.name}
-              </Text>
+                <Text
+                  numberOfLines={1}
+                  style={Styles.listItemTitle}>
+                  {group.name}
+                </Text>
+              </Body>
             </ListItem>
           );
         }

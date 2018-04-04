@@ -10,3 +10,6 @@ export * from './help';
 export * from './add-bar';
 export * from './oauth-signin-buttons';
 export * from './error-message';
+export * from './switch';
+export * from './checkBox';
+export * from './radioButton';

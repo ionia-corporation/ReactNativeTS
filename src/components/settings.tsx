@@ -1,8 +1,10 @@
 import React from 'react';
-import { Container, Content } from 'native-base';
+import { TouchableOpacity } from 'react-native';
+import { Container, Content, List, ListItem, Text, Right, Body, View } from 'native-base';
 
-import { HeaderComponent } from './index';
-import Styles from '../styles/main';
+import { HeaderComponent, Switch, CheckBox, RadioButton } from './index';
+import { Styles, Colors} from '../styles/main';
+
 
 class SettingsComponent extends React.Component<any, any> {
   render() {
@@ -10,7 +12,68 @@ class SettingsComponent extends React.Component<any, any> {
       <Container style={Styles.viewContainer}>
         <HeaderComponent title='Settings'/>
 
-        <Content/>
+        <Content>
+          <List>
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+              <Body>
+                <Text
+                  numberOfLines={1}
+                  style={[Styles.listItemTitle, Styles.settingsListItemTitle]}
+                >TEMPERATURE</Text>
+              </Body>
+
+              <Right>
+                <View style={Styles.settingsListItemCheckbox}>
+                  <CheckBox
+                    values={['F˚', 'C˚']}
+                    defaultValue='F˚'
+                  />
+                </View>
+              </Right>
+            </ListItem>
+
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+              <Body>
+                <Text
+                  numberOfLines={1}
+                  style={[Styles.listItemTitle, Styles.settingsListItemTitle]}
+                >PUSH NOTIFICATIONS</Text>
+              </Body>
+
+              <Right>
+                <Switch defaultValue/>
+              </Right>
+            </ListItem>
+
+            <ListItem style={[Styles.listItem]}>
+              <Body>
+                <View style={Styles.settingsListItemRadio}>
+                  <RadioButton
+                    values={[
+                      {name:'highTemp', title:'High Temp', subTitle: 'Alert me when indoor temp is above 80˚'},
+                      {name:'lowTemp', title:'Low Temp', subTitle: 'Alert me when indoor temp is above 60˚'},
+                      {name:'outdoorTemp', title:'Outdoor Temp', subTitle: 'Alert me when outdoor temp is above 97˚ or below 20˚'}
+                    ]}
+                    defaulValue='highTemp'
+                  />
+                </View>
+              </Body>
+            </ListItem>
+
+            <ListItem style={[Styles.listItem, Styles.listItemGroup]}>
+              <Body>
+                <Text
+                  numberOfLines={1}
+                  style={[Styles.listItemTitle, Styles.settingsListItemTitle, Styles.textDisabled]}
+                >EMAIL NOTIFICATIONS</Text>
+              </Body>
+
+              <Right>
+                <Switch disabled/>
+              </Right>
+            </ListItem>
+          </List>
+        </Content>
       </Container>
     );
   }
