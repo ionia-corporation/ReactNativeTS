@@ -64,7 +64,7 @@ class SettingsComponent extends React.Component<any, any> {
               <Body>
                 <Text
                   numberOfLines={1}
-                  style={[Styles.listItemTitle, Styles.settingsListItemTitle, {color: Colors.greyishBrown}]}
+                  style={[Styles.listItemTitle, Styles.settingsListItemTitle, Styles.textDisabled]}
                 >EMAIL NOTIFICATIONS</Text>
               </Body>
 

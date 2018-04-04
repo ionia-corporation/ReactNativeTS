@@ -329,6 +329,10 @@ export const Styles = StyleSheet.create({
 
   paragraph,
 
+  textDisabled: {
+    color: Colors.greyishBrown
+  } as TextStyle,
+
   errorMessage: {
     fontSize: 13,
     fontWeight: 'bold'
@@ -524,11 +528,19 @@ export const Styles = StyleSheet.create({
     padding: 2
   } as ViewStyle,
 
+  radioButtonBorderDisabled: {
+    borderColor: Colors.greyishBrown
+  } as ViewStyle,
+
   radioButtonCenter: {
     width: 12,
     height: 12,
     borderRadius: 16,
     backgroundColor: Colors.neonRed
+  } as ViewStyle,
+
+  radioButtonCenterDisabled: {
+    backgroundColor: Colors.greyishBrown
   } as ViewStyle,
 
   radioButtonTitle: {

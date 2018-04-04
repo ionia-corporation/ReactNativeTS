@@ -7,6 +7,7 @@ interface Props {
   values: string[];
   defaultValue: string;
   onChange?: (newValue: string) => void;
+  disabled?: boolean;
 }
 
 interface State {
@@ -29,7 +30,7 @@ class CheckBoxComponent extends React.Component<Props, State> {
   }
 
   render() {
-    const { values } = this.props;
+    const { values, disabled } = this.props;
     const { checkedValue } = this.state;
 
     return values.map((value, i) => {
@@ -37,11 +38,11 @@ class CheckBoxComponent extends React.Component<Props, State> {
         <View style={Styles.checkBoxContainer} key={i}>
           <CheckBoxBase
             checked={value === checkedValue}
-            color={Colors.neonRed}
-            onPress={() => this.handleCheckBox(value)}
+            color={disabled ? Colors.greyishBrown : Colors.neonRed}
+            onPress={() => !disabled && this.handleCheckBox(value)}
           />
 
-          <Text style={Styles.checkBoxText}>{value}</Text>
+          <Text style={[Styles.checkBoxText, disabled && Styles.textDisabled]}>{value}</Text>
         </View>
       );
     })
